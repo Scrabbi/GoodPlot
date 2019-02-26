@@ -1,0 +1,42 @@
+﻿<Window x:Class="GoodPlot.Axis_format_Window"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        Title="Axis_Format_Window" Height="381.41" Width="225.149">
+    <Grid >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="12*" ></RowDefinition>
+            <RowDefinition Height="25*" ></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition ></ColumnDefinition>
+            <ColumnDefinition ></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Orientation="Vertical" VerticalAlignment="Stretch">
+            <Label Content="Название оси" Background="Aqua" HorizontalAlignment="Center" />
+            <TextBox Name="Axis_name" Text="TextBox" Background="AntiqueWhite" HorizontalAlignment="Stretch"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch">
+            <Label Content="Max" Background="Aquamarine" HorizontalAlignment="Stretch" Height="35" />
+            <Label Content="Min" Background="Aquamarine" HorizontalAlignment="Stretch" Height="34" />
+            <Label Content="Цвет" Background="Aquamarine" HorizontalAlignment="Stretch" Height="33"  />
+            <Label Content="Размер шрифта" Background="Aquamarine" HorizontalAlignment="Stretch" Height="27"/>
+            <Label Content="Формат чисел" Background="Aquamarine" HorizontalAlignment="Stretch" Height="27"/>
+            <Label Content="Количество делений" Background="Aquamarine" HorizontalAlignment="Stretch" Height="27"/>
+            <Label Content="Офсет" Background="Aquamarine" HorizontalAlignment="Stretch" Height="27"/>
+            <Label Content="Ширина" Background="Aquamarine" HorizontalAlignment="Stretch" Height="27"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Stretch">
+            <TextBox Name="TextBoxMax" Height="35">
+            </TextBox>
+            <TextBox Name="TextBoxMin" Height="35">
+            </TextBox>
+            <xctk:ColorPicker  Name="ColorBox" Height="33"/>
+            <TextBox Name="FontSizeTextBox" Height="28" TextWrapping="Wrap" Text="TextBox"/>
+            <TextBox Name="ValueFormatTextBox" Height="26" TextWrapping="Wrap" Text="TextBox"/>
+            <TextBox Name="MarksCountTextBox" Height="26" TextWrapping="Wrap" Text="5"/>
+            <TextBox Name="OfsetTextBox" Height="26" TextWrapping="Wrap" Text="5"/>
+            <TextBox Name="WideTextBox" Height="26" TextWrapping="Wrap" Text="5"/>
+        </StackPanel>
+    </Grid>
+</Window>

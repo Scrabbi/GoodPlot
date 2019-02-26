@@ -1,0 +1,42 @@
+﻿<Window x:Class="GoodPlot.ModuleDiffEff"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="ModuleDiffEff" Height="344" Width="300" Topmost="True" HorizontalAlignment="Right" WindowStartupLocation="Manual" Left="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="22*"/>
+            <ColumnDefinition Width="51*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Orientation="Vertical" VerticalAlignment="Stretch" Grid.ColumnSpan="2">
+            <Label Content="Группа для расчета" Background="Bisque" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" />
+            <TextBox Name="GroupTexBox"  HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Height="29"/>
+            <Label Content="Реактивность для расчета" Background="Bisque" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" />
+            <TextBox Name="ReactivitiTexBox"   HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Height="29"/>
+            <StackPanel x:Name="PanelRadioButt" Orientation="Horizontal">
+                <RadioButton GroupName="CalcWay" Name="RadHand" Content="Вручную" IsChecked="True" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Width="144" />
+                <RadioButton GroupName="CalcWay" Name="RadAuto" Content="Автомат"  HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Width="145"/>
+            </StackPanel>
+            <Label Content="Вехние точки" Background="Bisque" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" />
+            <StackPanel x:Name="PanelButtsTop" Orientation="Horizontal" Margin="1" Height="34" RenderTransformOrigin="0.503,1.147">
+                <Button  Content="Верх:начало" x:Name="ButtonTopStart" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Width="144"
+            		Background="LightCyan" Click="ButtonTopStart_Click" />
+                <Button  Content="Верх:конец"  x:Name="ButtonTopEnd" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Width="145"
+            		Background="LightCyan" Click="ButtonTopEnd_Click"/>
+            </StackPanel>
+            <Label Content="Нижние точки" Background="Bisque" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" />
+            <StackPanel x:Name="PanelButtsBottom" Orientation="Horizontal" Margin="1" Height="34" RenderTransformOrigin="0.503,1.147">
+                <Button  Content="Низ:начало" x:Name="ButtonBotStart" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Width="144"
+            		Background="LightCyan" Click="ButtonBotStart_Click" />
+                <Button  Content="Низ:конец"  x:Name="ButtonBotEnd" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Width="145"
+            		Background="LightCyan" Click="ButtonBotEnd_Click"/>
+            </StackPanel>
+            <Button Name="ButtonGroupPoint" Content="Отметить середну движения группы"  Margin="1" Padding="3" Background="LightCyan" 
+                    HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Click="ButtonGroupPoint_Click"/>
+            <Button Name="ButtonCalculation" Content="Рассчитать" Margin="1,10" Padding="3" Background="LightCyan" HorizontalContentAlignment="Center" 
+                   HorizontalAlignment="Stretch" Click="ButtonCalculation_Click"/>
+            <Label Content="Отобразить сглаживающие прямые" Margin="1" Padding="3" Background="LightCyan" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" />
+            <Label Content="Сброс" Margin="1" Padding="3" Background="LightCyan" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" />
+
+        </StackPanel>
+    </Grid>
+</Window>

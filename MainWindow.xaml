@@ -1,0 +1,233 @@
+﻿<Window
+xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+xmlns:wfi="clr-namespace:System.Windows.Forms.Integration;assembly=WindowsFormsIntegration"
+xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
+xmlns:dvc="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
+xmlns:local="clr-namespace:GoodPlot"  x:Class="GoodPlot.MainWindow"
+Icon="PerfCenterCpl.ico"
+    Title="Paint_it!" Height="424.373" Width="692.604">
+    <!--основное поле-->
+    <Grid Margin="0,0,-8,-2">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="526*"/>
+            <ColumnDefinition Width="167*"/>
+        </Grid.ColumnDefinitions>
+        <!--2 строки, в первой меню программы, во второй вкладки-->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25*"/>
+            <RowDefinition Height="378*"/>
+        </Grid.RowDefinitions>
+        <!--меню программы-->
+        <Menu Name="Main_Menu" Grid.Row="0" Grid.ColumnSpan="2" MinHeight="15" Margin="0,0,10,0">
+            <!--открывать файл-->
+            <MenuItem Header="Начало работы" Name="StartWork">
+                <MenuItem Header="Открыть" x:Name="OpenFile" Click="OpenFile_MenuItem_Click"/>
+                <MenuItem Header="Добавить" x:Name="AddFile" Click="AddFile_Click"/>
+            </MenuItem>
+
+            <MenuItem Header="Тип графика" RenderTransformOrigin="0.5,0.5">
+                <MenuItem.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="10.347"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </MenuItem.RenderTransform>
+                <MenuItem Header="1 график, 4 оси"  Name="One_GraphButton" x:FieldModifier="public" Click="One_Graph_Click"/>
+                <MenuItem Header="Друг под другом, 2 оси"  Name="Many_GraphButton" Click="Many_Graph_Click"/>
+            </MenuItem>
+            <MenuItem Header="Удаление" RenderTransformOrigin="0.5,0.5">
+                <MenuItem.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="-5.347"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </MenuItem.RenderTransform>
+                <MenuItem Header="Убрать линию" x:Name="DelLastLine" Click="DelLastLine_Click"/>
+                <MenuItem Header="Убрать все линии" x:Name="DelAllLines" Click="DelAllLines_Click"/>
+                <MenuItem Header="Удалить надпись" x:Name="DelTitle" Click="DelTitle_Click"/>
+                <MenuItem Header="Удалить все надписи и линии" x:Name="DelAllTitles" Click="DelAllTitles_Click"/>
+                <MenuItem Header="Удалить график параметра"  Name="ButtonClearLines" Click="ButtonClearLines_Click"/>
+            </MenuItem>
+            <MenuItem Header="Сохранить изображение" RenderTransformOrigin="0.5,0.5">
+                <MenuItem.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="5.347"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </MenuItem.RenderTransform>
+                <MenuItem Header="Сохранить изображение" x:Name="SaveImage" Click="SaveImage_Click"/>
+            </MenuItem>
+            <MenuItem Header="Печать">
+                <MenuItem Header="Настройка страницы" x:Name="PageOptions" Click="PageOptions_Click"/>
+                <MenuItem Header="Печать – выбор принтера" x:Name="PrintOptions" Click="PrintOptions_Click"/>
+                <MenuItem Header="Печать – предварительный просмотр" x:Name="PreviewPrint" Click="PreviewPrint_Click"/>
+            </MenuItem>
+            <MenuItem Header="Курсор" RenderTransformOrigin="0.5,0.5">
+                <MenuItem.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform/>
+                        <SkewTransform/>
+                        <RotateTransform Angle="-9.347"/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </MenuItem.RenderTransform>
+                <MenuItem Header="Убрать" x:Name="DelKursorButton" Click="DelKursorButton_Click"/>
+            </MenuItem>
+            <MenuItem Header="Файл" Name="File_Menu">
+                <MenuItem Header="Сахранить" x:Name="SaveMenuItem" Click="SaveMenuItem_Click"/>
+                <MenuItem Header="Загрузить" x:Name="LoadMenuItem" Click="LoadMenuItem_Click"/>
+                <MenuItem Header="Начать заново" x:Name="NewBeginning" Click="NewBeginning_Click"/>
+                <MenuItem Header="СВРК:подгрузить обозначения" x:Name="LoadSvrkNames" Click="LoadSvrkNames_Click"/>
+            </MenuItem>
+            <MenuItem Header="Расчеты" Name="Calculations_Menu">
+                <MenuItem Header="Дифф. эфф." x:Name="DiffEffModule" Click="DiffEffModule_Click"/>
+            </MenuItem>
+        </Menu>
+        <!--вкладки-->
+        <TabControl x:Name="TabCont1" Grid.Row="1" Grid.ColumnSpan="2" >
+            <!--Первая вкладка, параметры и значения-->
+            <TabItem x:Name="Points_Tab" MouseLeftButtonUp="List_Parameters_MouseLeftButtonUp">
+                <!--заголовок "Показания датчиков"-->
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Ellipse Height="10" Width="10" Fill="Black" />
+                        <TextBlock Margin="3"><Run Text="Показания датчиков"/></TextBlock>
+                    </StackPanel>
+                </TabItem.Header>
+                <!--создадим 3 столбца, посередне передвижной, в первом список параметров, вов втором значения параметров-->
+                <Grid>
+                    <!--три колонки-->
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="187*" />
+                        <ColumnDefinition Width="41*"/>
+                        <ColumnDefinition Width="Auto" MinWidth="3" />
+                        <ColumnDefinition Width="447*" />
+                        <ColumnDefinition Width="5*"/>
+                    </Grid.ColumnDefinitions>
+                    <!--плавающая центральная-->
+                    <GridSplitter Grid.Column="2" ShowsPreview="False" Width="3" 
+                      HorizontalAlignment="Center" VerticalAlignment="Stretch" />
+                    <!--Лист значений параметра выбранного-->
+                    <ListView   x:Name="Points_List" Grid.Column="3" AllowDrop="True" >
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn  DisplayMemberBinding="{Binding Time,Mode=OneWay,UpdateSourceTrigger=PropertyChanged,StringFormat='HH:mm:ss.fff yyyy-MM-dd'}" Width="150" Header="Время" />
+                                <GridViewColumn  DisplayMemberBinding="{Binding Value,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Width="100" Header="Значение" />
+                                <GridViewColumn  DisplayMemberBinding="{Binding IsOk,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Width="100" Header="Достоверность" />
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                    <!--Лист списка параметров-->
+                    <ListView   x:Name="List_Parameters"  Grid.Column="0" Grid.ColumnSpan="2"  AllowDrop="True" MouseDoubleClick="List_Parameters_MouseDoubleClick">
+                        <ListView.View>
+                            <GridView>
+                                <GridViewColumn  DisplayMemberBinding="{Binding KKS, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Width="150" Header="KKS параметра" />
+                                <GridViewColumn  DisplayMemberBinding="{Binding Description, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Width="100" Header="О параметре" />
+                                <GridViewColumn  DisplayMemberBinding="{Binding Dimention, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Width="100" Header="Размерность" />
+                            </GridView>
+                        </ListView.View>
+                        <ListView.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Построить/левая ось" Name="bLeft"  Click="BuildLeft_Click"></MenuItem>
+                                <MenuItem Header="Построить/правая ось" Name="bRight"  Click="BuildRight_Click"></MenuItem>
+                                <MenuItem Header="Построить/вторая левая ось"  Name="bsLeft" Click="bsLeft_Click"></MenuItem>
+                                <MenuItem Header="Построить/вторая правая ось" Name="bsRight" Click="bsRight_Click"></MenuItem>
+                            </ContextMenu>
+                        </ListView.ContextMenu>
+                    </ListView>
+                </Grid>
+            </TabItem>
+            <!--Вторая вкладка, график-->
+            <TabItem x:Name="Plot_Tab">
+                <!--Заголовок-->
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Rectangle Height="10" Width="10" Fill="Black" />
+                        <TextBlock Margin="3"><Run Text="График"/></TextBlock>
+                    </StackPanel>
+                </TabItem.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="82*"/>
+                        <ColumnDefinition Width="601*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="283*" />
+                        <RowDefinition Height="23*"/>
+                    </Grid.RowDefinitions>
+                    <!--Добавляем элемент winforms MS Chart. Строка с графико, номер 2 строка -->
+                    <WindowsFormsHost Grid.Row="1" Grid.ColumnSpan="2">
+                        <dvc:Chart x:Name="Chart1" x:FieldModifier="public"/>
+                    </WindowsFormsHost>
+                    <!--Строка с кнопками, номер 1 строка-->
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Grid.ColumnSpan="2">
+                        <TextBox  x:Name="TextBox_Arena_N" Height="20" Text="Area# 1" 
+                                   Width="59" Margin="0,2"  />
+
+
+                        <Button Name="ButtonDrowLine" Background="LightGray" Click="ButtonDrowLine_Click" Content="Нарисовать линию"/>
+                        <Button Name="ButtonDrow_Title" Background="LightGray" Click="ButtonDrowTitle_Click" Content="Добавить подпись"/>
+                    </StackPanel>
+                    <!--Строка с координатами, номер 3 строка-->
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,5,0,-5" Grid.ColumnSpan="2">
+                        <Label Content="Xcoord" />
+                        <Label Name="LabelXcoord" Content="X" />
+                        <Label Content="Ycoord" />
+                        <Label Name="LabelYcoord" Content="Y" />
+                        <Label Content="Ось для курсора" />
+                        <ComboBox Name="AreasList" Width="88" SelectionChanged ="AreasList_Selected" ItemsSource="{Binding}">
+
+                        </ComboBox>
+                    </StackPanel>
+
+                </Grid>
+            </TabItem>
+            <TabItem x:Name="RezultCurrent_Tab">
+                <!--Заголовок-->
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Rectangle Height="12" Width="16" Fill="Aqua" />
+                        <TextBlock Margin="3"><Run Text="Текущий результат"/></TextBlock>
+                    </StackPanel>
+                </TabItem.Header>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="82*"/>
+                        <ColumnDefinition Width="601*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <DataGrid  Name="TableCurrent"  Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,-308" Grid.RowSpan="2">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn  Header="Номер" />
+                            <DataGridTextColumn  Header="Н12, %" />
+                            <DataGridTextColumn  Header="Н11, %" />
+                            <DataGridTextColumn  Header="Н10, %" />
+                            <DataGridTextColumn  Header="Н9, %" />
+                            <DataGridTextColumn  Header="Н8, %" />
+                            <DataGridTextColumn  Header="dН, см" />
+                            <DataGridTextColumn  Header="dρ, %" />
+                            <DataGridTextColumn  Header="dρ/dН, %/см" />
+                            
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <!--Строка с кнопками-->
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Grid.ColumnSpan="2">
+                        <!--<Button Name="ButtonDrowLine" Background="LightGray" Click="ButtonDrowLine_Click" Content="Нарисовать линию"/>
+                        <Button Name="ButtonDrow_Title" Background="LightGray" Click="ButtonDrowTitle_Click" Content="Добавить подпись"/>-->
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

@@ -1,0 +1,50 @@
+﻿<Window x:Class="GoodPlot.Legend_Format_Window"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Legend_Format_Window" Height="334.66" Width="286.149">
+    <Grid Margin="0,0,-8,-2" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="12*" ></RowDefinition>
+            <RowDefinition Height="25*" ></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition ></ColumnDefinition>
+            <ColumnDefinition ></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Orientation="Vertical" VerticalAlignment="Stretch">
+            <Label Content="Заголовок" Background="Aqua" HorizontalAlignment="Center" />
+            <TextBox Name="KKS_Text" Text="TextBox" Background="AntiqueWhite" HorizontalAlignment="Stretch"/>
+            <Button Name="But_Del" Content="Удалить линию" Background="Beige" HorizontalAlignment="Stretch" Height="27" Click="But_Del_Click"/>
+            <Button Name="AllDifferentMarkers" Content="Для каждой линии-свой маркер точки" 
+                    Background="Azure"  HorizontalAlignment="Stretch" Height="27" Click="AllDifferentMarkers_Click"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch">
+            <Label Content="Стиль линии" Background="Aquamarine" HorizontalAlignment="Stretch" Height="57" />
+            <Label Content="Цвет" Background="Aquamarine" HorizontalAlignment="Stretch" Height="52"  />
+            <Label Content="Ширина" Background="Aquamarine" HorizontalAlignment="Stretch" Height="49"/>
+            <Label Content="Тип линии" Background="Aquamarine" HorizontalAlignment="Stretch" Height="49"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Stretch">
+            <ComboBox Name="ComBoxLineType" Height="57">
+                <TextBlock>Dash</TextBlock>
+                <TextBlock>DashDot</TextBlock>
+                <TextBlock>DashDotDot</TextBlock>
+                <TextBlock>Dot</TextBlock>
+                <TextBlock>Solid</TextBlock>
+            </ComboBox>
+            <xctk:ColorPicker  Name="ColorBox" Height="51"/>
+            <TextBox Name="LineWidhtTextBox" Height="47" TextWrapping="Wrap" Text="TextBox"/>
+            <ComboBox Name="ComBoxType" Height="57">
+                <TextBlock>Колонки</TextBlock>
+                <TextBlock>Линия (соединяет точки по очереди)</TextBlock>
+                <TextBlock>Сглаженная линия (сплайн)</TextBlock>
+                <TextBlock>Точки данных</TextBlock>
+                <TextBlock>Кусочная линия (идет от точки к точке, между ними оставаясь горизогтальной)</TextBlock>
+                <TextBlock>Площадь под кривой</TextBlock>
+                <TextBlock>Сглаженная площадь</TextBlock>
+                
+            </ComboBox>
+        </StackPanel>
+    </Grid>
+</Window>
