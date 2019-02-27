@@ -207,8 +207,8 @@ Icon="PerfCenterCpl.ico"
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <DataGrid  Name="TableCurrent"  Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,-308" Grid.RowSpan="2">
-                        <DataGrid.Columns>
+                    <DataGrid  AutoGenerateColumns="True" Name="TableCurrent"  Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,-308" Grid.RowSpan="2">
+                        <!--<DataGrid.Columns>
                             <DataGridTextColumn  Header="Номер" />
                             <DataGridTextColumn  Header="Н12, %" />
                             <DataGridTextColumn  Header="Н11, %" />
@@ -217,9 +217,9 @@ Icon="PerfCenterCpl.ico"
                             <DataGridTextColumn  Header="Н8, %" />
                             <DataGridTextColumn  Header="dН, см" />
                             <DataGridTextColumn  Header="dρ, %" />
-                            <DataGridTextColumn  Header="dρ/dН, %/см" />
+                            <DataGridTextColumn  Header="dρ:dН, %:см" />
                             
-                        </DataGrid.Columns>
+                        </DataGrid.Columns>-->
                     </DataGrid>
                     <!--Строка с кнопками-->
                     <StackPanel Grid.Row="1" Orientation="Horizontal" Grid.ColumnSpan="2">

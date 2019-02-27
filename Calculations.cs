@@ -9,7 +9,8 @@ namespace GoodPlot
 {
  public class Calculations
   {
-  
+  public  double Step_h = 3.75;
+  public double B_eff = 0.74;
   /// <summary>
   /// Найти из списка точек точку с заданным временем
   /// </summary>
@@ -26,6 +27,7 @@ namespace GoodPlot
       MessageBox.Show("Не найдено совпадение времени с курсором");
       return new Time_and_Value();
     }
+    
 
   }
 }

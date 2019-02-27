@@ -1,7 +1,7 @@
 ﻿<Window x:Class="GoodPlot.ModuleDiffEff"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="ModuleDiffEff" Height="344" Width="300" Topmost="True" HorizontalAlignment="Right" WindowStartupLocation="Manual" Left="800">
+        Title="ModuleDiffEff" Closed="Window_Closed" Height="344" Width="300" Topmost="True" HorizontalAlignment="Right" WindowStartupLocation="Manual" Left="800">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="22*"/>
@@ -14,7 +14,7 @@
             <TextBox Name="ReactivitiTexBox"   HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Height="29"/>
             <StackPanel x:Name="PanelRadioButt" Orientation="Horizontal">
                 <RadioButton GroupName="CalcWay" Name="RadHand" Content="Вручную" IsChecked="True" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Width="144" />
-                <RadioButton GroupName="CalcWay" Name="RadAuto" Content="Автомат"  HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Width="145"/>
+                <RadioButton GroupName="CalcWay" Name="RadAuto" Content="Автомат" Checked="RadAuto_Checked"  HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Width="145"/>
             </StackPanel>
             <Label Content="Вехние точки" Background="Bisque" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" />
             <StackPanel x:Name="PanelButtsTop" Orientation="Horizontal" Margin="1" Height="34" RenderTransformOrigin="0.503,1.147">
