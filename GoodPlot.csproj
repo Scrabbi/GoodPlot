@@ -146,7 +146,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Calculations.cs" />
+    <Compile Include="Calculations.xaml.cs">
+      <DependentUpon>Calculations.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ModuleDiffEff.xaml.cs">
       <DependentUpon>ModuleDiffEff.xaml</DependentUpon>
     </Compile>
@@ -155,6 +157,10 @@
       <DependentUpon>TitleFormatWindow.xaml</DependentUpon>
     </Compile>
     <Page Include="Axis_format_Window.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Calculations.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

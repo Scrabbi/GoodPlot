@@ -88,6 +88,7 @@ Icon="PerfCenterCpl.ico"
             </MenuItem>
             <MenuItem Header="Расчеты" Name="Calculations_Menu">
                 <MenuItem Header="Дифф. эфф." x:Name="DiffEffModule" Click="DiffEffModule_Click"/>
+                <MenuItem Header="Настройки расчета" x:Name="CalculOptions" Click="CalculOptions_Click"/>
             </MenuItem>
         </Menu>
         <!--вкладки-->

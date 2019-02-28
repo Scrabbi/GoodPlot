@@ -34,6 +34,11 @@ namespace GoodPlot
     double dH = 0;
     double dPdH;
 
+    
+
+    //Начало - конец участка для анализа.
+    DateTime Start; DateTime End;
+
     /// <summary>
     /// Массив для записи 4 пар время-значение (4 точки из списка точек параметра).
     /// </summary>
@@ -50,46 +55,47 @@ namespace GoodPlot
     /// Доступ к списку параметров
     /// </summary>
     File_Acts fileacts_ref;
-    Calculations MyCalc = new Calculations();
+
+    Calculations MyCalc; 
     public ModuleDiffEff(Chart chart, File_Acts FA, DataGrid datagrid)
     {
       InitializeComponent();
       Chart_ref=chart;
       fileacts_ref=FA;
       datagrid_ref = datagrid;
-      
+      MyCalc = new Calculations(FA);
     }
 
 
     private void ButtonTopStart_Click(object sender, RoutedEventArgs e)
     {
       ButtonTopStart.Background = Brushes.MediumSeaGreen;
-      if (RadHand.IsChecked==true)
-      {
-       
       //ПРоверка что курсор нормальный, имеет значение. Если курсора вообще нет на графике.
       if (double.IsNaN(Chart_ref.ChartAreas[0].CursorX.Position))
       {
         MessageBox.Show("Перенаведите курсор!");
         return;
       }
+
+      if (RadHand.IsChecked == true)
+      {
       ////////////Вручную///////////////////////////////////////////////////////////////////////
       if (RadHand.IsChecked==true)
       {
         //Заносим точку. Запомнили точку старта.
         Parameter selectedParam =(Parameter) fileacts_ref.Parameters.Find(n => n.KKS.Contains(ReactivitiTexBox.Text));
-        Time_and_Value TAV = MyCalc.FindPoint(selectedParam.Time_and_Value_List,DateTime.FromOADate(Chart_ref.ChartAreas[0].CursorX.Position));
+        Time_and_Value TAV = MyCalc.FindPoint(selectedParam.Time_and_Value_List, DateTime.FromOADate(Chart_ref.ChartAreas[0].CursorX.Position));
 
         //Заносим параметр. 
         ReactivityMassForDE[0] = TAV;
-        
         return;
       }
       }
       //Автомат
       else
       {
-
+        //Заносим точку. Запомнили точку старта.
+        Start = DateTime.FromOADate(Chart_ref.ChartAreas[0].CursorX.Position);
       }
 
 
@@ -193,7 +199,8 @@ namespace GoodPlot
       }
       else
       {
-
+        //Заносим точку. Запомнили точку конца.
+        End = DateTime.FromOADate(Chart_ref.ChartAreas[0].CursorX.Position);
       }
     }
     /// <summary>
@@ -214,15 +221,15 @@ namespace GoodPlot
 
       //Вычисление приращений
       dP = Math.Abs(A0 + B0 * GroupPosition.Time.ToOADate() - (A1 + B1 * GroupPosition.Time.ToOADate()));
-      dP*=MyCalc.B_eff;
+      dP *= MyCalc.B_eff;
 
       Parameter ChosenGroup = (Parameter)fileacts_ref.Parameters.Find(n => n.KKS.Contains(GroupTexBox.Text));
-      double d1 = MyCalc.FindPoint(ChosenGroup.Time_and_Value_List,ReactivityMassForDE[0].Time).Value;
+      double d1 = MyCalc.FindPoint(ChosenGroup.Time_and_Value_List, ReactivityMassForDE[0].Time).Value;
       double d2 = MyCalc.FindPoint(ChosenGroup.Time_and_Value_List, ReactivityMassForDE[2].Time).Value;
       
       
       dH = d1 - d2;
-      dH*=MyCalc.Step_h;
+      dH *= MyCalc.Step_h;
       dPdH = dP/dH;
 
       //Заполним табличку 
@@ -258,7 +265,7 @@ namespace GoodPlot
       if (ChosenGroup.KKS.Contains("JDA"))
       {
         dt.Rows.Add(0,//Номер
-          MyCalc.FindPoint(fileacts_ref.Parameters.Find(n => n.KKS.Contains("JDA00FG912")).Time_and_Value_List,ReactivityMassForDE[0].Time).Value.ToString("F"), //H12
+          MyCalc.FindPoint(fileacts_ref.Parameters.Find(n => n.KKS.Contains("JDA00FG912")).Time_and_Value_List, ReactivityMassForDE[0].Time).Value.ToString("F"), //H12
           MyCalc.FindPoint(fileacts_ref.Parameters.Find(n => n.KKS.Contains("JDA00FG911")).Time_and_Value_List, ReactivityMassForDE[0].Time).Value.ToString("F"),//H11 
           MyCalc.FindPoint(fileacts_ref.Parameters.Find(n => n.KKS.Contains("JDA00FG910")).Time_and_Value_List, ReactivityMassForDE[0].Time).Value.ToString("F"), //H10
         MyCalc.FindPoint(fileacts_ref.Parameters.Find(n => n.KKS.Contains("JDA00FG909")).Time_and_Value_List, ReactivityMassForDE[0].Time).Value.ToString("F"), //H9
@@ -284,7 +291,9 @@ namespace GoodPlot
 
       if (RadAuto.IsChecked==true)
       {
-        
+        //Найдем М1
+        List<DateTime> M1 = new List<DateTime>();
+        M1 = MyCalc.GiveM1(Start, End);
       }
     }
 

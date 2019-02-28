@@ -1093,14 +1093,12 @@ namespace GoodPlot
         /// <param name="e"></param>
         private void DiffEffModule_Click(object sender, RoutedEventArgs e)
         {
-          //MessageBox.Show("К сожелению, пока что модуль в разработке");
-          //return;
           //У нас тут только обыный график. Ведем обработку! Исключаем все фарианты с несколькими графиками!
           One_GraphButton.IsEnabled=false;
           Many_GraphButton.IsEnabled=false;
 
           ModuleDiffEff DiffEffWindow = new ModuleDiffEff(Chart1, File_Acts_One, TableCurrent);
-          DiffEffWindow.Show();
+          DiffEffWindow.Show(); 
         }
 
         private void List_Parameters_MouseDoubleClick(object sender, MouseButtonEventArgs e)
@@ -1108,6 +1106,12 @@ namespace GoodPlot
           ListBox lb = (ListBox)(sender);
           Parameter selectedParametr = (Parameter)lb.SelectedItem;
           if (selectedParametr != null) Clipboard.SetText(selectedParametr.KKS);
+        }
+
+        private void CalculOptions_Click(object sender, RoutedEventArgs e)
+        {
+          Calculations CalculationsWindow = new Calculations(File_Acts_One);
+          CalculationsWindow.Show(); 
         }
 
 

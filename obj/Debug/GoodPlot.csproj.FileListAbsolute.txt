@@ -169,3 +169,6 @@ d:\Progs\C#Projects\GoodPlot\obj\Debug\GoodPlot.g.resources
 d:\Progs\C#Projects\GoodPlot\obj\Debug\GoodPlot.Properties.Resources.resources
 d:\Progs\C#Projects\GoodPlot\obj\Debug\GoodPlot.csproj.GenerateResource.Cache
 d:\Progs\C#Projects\GoodPlot\bin\Debug\Microsoft.QualityTools.Testing.Fakes.dll
+D:\Progs\C#Projects\GoodPlot\bin\Debug\MathNet.Numerics.dll
+D:\Progs\C#Projects\GoodPlot\obj\Debug\Calculations.baml
+D:\Progs\C#Projects\GoodPlot\obj\Debug\Calculations.g.cs
