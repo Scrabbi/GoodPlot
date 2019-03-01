@@ -10,23 +10,32 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using MathNet.Numerics;
 
 namespace GoodPlot
 {
   /// <summary>
   /// Логика взаимодействия для Calculations.xaml
   /// </summary>
-  public partial class Calculations : Window
+  public partial class Calculations : System.Windows.Window
   {
     public double Step_h = 3.75;
     public double B_eff = 0.74;
     public string ReactKKSMainPart = "247.";
     public string GroupKKSMainPart = "YVM";
-    public string GroupKKSMainPart12 = "-";
-    public string GroupKKSMainPart11 = "-";
+    public string GroupKKSMainPart12 = "-----";
+    public string GroupKKSMainPart11 = "-----";
     public string GroupKKSMainPart10 = "YVM10FG900";
     public string GroupKKSMainPart9 = "YVM10FG909";
     public string GroupKKSMainPart8 = "YVM10FG908";
+
+    //Выделим параметры для групп ОР СУЗ и реактивности.
+    Parameter H12 = null;
+    Parameter H11 = null;
+    Parameter H10 = null;
+    Parameter H9 = null;
+    Parameter H8 = null;
+    Parameter Reactivity = null;
     /// <summary>
     /// Доступ к списку параметров
     /// </summary>
@@ -46,7 +55,7 @@ namespace GoodPlot
     {
       foreach (var item in TadList)
       {
-        if (item.Time.Hour == Dt.Hour && item.Time.Minute == Dt.Minute && (item.Time.Second - Dt.Second) <= 1)
+        if (item.Time.Hour == Dt.Hour && item.Time.Minute == Dt.Minute && Math.Abs(item.Time.Second - Dt.Second) <= 1)
           return item;
       }
       MessageBox.Show("Не найдено совпадение времени с курсором");
@@ -62,10 +71,8 @@ namespace GoodPlot
     {
       for (int i = 0; i < TadList.Count; i++)
       {
-        if (TadList[i].Time.Hour==Dt.Hour && TadList[i].Time.Minute == Dt.Minute && (TadList[i].Time.Second - Dt.Second) <= 1)
-        {
-          return i;
-        }
+        if (TadList[i].Time.Hour==Dt.Hour && TadList[i].Time.Minute == Dt.Minute && Math.Abs(TadList[i].Time.Second - Dt.Second) <= 1)
+        return i;
       }
 
     return 0;
@@ -130,8 +137,8 @@ namespace GoodPlot
       //Бушер
       if (GroupKKSMainPart=="YVM")
       {
-        GroupKKSMainPart12 = "-";
-        GroupKKSMainPart11 = "-";
+        GroupKKSMainPart12 = "--------";
+        GroupKKSMainPart11 = "------";
         GroupKKSMainPart10 = "YVM10FG900";
         GroupKKSMainPart9 = "YVM10FG909";
         GroupKKSMainPart8 = "YVM10FG908";
@@ -157,54 +164,110 @@ namespace GoodPlot
     {
     List<DateTime> M1=new List<DateTime>();
 
-    //Выделим параметры для групп ОР СУЗ и реактивности.
-    Parameter H12= null;
-    Parameter H11 = null;
-    Parameter H10 = null;
-    Parameter H9 = null;
-    Parameter H8 = null;
-    Parameter Reactivity = null;
     try
     {
-      H12 = (Parameter)Fileacts_ref.Parameters.Find(n => n.KKS.Contains(GroupKKSMainPart12));
-      H11 = (Parameter)Fileacts_ref.Parameters.Find(n => n.KKS.Contains(GroupKKSMainPart11));
-      H10 = (Parameter)Fileacts_ref.Parameters.Find(n => n.KKS.Contains(GroupKKSMainPart10));
-      H9 = (Parameter)Fileacts_ref.Parameters.Find(n => n.KKS.Contains(GroupKKSMainPart9));
-      H8 = (Parameter)Fileacts_ref.Parameters.Find(n => n.KKS.Contains(GroupKKSMainPart8));
-      Reactivity = (Parameter)Fileacts_ref.Parameters.Find(n => n.KKS.Contains(ReactKKSMainPart));
+      H12 = Fileacts_ref.Parameters.Find(n => n.KKS.Contains(GroupKKSMainPart12));
+      H11 = Fileacts_ref.Parameters.Find(n => n.KKS.Contains(GroupKKSMainPart11));
+      H10 = Fileacts_ref.Parameters.Find(n => n.KKS.Contains(GroupKKSMainPart10));
+      H9 = Fileacts_ref.Parameters.Find(n => n.KKS.Contains(GroupKKSMainPart9));
+      H8 = Fileacts_ref.Parameters.Find(n => n.KKS.Contains(GroupKKSMainPart8));
+      Reactivity = Fileacts_ref.Parameters.Find(n => n.KKS.Contains(ReactKKSMainPart));
     }
     catch (Exception)
     {}
    int start = FindIndex(H10.Time_and_Value_List,Start);
    int end = FindIndex(H10.Time_and_Value_List, End);
-    if (H12!=null)
+    if (H12==null)
     {
-      for (int i = start; i < end; i++)
-      {
-        if ( Math.Abs( H12.Time_and_Value_List[i].Value - H12.Time_and_Value_List[i+5].Value)>1 
-        || Math.Abs(H11.Time_and_Value_List[i].Value - H11.Time_and_Value_List[i+5].Value)>1 || 
-        Math.Abs(H10.Time_and_Value_List[i].Value - H10.Time_and_Value_List[i+5].Value)>1 || 
-        Math.Abs(H9.Time_and_Value_List[i].Value - H9.Time_and_Value_List[i+5].Value)>1||
-        Math.Abs(H8.Time_and_Value_List[i].Value - H8.Time_and_Value_List[i+5].Value)>1 )
-        {
-            M1.Add(H12.Time_and_Value_List[i].Time);//Запомнили точку опуска
-            for (int j = 0; j < 1000; j++)
-            {
-              if (Math.Abs(H12.Time_and_Value_List[i].Value - H12.Time_and_Value_List[i + 5].Value) < 0.02 &&
-         Math.Abs(H11.Time_and_Value_List[i].Value - H11.Time_and_Value_List[i + 5].Value) < 0.02 &&
-        Math.Abs(H10.Time_and_Value_List[i].Value - H10.Time_and_Value_List[i + 5].Value) < 0.02 &&
-        Math.Abs(H9.Time_and_Value_List[i].Value - H9.Time_and_Value_List[i + 5].Value) < 0.02 &&
-        Math.Abs(H8.Time_and_Value_List[i].Value - H8.Time_and_Value_List[i + 5].Value) < 0.02)
-              {
-                M1.Add(H12.Time_and_Value_List[i].Time);//Точка низа
-                continue;
-              }
-            }
-        }
-      }  
+    //Чтобы алгоритм работал при любых файлах
+    H11=H10;
+    H12=H11;
     }
 
+    int i = start;
+      while ( i < end)
+      {
+        while (Math.Abs( H12.Time_and_Value_List[i].Value - H12.Time_and_Value_List[i+3].Value) < 0.05
+        && Math.Abs(H11.Time_and_Value_List[i].Value - H11.Time_and_Value_List[i + 3].Value) < 0.05
+        &&Math.Abs(H10.Time_and_Value_List[i].Value - H10.Time_and_Value_List[i + 3].Value) < 0.05 
+        &&Math.Abs(H9.Time_and_Value_List[i].Value - H9.Time_and_Value_List[i + 3].Value) < 0.05 
+        &&Math.Abs(H8.Time_and_Value_List[i].Value - H8.Time_and_Value_List[i + 3].Value) < 0.05)
+        {
+        i++;
+        }
+        if (i < end)//а то последняя точка залезает
+        M1.Add(H10.Time_and_Value_List[i].Time);//Запомнили точку спуска
+        
+            
+        while (Math.Abs(H12.Time_and_Value_List[i].Value - H12.Time_and_Value_List[i + 5].Value) > 0.03 
+        || Math.Abs(H11.Time_and_Value_List[i].Value - H11.Time_and_Value_List[i + 5].Value) > 0.03 
+        ||Math.Abs(H10.Time_and_Value_List[i].Value - H10.Time_and_Value_List[i + 5].Value) > 0.03 
+        ||Math.Abs(H9.Time_and_Value_List[i].Value - H9.Time_and_Value_List[i + 5].Value) > 0.03 
+        ||Math.Abs(H8.Time_and_Value_List[i].Value - H8.Time_and_Value_List[i + 5].Value) > 0.03)
+        {
+        i++;  
+        }
+        if (i < end)//а то последняя точка залезает
+        M1.Add(H10.Time_and_Value_List[i].Time);//Точка низа
+
+        i++;
+      }  
+    
+
       return M1;
+    }
+    /// <summary>
+    /// Получить лист с отступами в 33% у каждой точки через одну, начиная с 3-й точки.
+    /// </summary>
+    /// <param name="M"></param>
+    /// <returns></returns>
+    public List<DateTime> GiveIndentList(List<DateTime> M)
+    {
+    List<DateTime> Mout=new List<DateTime>();
+    Mout.AddRange(M);
+      for (int i = 2; i < M.Count; i+=2)
+      {
+        Mout[i] = Give30PercentPointBetween(Mout[i], Mout[i + 1]);
+      }
+      return Mout;
+    }
+    /// <summary>
+    /// Вернуть точку на 33% вперед (по отношению к следующей точке) от точку старта
+    /// </summary>
+    /// <param name="p_Start"></param>
+    /// <param name="p_End"></param>
+    /// <returns></returns>
+    private DateTime Give30PercentPointBetween(DateTime p_Start, DateTime p_End)
+    {
+      return p_Start.AddSeconds((int)p_End.Subtract(p_Start).TotalSeconds / 3);
+    }
+    /// <summary>
+    /// Получить наборы кофэффициентов для прямых.
+    /// </summary>
+    /// <param name="M"></param>
+    /// <returns></returns>
+    public List<Tuple<double,double>> Give_ab_Koeffs(List<DateTime> M)
+    {
+    List<Tuple<double,double>> AB_Koeffs= new List<Tuple<double,double>>();
+    for (int i = 0; i < M.Count; i+=2)
+			    {
+        AB_Koeffs.Add(Fit.Line(
+        new double[] { M[i].ToOADate(), M[i + 1].ToOADate() },
+        new double[] { FindPoint(Reactivity.Time_and_Value_List, M[i]).Value, FindPoint(Reactivity.Time_and_Value_List, M[i+1]).Value }));
+       }
+
+        return AB_Koeffs;
+    }
+    /// <summary>
+    /// Получить интервал значений времени между двумя точками времени
+    /// </summary>
+    /// <param name="p_Start"></param>
+    /// <param name="p_End"></param>
+    /// <returns></returns>
+    private double[] GiveIntervalBtw(DateTime p_Start, DateTime p_End)
+    {
+
+
     }
 
   }

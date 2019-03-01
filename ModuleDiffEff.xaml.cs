@@ -291,9 +291,24 @@ namespace GoodPlot
 
       if (RadAuto.IsChecked==true)
       {
-        //Найдем М1
+        //Найдем М1. Набор перемещений группы (стоять-опуститься, стоять-опуститься, ...)
         List<DateTime> M1 = new List<DateTime>();
         M1 = MyCalc.GiveM1(Start, End);
+        //М2. В начало и конец дабавляем точку старта и конца.
+        List<DateTime> M2 = new List<DateTime>();
+        M2.AddRange(M1);
+        M2.Insert(0,Start);
+        M2.Add(End);
+        //Отступить 33% от положения, когда группа опустилась только.
+        List<DateTime> M3 = new List<DateTime>();
+        M3 = MyCalc.GiveIndentList(M2);
+        //Получить коэффициенты прямых для аппроксимаций реактивности
+        List<Tuple<double, double>> M4 = new List<Tuple<double,double>>();
+        M4 = MyCalc.Give_ab_Koeffs(M3);
+
+        //List<DateTime> M5 = new List<DateTime>();
+        //M5 = MyCalc.Give_P_List(M1,M4);
+
       }
     }
 
