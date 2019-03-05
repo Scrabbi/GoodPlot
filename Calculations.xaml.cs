@@ -221,7 +221,7 @@ namespace GoodPlot
     /// </summary>
     /// <param name="M"></param>
     /// <returns></returns>
-    public List<DateTime> GiveIndentList(List<DateTime> M)
+    public List<DateTime> GiveIndentList_M3(List<DateTime> M)
     {
     List<DateTime> Mout=new List<DateTime>();
     Mout.AddRange(M);
@@ -246,17 +246,17 @@ namespace GoodPlot
     /// </summary>
     /// <param name="M"></param>
     /// <returns></returns>
-    public List<Tuple<double,double>> Give_ab_Koeffs(List<DateTime> M)
+    public List<Tuple<double,double>> Give_ab_Koeffs_M4(List<DateTime> M3)
     {
     List<Tuple<double,double>> AB_Koeffs= new List<Tuple<double,double>>();
-    for (int i = 0; i < M.Count; i+=2)
+    for (int i = 0; i < M3.Count; i+=2)
 			    {
         //AB_Koeffs.Add(Fit.Line(
         //new double[] { M[i].ToOADate(), M[i + 1].ToOADate() },
         //new double[] { FindPoint(Reactivity.Time_and_Value_List, M[i]).Value, FindPoint(Reactivity.Time_and_Value_List, M[i+1]).Value }));
         List<double> Times = new List<double>();
         List<double> Values = new List<double>();
-        GiveIntervalBtw(M[i], M[i + 1], out Values, out Times);
+        GiveIntervalBtw(M3[i], M3[i + 1], out Values, out Times);
 
         AB_Koeffs.Add(Fit.Line(Times.ToArray(), Values.ToArray()));
        }
@@ -284,10 +284,20 @@ namespace GoodPlot
     /// Получить все значения изменений реактивности.
     /// </summary>
     /// <returns></returns>
-    public List<double> GiveDelPo()
+    public List<double> GiveDelPo_M5(List<Tuple<double, double>> M4, List<DateTime> M1)
     {
-      
+      List<double> M5 = new List<double>();
+      double DelPo=0;
+      for (int i = 0; i < M4.Count-1; i++)
+      {
+        DateTime PointMiddle =   M1[i*2].AddSeconds(M1[i*2+1].Subtract(M1[i*2]).TotalSeconds / 2);
 
+        DelPo = M4[i].Item1 + M4[i].Item2 * FindPoint(Reactivity.Time_and_Value_List, PointMiddle).Value -
+          (M4[i + 1].Item1 + M4[i + 1].Item2 * FindPoint(Reactivity.Time_and_Value_List, PointMiddle).Value);
+        M5.Add(DelPo);
+      }
+
+      return M5;
     }
   }
 }

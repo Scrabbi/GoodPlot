@@ -301,13 +301,14 @@ namespace GoodPlot
         M2.Add(End);
         //Отступить 33% от положения, когда группа опустилась только.
         List<DateTime> M3 = new List<DateTime>();
-        M3 = MyCalc.GiveIndentList(M2);
+        M3 = MyCalc.GiveIndentList_M3(M2);
         //Получить коэффициенты прямых для аппроксимаций реактивности
         List<Tuple<double, double>> M4 = new List<Tuple<double,double>>();
-        M4 = MyCalc.Give_ab_Koeffs(M3);
+        M4 = MyCalc.Give_ab_Koeffs_M4(M3);
 
-        //List<DateTime> M5 = new List<DateTime>();
-        //M5 = MyCalc.Give_P_List(M1,M4);
+        
+        List<double> M5 = new List<double>();
+        M5 = MyCalc.GiveDelPo_M5(M4,M1);
 
       }
     }
