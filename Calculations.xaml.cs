@@ -62,7 +62,7 @@ namespace GoodPlot
       return new Time_and_Value();
     }
     /// <summary>
-    /// Найти индекс элемента с указанным временем
+    /// Найти индекс элемента в списке значений времён с указанным временем
     /// </summary>
     /// <param name="TadList"></param>
     /// <param name="Dt"></param>
@@ -251,24 +251,43 @@ namespace GoodPlot
     List<Tuple<double,double>> AB_Koeffs= new List<Tuple<double,double>>();
     for (int i = 0; i < M.Count; i+=2)
 			    {
-        AB_Koeffs.Add(Fit.Line(
-        new double[] { M[i].ToOADate(), M[i + 1].ToOADate() },
-        new double[] { FindPoint(Reactivity.Time_and_Value_List, M[i]).Value, FindPoint(Reactivity.Time_and_Value_List, M[i+1]).Value }));
+        //AB_Koeffs.Add(Fit.Line(
+        //new double[] { M[i].ToOADate(), M[i + 1].ToOADate() },
+        //new double[] { FindPoint(Reactivity.Time_and_Value_List, M[i]).Value, FindPoint(Reactivity.Time_and_Value_List, M[i+1]).Value }));
+        List<double> Times = new List<double>();
+        List<double> Values = new List<double>();
+        GiveIntervalBtw(M[i], M[i + 1], out Values, out Times);
+
+        AB_Koeffs.Add(Fit.Line(Times.ToArray(), Values.ToArray()));
        }
 
         return AB_Koeffs;
     }
     /// <summary>
-    /// Получить интервал значений времени между двумя точками времени
+    /// Получить интервал значений времени и значения между двумя точками времени
     /// </summary>
     /// <param name="p_Start"></param>
     /// <param name="p_End"></param>
     /// <returns></returns>
-    private double[] GiveIntervalBtw(DateTime p_Start, DateTime p_End)
+    private void GiveIntervalBtw(DateTime p_Start, DateTime p_End, out List<double> Values, out List<double> Times)
     {
+    Times = new List<double>();
+    Values = new List<double>();
 
+    for (int i = this.FindIndex(Reactivity.Time_and_Value_List, p_Start); i < this.FindIndex(Reactivity.Time_and_Value_List, p_End); i++)
+      {
+        Times.Add(Reactivity.Time_and_Value_List[i].Time.ToOADate());
+        Values.Add(Reactivity.Time_and_Value_List[i].Value);
+      }
+    }
+    /// <summary>
+    /// Получить все значения изменений реактивности.
+    /// </summary>
+    /// <returns></returns>
+    public List<double> GiveDelPo()
+    {
+      
 
     }
-
   }
 }
