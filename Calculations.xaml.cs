@@ -19,23 +19,23 @@ namespace GoodPlot
   /// </summary>
   public partial class Calculations : System.Windows.Window
   {
-    public double Step_h = 3.75;
+    public  double Step_h = 3.52;
     public double B_eff = 0.74;
-    public string ReactKKSMainPart = "247.";
-    public string GroupKKSMainPart = "YVM";
-    public string GroupKKSMainPart12 = "-----";
-    public string GroupKKSMainPart11 = "-----";
-    public string GroupKKSMainPart10 = "YVM10FG900";
-    public string GroupKKSMainPart9 = "YVM10FG909";
-    public string GroupKKSMainPart8 = "YVM10FG908";
+    public static string ReactKKSMainPart = "247.";
+    public static string GroupKKSMainPart = "YVM";
+    public static string GroupKKSMainPart12 = "-----";
+    public static string GroupKKSMainPart11 = "-----";
+    public static string GroupKKSMainPart10 = "YVM10FG900";
+    public static string GroupKKSMainPart9 = "YVM10FG909";
+    public static string GroupKKSMainPart8 = "YVM10FG908";
 
     //Выделим параметры для групп ОР СУЗ и реактивности.
-    Parameter H12 = null;
-    Parameter H11 = null;
-    Parameter H10 = null;
-    Parameter H9 = null;
-    Parameter H8 = null;
-    Parameter Reactivity = null;
+    public Parameter H12 = null;
+    public Parameter H11 = null;
+    public Parameter H10 = null;
+    public Parameter H9 = null;
+    public Parameter H8 = null;
+    public Parameter Reactivity = null;
     /// <summary>
     /// Доступ к списку параметров
     /// </summary>
@@ -55,7 +55,7 @@ namespace GoodPlot
     {
       foreach (var item in TadList)
       {
-        if (item.Time.Hour == Dt.Hour && item.Time.Minute == Dt.Minute && Math.Abs(item.Time.Second - Dt.Second) <= 1)
+        if (item.Time.Hour == Dt.Hour && item.Time.Minute == Dt.Minute && Math.Abs(item.Time.Second - Dt.Second) == 0)
           return item;
       }
       MessageBox.Show("Не найдено совпадение времени с курсором");
@@ -71,7 +71,7 @@ namespace GoodPlot
     {
       for (int i = 0; i < TadList.Count; i++)
       {
-        if (TadList[i].Time.Hour==Dt.Hour && TadList[i].Time.Minute == Dt.Minute && Math.Abs(TadList[i].Time.Second - Dt.Second) <= 1)
+        if (TadList[i].Time.Hour==Dt.Hour && TadList[i].Time.Minute == Dt.Minute && Math.Abs(TadList[i].Time.Second - Dt.Second) == 1)
         return i;
       }
 
@@ -187,15 +187,16 @@ namespace GoodPlot
     int i = start;
       while ( i < end)
       {
-        while (Math.Abs( H12.Time_and_Value_List[i].Value - H12.Time_and_Value_List[i+3].Value) < 0.05
-        && Math.Abs(H11.Time_and_Value_List[i].Value - H11.Time_and_Value_List[i + 3].Value) < 0.05
-        &&Math.Abs(H10.Time_and_Value_List[i].Value - H10.Time_and_Value_List[i + 3].Value) < 0.05 
-        &&Math.Abs(H9.Time_and_Value_List[i].Value - H9.Time_and_Value_List[i + 3].Value) < 0.05 
-        &&Math.Abs(H8.Time_and_Value_List[i].Value - H8.Time_and_Value_List[i + 3].Value) < 0.05)
+        while (Math.Abs( H12.Time_and_Value_List[i].Value - H12.Time_and_Value_List[i+2].Value) < 0.05
+        && Math.Abs(H11.Time_and_Value_List[i].Value - H11.Time_and_Value_List[i + 2].Value) < 0.05
+        &&Math.Abs(H10.Time_and_Value_List[i].Value - H10.Time_and_Value_List[i + 2].Value) < 0.05 
+        &&Math.Abs(H9.Time_and_Value_List[i].Value - H9.Time_and_Value_List[i + 2].Value) < 0.05 
+        &&Math.Abs(H8.Time_and_Value_List[i].Value - H8.Time_and_Value_List[i + 2].Value) < 0.05
+        && i < end)
         {
         i++;
         }
-        if (i < end)//а то последняя точка залезает
+        if (i < end)//переход к следующему движению группы
         M1.Add(H10.Time_and_Value_List[i].Time);//Запомнили точку спуска
         
             
@@ -203,14 +204,15 @@ namespace GoodPlot
         || Math.Abs(H11.Time_and_Value_List[i].Value - H11.Time_and_Value_List[i + 5].Value) > 0.03 
         ||Math.Abs(H10.Time_and_Value_List[i].Value - H10.Time_and_Value_List[i + 5].Value) > 0.03 
         ||Math.Abs(H9.Time_and_Value_List[i].Value - H9.Time_and_Value_List[i + 5].Value) > 0.03 
-        ||Math.Abs(H8.Time_and_Value_List[i].Value - H8.Time_and_Value_List[i + 5].Value) > 0.03)
+        ||Math.Abs(H8.Time_and_Value_List[i].Value - H8.Time_and_Value_List[i + 5].Value) > 0.03
+        && i < end)
         {
         i++;  
         }
-        if (i < end)//а то последняя точка залезает
+        if (i < end)//переход к следующему движению группы
         M1.Add(H10.Time_and_Value_List[i].Time);//Точка низа
 
-        i++;
+        i+=2;
       }  
     
 
@@ -281,23 +283,53 @@ namespace GoodPlot
       }
     }
     /// <summary>
-    /// Получить все значения изменений реактивности.
+    /// Получить все значения изменений реактивности. И перемещений группы.
     /// </summary>
     /// <returns></returns>
-    public List<double> GiveDelPo_M5(List<Tuple<double, double>> M4, List<DateTime> M1)
+    public List<Tuple<double, double>> GiveDelPo_M5(List<Tuple<double, double>> M4, List<DateTime> M1)
     {
-      List<double> M5 = new List<double>();
+      List<Tuple<double, double>> M5 = new List<Tuple<double, double>>();
+
       double DelPo=0;
       for (int i = 0; i < M4.Count-1; i++)
       {
         DateTime PointMiddle =   M1[i*2].AddSeconds(M1[i*2+1].Subtract(M1[i*2]).TotalSeconds / 2);
 
-        DelPo = M4[i].Item1 + M4[i].Item2 * FindPoint(Reactivity.Time_and_Value_List, PointMiddle).Value -
-          (M4[i + 1].Item1 + M4[i + 1].Item2 * FindPoint(Reactivity.Time_and_Value_List, PointMiddle).Value);
-        M5.Add(DelPo);
+        DelPo = M4[i].Item1 + M4[i].Item2 * PointMiddle.ToOADate() -
+          (M4[i + 1].Item1 + M4[i + 1].Item2 * PointMiddle.ToOADate());
+        double dH12 = Step_h*( FindPoint(H12.Time_and_Value_List, M1[i * 2]).Value - FindPoint(H12.Time_and_Value_List, M1[i * 2 + 1]).Value);
+        double dH11 = Step_h*(FindPoint(H11.Time_and_Value_List, M1[i * 2]).Value - FindPoint(H11.Time_and_Value_List, M1[i * 2 + 1]).Value);
+        double dH10 = Step_h*(FindPoint(H10.Time_and_Value_List, M1[i * 2]).Value - FindPoint(H10.Time_and_Value_List, M1[i * 2 + 1]).Value);
+        double dH9 = Step_h*(FindPoint(H9.Time_and_Value_List, M1[i * 2]).Value - FindPoint(H9.Time_and_Value_List, M1[i * 2 + 1]).Value);
+        double dH8 = Step_h*(FindPoint(H8.Time_and_Value_List, M1[i * 2]).Value - FindPoint(H8.Time_and_Value_List, M1[i * 2 + 1]).Value);
+        if (dH12 > 1)
+        {
+          M5.Add(new Tuple<double,double> (DelPo * B_eff,dH12)); 
+        }
+        if (dH12 <1 && dH11>1)
+        {
+          M5.Add(new Tuple<double, double>(DelPo * B_eff, dH11));
+        }
+        if (dH12 < 1 && dH11 < 1 && dH10 > 1)
+        {
+          M5.Add(new Tuple<double, double>(DelPo * B_eff, dH10));
+        }
+        if (dH12 < 1 && dH11 < 1 && dH10 < 1 && dH9 > 1)
+        {
+          M5.Add(new Tuple<double, double>(DelPo * B_eff, dH9));
+        }
+        if (dH12 < 1 && dH11 < 1 && dH10 < 1 && dH9 < 1 && dH8 > 1)
+        {
+          M5.Add(new Tuple<double, double>(DelPo * B_eff, dH8));
+        }
+
       }
 
       return M5;
     }
+
+
+
+
   }
 }

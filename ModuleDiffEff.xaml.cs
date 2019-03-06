@@ -305,11 +305,40 @@ namespace GoodPlot
         //Получить коэффициенты прямых для аппроксимаций реактивности
         List<Tuple<double, double>> M4 = new List<Tuple<double,double>>();
         M4 = MyCalc.Give_ab_Koeffs_M4(M3);
-
-        
-        List<double> M5 = new List<double>();
+        List<Tuple<double, double>> M5 = new List<Tuple<double, double>>();
         M5 = MyCalc.GiveDelPo_M5(M4,M1);
 
+        //Заполним табличку 
+        DataTable dt = new DataTable();
+        dt.Columns.Add("Номер"); dt.Columns.Add("Н12, %"); dt.Columns.Add("Н11, %"); dt.Columns.Add("Н10, %"); dt.Columns.Add("Н9, %"); dt.Columns.Add("Н8, %"); dt.Columns.Add("dН, см"); dt.Columns.Add("dρ, %"); dt.Columns.Add("dρ:dН, %:см"); dt.Columns.Add("Δρ, %");
+        //Первая строчка
+        dt.Rows.Add(0,//Номер
+          MyCalc.FindPoint(MyCalc.H12.Time_and_Value_List, M1[0]).Value, //H12
+          MyCalc.FindPoint(MyCalc.H11.Time_and_Value_List, M1[0]).Value,//H11 
+          MyCalc.FindPoint(MyCalc.H10.Time_and_Value_List, M1[0]).Value, //H10
+          MyCalc.FindPoint(MyCalc.H9.Time_and_Value_List, M1[0]).Value, //H9
+          MyCalc.FindPoint(MyCalc.H8.Time_and_Value_List, M1[0]).Value, //H8
+        0, //dH
+        0, //dP
+        0,//dP / dH
+        0);
+        double PO=0;
+        //Остальные
+        for (int i = 0; i < M5.Count; i++)
+        {
+        
+          dt.Rows.Add(i+1,//Номер
+          MyCalc.FindPoint(MyCalc.H12.Time_and_Value_List,M1[i*2+1]).Value, //H12
+          MyCalc.FindPoint(MyCalc.H11.Time_and_Value_List, M1[i * 2 + 1]).Value,//H11 
+          MyCalc.FindPoint(MyCalc.H10.Time_and_Value_List, M1[i * 2 + 1]).Value, //H10
+          MyCalc.FindPoint(MyCalc.H9.Time_and_Value_List, M1[i * 2 + 1]).Value, //H9
+          MyCalc.FindPoint(MyCalc.H8.Time_and_Value_List, M1[i * 2 + 1]).Value, //H8
+          M5[i].Item2,//dH
+          M5[i].Item1, //dP
+          M5[i].Item1 / ( M5[i].Item2),//dP / dH
+          PO+=M5[i].Item1);//Суммарная реактивность
+        }
+          datagrid_ref.ItemsSource = dt.DefaultView;
       }
     }
 

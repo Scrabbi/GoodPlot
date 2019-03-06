@@ -199,17 +199,15 @@ Icon="PerfCenterCpl.ico"
                         <TextBlock Margin="3"><Run Text="Текущий результат"/></TextBlock>
                     </StackPanel>
                 </TabItem.Header>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="82*"/>
-                        <ColumnDefinition Width="601*"/>
-                    </Grid.ColumnDefinitions>
+                <ScrollViewer ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" 
+                                ScrollViewer.HorizontalScrollBarVisibility="Auto" >
+                    <Grid>
+                    
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="300"/>
                     </Grid.RowDefinitions>
-                    <DataGrid  AutoGenerateColumns="True" Name="TableCurrent"  Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,0,-308" Grid.RowSpan="2">
-                        <!--<DataGrid.Columns>
+                    <DataGrid Grid.Row="0"   AutoGenerateColumns="True" Name="TableCurrent"   Margin="0,0,0,-308">
+                            <!--<DataGrid.Columns>
                             <DataGridTextColumn  Header="Номер" />
                             <DataGridTextColumn  Header="Н12, %" />
                             <DataGridTextColumn  Header="Н11, %" />
@@ -219,15 +217,11 @@ Icon="PerfCenterCpl.ico"
                             <DataGridTextColumn  Header="dН, см" />
                             <DataGridTextColumn  Header="dρ, %" />
                             <DataGridTextColumn  Header="dρ:dН, %:см" />
-                            
-                        </DataGrid.Columns>-->
+                            </DataGrid.Columns>-->
                     </DataGrid>
-                    <!--Строка с кнопками-->
-                    <StackPanel Grid.Row="1" Orientation="Horizontal" Grid.ColumnSpan="2">
-                        <!--<Button Name="ButtonDrowLine" Background="LightGray" Click="ButtonDrowLine_Click" Content="Нарисовать линию"/>
-                        <Button Name="ButtonDrow_Title" Background="LightGray" Click="ButtonDrowTitle_Click" Content="Добавить подпись"/>-->
-                    </StackPanel>
+                    
                 </Grid>
+                </ScrollViewer>
             </TabItem>
         </TabControl>
     </Grid>
