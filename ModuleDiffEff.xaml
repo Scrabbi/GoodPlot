@@ -1,7 +1,7 @@
 ﻿<Window x:Class="GoodPlot.ModuleDiffEff"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="ModuleDiffEff" Closed="Window_Closed" Height="344" Width="300" Topmost="True" HorizontalAlignment="Right" WindowStartupLocation="Manual" Left="800">
+        Title="ModuleDiffEff" Closed="Window_Closed" Height="406" Width="300" Topmost="True" HorizontalAlignment="Right" WindowStartupLocation="Manual" Left="800">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="22*"/>

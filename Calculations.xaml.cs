@@ -11,7 +11,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using MathNet.Numerics;
-
+using System.IO;
 namespace GoodPlot
 {
   /// <summary>
@@ -44,6 +44,45 @@ namespace GoodPlot
     {
       InitializeComponent();
       Fileacts_ref=FA;
+      //Считать состояние
+      try
+      {
+        StreamReader FileRead = new StreamReader("Options.txt");
+        //Считать 1 линию из файла.
+        GroupKKSMainPart = FileRead.ReadLine();
+        //Считать 2 линию из файла.
+        ReactKKSMainPart = FileRead.ReadLine();
+        //Считать 3 линию из файла.
+        Step_h = Convert.ToDouble(FileRead.ReadLine());
+        //Считать 4 линию из файла.
+        B_eff = Convert.ToDouble(FileRead.ReadLine());
+        FileRead.Close();
+      }
+      catch (Exception)
+      {}
+      GroupTexBox.Text=GroupKKSMainPart;
+      ReactivitiTexBox.Text=ReactKKSMainPart;
+      ShagTexBox.Text=Step_h.ToString();
+      BetaTexBox.Text=B_eff.ToString();
+        
+      //Бушер
+      if (GroupKKSMainPart=="YVM")
+      {
+        GroupKKSMainPart12 = "--------";
+        GroupKKSMainPart11 = "------";
+        GroupKKSMainPart10 = "YVM10FG900";
+        GroupKKSMainPart9 = "YVM10FG909";
+        GroupKKSMainPart8 = "YVM10FG908";
+      }
+      //НВАЭС-2
+      if (GroupKKSMainPart == "JDA")
+      {
+        GroupKKSMainPart12 = "JDA00FG912";
+        GroupKKSMainPart11 = "JDA00FG911";
+        GroupKKSMainPart10 = "JDA00FG910";
+        GroupKKSMainPart9 = "JDA00FG909";
+        GroupKKSMainPart8 = "JDA00FG908";
+      }
     }
     /// <summary>
     /// Найти из списка точек точку с заданным временем
@@ -53,9 +92,10 @@ namespace GoodPlot
     /// <returns></returns>
     public Time_and_Value FindPoint(List<Time_and_Value> TadList, DateTime Dt)
     {
+      double FrecvencyRegistration = TadList[1].Time.Subtract(TadList[0].Time).TotalSeconds;
       foreach (var item in TadList)
       {
-        if (item.Time.Hour == Dt.Hour && item.Time.Minute == Dt.Minute && Math.Abs(item.Time.Second - Dt.Second) == 0)
+        if (item.Time.Hour == Dt.Hour && item.Time.Minute == Dt.Minute && item.Time.Second == Dt.Second)
           return item;
       }
       MessageBox.Show("Не найдено совпадение времени с курсором");
@@ -69,91 +109,21 @@ namespace GoodPlot
     /// <returns></returns>
     public int FindIndex(List<Time_and_Value> TadList, DateTime Dt)
     {
+    double FrecvencyRegistration=TadList[1].Time.Subtract(TadList[0].Time).TotalSeconds;
+    
       for (int i = 0; i < TadList.Count; i++)
       {
-        if (TadList[i].Time.Hour==Dt.Hour && TadList[i].Time.Minute == Dt.Minute && Math.Abs(TadList[i].Time.Second - Dt.Second) == 1)
+        if (TadList[i].Time.Hour == Dt.Hour && TadList[i].Time.Minute == Dt.Minute && Math.Abs(TadList[i].Time.Second - Dt.Second) < FrecvencyRegistration)
         return i;
       }
 
     return 0;
      }
 
-    /// <summary>
-    /// Изменение значения бета эфф
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void BetaTexBox_TextChanged(object sender, TextChangedEventArgs e)
-    {
-      try
-      {
-        B_eff = Convert.ToDouble(BetaTexBox.Text);
-      }
-      catch (FormatException)
-      {}
-      
-    }
-    /// <summary>
-    /// Изменение значения шага группы в см
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void ShagTexBox_TextChanged(object sender, TextChangedEventArgs e)
-    {
-      try
-      {
-        Step_h = Convert.ToDouble(ShagTexBox.Text);
-      }
-      catch (FormatException)
-      { }
-    }
-    /// <summary>
-    /// Изменение признака реактивности
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void ReactivitiTexBox_TextChanged(object sender, TextChangedEventArgs e)
-    {
-      try
-      {
-        ReactKKSMainPart = ReactivitiTexBox.Text;
-      }
-      catch (FormatException)
-      { }
-    }
-    /// <summary>
-    /// Изменение признака группы, а так же признака для групп 12-8
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void GroupTexBox_TextChanged(object sender, TextChangedEventArgs e)
-    {
-      try
-      {
-        GroupKKSMainPart = GroupTexBox.Text;
-      }
-      catch (FormatException)
-      { }
-      //Бушер
-      if (GroupKKSMainPart=="YVM")
-      {
-        GroupKKSMainPart12 = "--------";
-        GroupKKSMainPart11 = "------";
-        GroupKKSMainPart10 = "YVM10FG900";
-        GroupKKSMainPart9 = "YVM10FG909";
-        GroupKKSMainPart8 = "YVM10FG908";
-      }
-
-      //НВАЭС-2
-      if (GroupKKSMainPart == "JDA")
-      {
-        GroupKKSMainPart12 = "JDA00FG912";
-        GroupKKSMainPart11 = "JDA00FG911";
-        GroupKKSMainPart10 = "JDA00FG910";
-        GroupKKSMainPart9 = "JDA00FG909";
-        GroupKKSMainPart8 = "JDA00FG908";
-      }
-    }
+    
+    
+    
+    
     /// <summary>
     /// Получить времена перемещения группы.
     /// </summary>
@@ -187,24 +157,24 @@ namespace GoodPlot
     int i = start;
       while ( i < end)
       {
-        while (Math.Abs( H12.Time_and_Value_List[i].Value - H12.Time_and_Value_List[i+2].Value) < 0.05
-        && Math.Abs(H11.Time_and_Value_List[i].Value - H11.Time_and_Value_List[i + 2].Value) < 0.05
-        &&Math.Abs(H10.Time_and_Value_List[i].Value - H10.Time_and_Value_List[i + 2].Value) < 0.05 
-        &&Math.Abs(H9.Time_and_Value_List[i].Value - H9.Time_and_Value_List[i + 2].Value) < 0.05 
-        &&Math.Abs(H8.Time_and_Value_List[i].Value - H8.Time_and_Value_List[i + 2].Value) < 0.05
+        while (Math.Abs( H12.Time_and_Value_List[i].Value - H12.Time_and_Value_List[i+3].Value) < 0.05
+        && Math.Abs(H11.Time_and_Value_List[i].Value - H11.Time_and_Value_List[i + 3].Value) < 0.05
+        &&Math.Abs(H10.Time_and_Value_List[i].Value - H10.Time_and_Value_List[i + 3].Value) < 0.05 
+        &&Math.Abs(H9.Time_and_Value_List[i].Value - H9.Time_and_Value_List[i + 3].Value) < 0.05 
+        &&Math.Abs(H8.Time_and_Value_List[i].Value - H8.Time_and_Value_List[i + 3].Value) < 0.05
         && i < end)
         {
         i++;
         }
         if (i < end)//переход к следующему движению группы
-        M1.Add(H10.Time_and_Value_List[i].Time);//Запомнили точку спуска
+        M1.Add(H10.Time_and_Value_List[i+2].Time);//Запомнили точку спуска
         
             
-        while (Math.Abs(H12.Time_and_Value_List[i].Value - H12.Time_and_Value_List[i + 5].Value) > 0.03 
-        || Math.Abs(H11.Time_and_Value_List[i].Value - H11.Time_and_Value_List[i + 5].Value) > 0.03 
-        ||Math.Abs(H10.Time_and_Value_List[i].Value - H10.Time_and_Value_List[i + 5].Value) > 0.03 
-        ||Math.Abs(H9.Time_and_Value_List[i].Value - H9.Time_and_Value_List[i + 5].Value) > 0.03 
-        ||Math.Abs(H8.Time_and_Value_List[i].Value - H8.Time_and_Value_List[i + 5].Value) > 0.03
+        while (Math.Abs(H12.Time_and_Value_List[i].Value - H12.Time_and_Value_List[i + 4].Value) > 0.03 
+        || Math.Abs(H11.Time_and_Value_List[i].Value - H11.Time_and_Value_List[i + 4].Value) > 0.03 
+        ||Math.Abs(H10.Time_and_Value_List[i].Value - H10.Time_and_Value_List[i + 4].Value) > 0.03 
+        ||Math.Abs(H9.Time_and_Value_List[i].Value - H9.Time_and_Value_List[i + 4].Value) > 0.03 
+        ||Math.Abs(H8.Time_and_Value_List[i].Value - H8.Time_and_Value_List[i + 4].Value) > 0.03
         && i < end)
         {
         i++;  
@@ -212,7 +182,7 @@ namespace GoodPlot
         if (i < end)//переход к следующему движению группы
         M1.Add(H10.Time_and_Value_List[i].Time);//Точка низа
 
-        i+=2;
+        i+=1;
       }  
     
 
@@ -327,8 +297,54 @@ namespace GoodPlot
 
       return M5;
     }
+    /// <summary>
+    /// Получить массив (x,y) , по которому рисовать будем сглаживающие прямые
+    /// </summary>
+    /// <param name="M1"></param>
+    /// <param name="M4"></param>
+    /// <returns></returns>
+    public List<Tuple<double, double>> GiveXYLine_M6(List<DateTime> M2, List<Tuple<double, double>> M4)
+    {
+      List<Tuple<double, double>> M6 = new List<Tuple<double, double>>();
+      //Промежуточный массив с серединными временами у пар точек изменения положения группы.
+      List <DateTime> M2_half=new List<DateTime>();
+      M2_half.Add(M2[0]);
+      for (int i = 1; i < M2.Count-1; i+=2)
+      {
+        M2_half.Add(M2[i].AddSeconds(M2[i  + 1].Subtract(M2[i]).TotalSeconds / 2));
+        M2_half.Add(M2[i].AddSeconds(M2[i + 1].Subtract(M2[i]).TotalSeconds / 2));
+      }
+      M2_half.Add(M2[M2.Count-1]);
 
+      DateTime time;
+      double value;
+      for (int i = 0; i < M2_half.Count; i++)
+      {
+        time = M2_half[i];
 
+        value = M4[(int)i / 2].Item1 + M4[(int)i / 2].Item2 * M2_half[i].ToOADate();
+        M6.Add(new Tuple<double, double>(time.ToOADate(), value));
+      }
+
+      return M6;
+
+    }
+    /// <summary>
+    /// Записать параметры
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void ButtonAccept_Click(object sender, RoutedEventArgs e)
+    {
+       
+        //GroupKKSMainPart = GroupTexBox.Text;
+        StreamWriter streamWriter = new StreamWriter("Options.txt");
+        streamWriter.WriteLine(GroupTexBox.Text);//Главный признак группы.
+        streamWriter.WriteLine(ReactivitiTexBox.Text);//Главный признак реактивности.
+        streamWriter.WriteLine(ShagTexBox.Text);
+        streamWriter.WriteLine(BetaTexBox.Text);
+        streamWriter.Close();
+    }
 
 
   }

@@ -38,9 +38,11 @@ namespace GoodPlot
 
     //Начало - конец участка для анализа.
     DateTime Start; DateTime End;
+    //
+    Chart_Acts chartActs=new Chart_Acts();
 
     /// <summary>
-    /// Массив для записи 4 пар время-значение (4 точки из списка точек параметра).
+    /// Массив для записи 4 пар время-значение (4 точки из списка точек параметра). ПРи ручном способе.
     /// </summary>
     Time_and_Value[] ReactivityMassForDE = new Time_and_Value[4];
     /// <summary>
@@ -305,8 +307,22 @@ namespace GoodPlot
         //Получить коэффициенты прямых для аппроксимаций реактивности
         List<Tuple<double, double>> M4 = new List<Tuple<double,double>>();
         M4 = MyCalc.Give_ab_Koeffs_M4(M3);
+        //Получить приращения
         List<Tuple<double, double>> M5 = new List<Tuple<double, double>>();
         M5 = MyCalc.GiveDelPo_M5(M4,M1);
+        //Получить массив (x,y) , по которому рисовать будем сглаживающие прямые
+        List<Tuple<double, double>> M6 = new List<Tuple<double, double>>();
+        M6 = MyCalc.GiveXYLine_M6(M2, M4);
+        //Построить кривую изменений реактивности
+        Chart_ref.Series.Add("InterLine");
+        Chart_ref.Series["InterLine"].ChartType = SeriesChartType.Line;
+        Chart_ref.Series["InterLine"].ChartArea = "Area# 1";
+        foreach (var item in M6)
+        {
+          Chart_ref.Series["InterLine"].Points.AddXY(item.Item1, item.Item2);
+        }
+
+        
 
         //Заполним табличку 
         DataTable dt = new DataTable();
@@ -351,7 +367,7 @@ namespace GoodPlot
     {
         ButtonTopEnd.IsEnabled=false; ButtonBotStart.IsEnabled=false;ButtonGroupPoint.IsEnabled=false;
     }
-
+    
     
     
   }

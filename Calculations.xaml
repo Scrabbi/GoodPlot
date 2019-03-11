@@ -12,13 +12,15 @@
             <Label Content="Главный признак реактивности" Background="Bisque" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" />
             <Label Content="Шаг группы в см" Background="Bisque" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" />
             <Label Content="Бета эфф" Background="Bisque" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" />
+            <Button Name="ButtonAccept" Content="Подтвердить" Background="DarkSeaGreen" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch"
+                    Click="ButtonAccept_Click"/>
         </StackPanel>
         <StackPanel Orientation="Vertical" VerticalAlignment="Stretch" Grid.Column="1">
-            <TextBox Name="GroupTexBox" TextChanged="GroupTexBox_TextChanged" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" 
+            <TextBox Name="GroupTexBox"  HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" 
                     Text="YVM" Height="24" />
-            <TextBox Text="247." Name="ReactivitiTexBox" TextChanged="ReactivitiTexBox_TextChanged"  HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Height="25"/>
-            <TextBox Text="3.75" Name="ShagTexBox"  TextChanged="ShagTexBox_TextChanged" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Height="29"/>
-            <TextBox Text="0.74" Name="BetaTexBox" TextChanged="BetaTexBox_TextChanged"  HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Height="29"/>
+            <TextBox Text="247." Name="ReactivitiTexBox"  HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Height="25"/>
+            <TextBox Text="3.75" Name="ShagTexBox"  HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Height="29"/>
+            <TextBox Text="0.74" Name="BetaTexBox"   HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Height="29"/>
         </StackPanel>
     </Grid>
 </Window>
