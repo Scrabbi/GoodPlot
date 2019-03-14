@@ -16,11 +16,17 @@ namespace GoodPlot
     /// </summary>
    class SaveLoadClass
   {
+        static Chart chart_ref;
+        
+        int k;
+        public SaveLoadClass(Chart chart)
+        { 
+        chart_ref=chart;
+        }
         /// <summary>
         /// Активный экземпляр класса Chart_Acts.
         /// </summary>
-        static Chart_Acts Chart_Acts_On = new Chart_Acts();
-
+        static Chart_Acts Chart_Acts_On = new Chart_Acts(chart_ref);
         
 
         /// <summary>
@@ -70,6 +76,8 @@ namespace GoodPlot
         /// <param name="File_Full_Name"></param>
         public static void Load_Condition(Chart chart1_given, File_Acts File_Acts_given, ListView ListVies_given, MainWindow MainWind)
     {
+            
+            
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Текстовый документ (*.txt)|*.txt|Все файлы (*.*)|*.*";
             openFileDialog.FilterIndex = 1;

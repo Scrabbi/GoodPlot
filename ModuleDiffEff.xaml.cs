@@ -39,7 +39,7 @@ namespace GoodPlot
     //Начало - конец участка для анализа.
     DateTime Start; DateTime End;
     //
-    Chart_Acts chartActs=new Chart_Acts();
+     Chart_Acts chartActs=new Chart_Acts(Chart_ref);
 
     /// <summary>
     /// Массив для записи 4 пар время-значение (4 точки из списка точек параметра). ПРи ручном способе.
@@ -52,7 +52,7 @@ namespace GoodPlot
   /// <summary>
   /// Передаваемый chart
   /// </summary>
-    Chart Chart_ref;
+   static Chart Chart_ref;
     /// <summary>
     /// Доступ к списку параметров
     /// </summary>

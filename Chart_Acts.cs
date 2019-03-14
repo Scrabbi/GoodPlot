@@ -10,8 +10,14 @@ using System.Drawing;
 
 namespace GoodPlot
 {
+    
     class Chart_Acts
     {
+    Chart chart_ref;
+    public Chart_Acts(Chart chart)
+    {
+    chart_ref=chart;
+    }
         ///// <summary>
         ///// Передавайемый из MainWindow чарт
         ///// </summary>
@@ -324,5 +330,13 @@ namespace GoodPlot
           }
         }
 
+        public List<Parameter> ParametrsOnGraph()
+        {
+        List<Parameter> listParOnGraph = new List<Parameter>();
+        chart_ref.Series[0].Points
+
+        return listParOnGraph;
         }
+
+    }
 }

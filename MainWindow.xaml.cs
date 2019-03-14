@@ -31,7 +31,7 @@ namespace GoodPlot
         /// <summary>
         /// Акт. экз. SaveLoadClass
         /// </summary>
-        SaveLoadClass SLC = new SaveLoadClass();
+        SaveLoadClass SLC;// = new SaveLoadClass(chart1);
         /// <summary>
         /// Активный экземпляр класса File_Acts.
         /// </summary>
@@ -39,7 +39,7 @@ namespace GoodPlot
         /// <summary>
         /// Активный экземпляр класса Chart_Acts.
         /// </summary>
-        Chart_Acts Chart_Acts_One = new Chart_Acts();
+        Chart_Acts Chart_Acts_One;
 
         //Задаем контекстное меню на график
         System.Windows.Forms.ContextMenu ContMenuChart = new System.Windows.Forms.ContextMenu();
@@ -63,6 +63,8 @@ namespace GoodPlot
 
         public MainWindow()
         {
+          Chart_Acts_One = new Chart_Acts(Chart1);
+          SLC = new SaveLoadClass(Chart1);
           try
           {
             InitializeComponent();
@@ -135,6 +137,7 @@ namespace GoodPlot
           Chart1.Focus();
           //Перемещение отменяем
           MovingTitle = null;
+          MovingLegend = null; 
           // Call HitTest. 
           HitTestResult result = Chart1.HitTest(e.X, e.Y, true);
 
@@ -261,11 +264,15 @@ namespace GoodPlot
         /// <param name="e"></param>
         void AFWindow_Closed(object sender, EventArgs e)
         {
-          for (int i = 0; i < Chart1.ChartAreas.Count - 1; i++)
+          if (Chart1.ChartAreas[Chart1.ChartAreas.Count - 1].AxisX.Maximum!=1)
           {
-            Chart1.ChartAreas[i].AxisX.Minimum = Chart1.ChartAreas[Chart1.ChartAreas.Count - 1].AxisX.Minimum;
-            Chart1.ChartAreas[i].AxisX.Maximum = Chart1.ChartAreas[Chart1.ChartAreas.Count - 1].AxisX.Maximum;
+            for (int i = 0; i < Chart1.ChartAreas.Count - 1; i++)
+            {
+              Chart1.ChartAreas[i].AxisX.Minimum = Chart1.ChartAreas[Chart1.ChartAreas.Count - 1].AxisX.Minimum;
+              Chart1.ChartAreas[i].AxisX.Maximum = Chart1.ChartAreas[Chart1.ChartAreas.Count - 1].AxisX.Maximum;
+            }
           }
+          
           
         }
         
