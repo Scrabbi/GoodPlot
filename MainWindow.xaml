@@ -88,6 +88,7 @@ Icon="PerfCenterCpl.ico"
             </MenuItem>
             <MenuItem Header="Расчеты" Name="Calculations_Menu">
                 <MenuItem Header="Дифф. эфф." x:Name="DiffEffModule" Click="DiffEffModule_Click"/>
+                <MenuItem Header="Значения" x:Name="Values_Module" Click="Values_Module_Click"/>
                 <MenuItem Header="Настройки расчета" x:Name="CalculOptions" Click="CalculOptions_Click"/>
             </MenuItem>
         </Menu>
@@ -165,7 +166,7 @@ Icon="PerfCenterCpl.ico"
                         <RowDefinition Height="23*"/>
                     </Grid.RowDefinitions>
                     <!--Добавляем элемент winforms MS Chart. Строка с графико, номер 2 строка -->
-                    <WindowsFormsHost Grid.Row="1" Grid.ColumnSpan="2">
+                    <WindowsFormsHost Grid.Row="1" HorizontalAlignment="Stretch" Grid.ColumnSpan="2">
                         <dvc:Chart x:Name="Chart1" x:FieldModifier="public"/>
                     </WindowsFormsHost>
                     <!--Строка с кнопками, номер 1 строка-->

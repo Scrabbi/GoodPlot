@@ -225,3 +225,5 @@ E:\Work\C#Progs\GoodPlot\obj\Debug\MainWindow.baml
 E:\Work\C#Progs\GoodPlot\obj\Debug\GoodPlot.g.resources
 E:\Work\C#Progs\GoodPlot\obj\Debug\GoodPlot.Properties.Resources.resources
 E:\Work\C#Progs\GoodPlot\obj\Debug\GoodPlot.csproj.GenerateResource.Cache
+D:\Progs\C#Projects\GoodPlot\obj\Debug\ModuleValues.baml
+D:\Progs\C#Projects\GoodPlot\obj\Debug\ModuleValues.g.cs

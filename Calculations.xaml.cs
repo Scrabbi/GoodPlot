@@ -12,6 +12,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using MathNet.Numerics;
 using System.IO;
+using System.Windows.Forms.DataVisualization.Charting;
+using System.Collections.ObjectModel;
+
 namespace GoodPlot
 {
   /// <summary>
@@ -40,10 +43,16 @@ namespace GoodPlot
     /// Доступ к списку параметров
     /// </summary>
     static File_Acts Fileacts_ref;
-    public Calculations(File_Acts FA)
+
+    static Chart chart_ref;
+
+    public ObservableCollection<Line_for_Table> TableList = new ObservableCollection<Line_for_Table>();
+    public Calculations(File_Acts FA, Chart chart)
     {
       InitializeComponent();
       Fileacts_ref=FA;
+      chart_ref=chart;
+      
       //Считать состояние
       try
       {
@@ -85,7 +94,7 @@ namespace GoodPlot
       }
     }
     /// <summary>
-    /// Найти из списка точек точку с заданным временем
+    /// Найти из списка точек точку с заданным временем из списка значений параметра
     /// </summary>
     /// <param name="TadList">Список точек</param>
     /// <param name="Dt">Заданное время</param>
@@ -95,11 +104,58 @@ namespace GoodPlot
       double FrecvencyRegistration = TadList[1].Time.Subtract(TadList[0].Time).TotalSeconds;
       foreach (var item in TadList)
       {
-        if (item.Time.Hour == Dt.Hour && item.Time.Minute == Dt.Minute && item.Time.Second == Dt.Second)
+        if (item.Time.Hour == Dt.Hour && item.Time.Minute == Dt.Minute && Math.Abs(item.Time.Second - Dt.Second) <= FrecvencyRegistration/2)
           return item;
       }
       MessageBox.Show("Не найдено совпадение времени с курсором");
       return new Time_and_Value();
+    }
+    /// <summary>
+    /// Тоже найти точку, но уже из списка точек серии
+    /// </summary>
+    /// <param name="PointList"></param>
+    /// <param name="Dt"></param>
+    /// <returns></returns>
+    public static DataPoint FindPoint(DataPointCollection PointList, DateTime Dt)
+    {
+      double FrecvencyRegistration = DateTime.FromOADate(PointList[1].XValue).Subtract(DateTime.FromOADate(PointList[0].XValue)).TotalSeconds;
+      foreach (var item in PointList)
+      {
+        if (DateTime.FromOADate(item.XValue).Hour == Dt.Hour && DateTime.FromOADate(item.XValue).Minute == Dt.Minute && Math.Abs(DateTime.FromOADate(item.XValue).Second - Dt.Second) <= FrecvencyRegistration/2)
+          return item;
+      }
+      MessageBox.Show("Не найдено совпадение времени с курсором");
+      return new DataPoint();
+    }
+    /// <summary>
+    /// Среднее вправо-лево от указанного количества времени.
+    /// </summary>
+    /// <param name="PointList"></param>
+    /// <param name="Dat"></param>
+    /// <param name="SecCount_for_Aver"></param>
+    /// <returns></returns>
+    double FindAverage(DataPointCollection PointList, DateTime Dat, int SecCount_for_Aver)
+    {
+      double aver_Start = 0;
+      double aver_End = 0;
+      double aver=0;
+      int pointcount=0;
+      TimeSpan ts= new TimeSpan(0,0,SecCount_for_Aver);
+      aver_Start = FindPoint(PointList, Dat.Subtract(ts)).XValue;
+      aver_End = FindPoint(PointList, Dat.Add(ts)).XValue;
+      foreach (var item in PointList)
+      {
+        if (item.XValue>aver_Start&&item.XValue<aver_End)
+        {
+        pointcount++;
+          aver+=item.YValues[0];
+        }
+      }
+      aver=aver/pointcount;
+
+
+
+      return aver;
     }
     /// <summary>
     /// Найти индекс элемента в списке значений времён с указанным временем
@@ -116,10 +172,53 @@ namespace GoodPlot
         if (TadList[i].Time.Hour == Dt.Hour && TadList[i].Time.Minute == Dt.Minute && Math.Abs(TadList[i].Time.Second - Dt.Second) < FrecvencyRegistration)
         return i;
       }
+     
 
-    return 0;
-     }
+     return 0;
+    }
+    public struct Line_for_Table
+    {
+      /// <summary>
+      /// Название линии
+      /// </summary>
+      public string KKS { get; set; }
+      /// <summary>
+      /// Значение точки.
+      /// </summary>
+      public double Value { get; set; }
+      /// <summary>
+      /// Среднее за указанное количество точек
+      /// </summary>
+      public double AverageValue { get; set; }
+    }
+    /// <summary>
+    /// Список легенд с графика. Значения в месте курсора.
+    /// </summary>
+    /// <returns></returns>
+    public void ParametrsOnGraph_Values(int secforaver)
+    {
+      ObservableCollection<Line_for_Table> Rezult = new ObservableCollection<Line_for_Table>();
+      Line_for_Table line = new Line_for_Table(); 
+      
+      foreach (var item in chart_ref.Series)
+      {
+        try
+        {
+          line.KKS = item.Name;
+          line.Value = FindPoint(item.Points, DateTime.FromOADate(chart_ref.ChartAreas[item.ChartArea].CursorX.Position)).YValues[0];
+          line.AverageValue=FindAverage(item.Points,DateTime.FromOADate(chart_ref.ChartAreas[item.ChartArea].CursorX.Position),secforaver);
+          Rezult.Add(line);
+        }
+        catch (Exception)
+        {}
+        
+      }
 
+
+
+      TableList=Rezult;
+     // return Rezult;
+    }
     
     
     
@@ -345,7 +444,7 @@ namespace GoodPlot
         streamWriter.WriteLine(BetaTexBox.Text);
         streamWriter.Close();
     }
-
+    
 
   }
 }

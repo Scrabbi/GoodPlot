@@ -63,7 +63,7 @@ namespace GoodPlot
 
         public MainWindow()
         {
-          Chart_Acts_One = new Chart_Acts(Chart1);
+          Chart_Acts_One = new Chart_Acts();
           SLC = new SaveLoadClass(Chart1);
           try
           {
@@ -1117,8 +1117,14 @@ namespace GoodPlot
 
         private void CalculOptions_Click(object sender, RoutedEventArgs e)
         {
-          Calculations CalculationsWindow = new Calculations(File_Acts_One);
+          Calculations CalculationsWindow = new Calculations(File_Acts_One,Chart1);
           CalculationsWindow.Show(); 
+        }
+
+        private void Values_Module_Click(object sender, RoutedEventArgs e)
+        {
+          ModuleValues ValuesWindow = new ModuleValues(File_Acts_One, Chart1);
+          ValuesWindow.Show(); 
         }
 
 

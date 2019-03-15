@@ -152,6 +152,9 @@
     <Compile Include="ModuleDiffEff.xaml.cs">
       <DependentUpon>ModuleDiffEff.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ModuleValues.xaml.cs">
+      <DependentUpon>ModuleValues.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SaveLoadClass.cs" />
     <Compile Include="TitleFormatWindow.xaml.cs">
       <DependentUpon>TitleFormatWindow.xaml</DependentUpon>
@@ -189,6 +192,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="ModuleDiffEff.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ModuleValues.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

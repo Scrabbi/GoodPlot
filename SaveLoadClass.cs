@@ -26,7 +26,7 @@ namespace GoodPlot
         /// <summary>
         /// Активный экземпляр класса Chart_Acts.
         /// </summary>
-        static Chart_Acts Chart_Acts_On = new Chart_Acts(chart_ref);
+        static Chart_Acts Chart_Acts_On = new Chart_Acts();
         
 
         /// <summary>
