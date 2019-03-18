@@ -13,7 +13,7 @@
             <Label Content="Реактивность для расчета" Background="Bisque" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" />
             <TextBox Name="ReactivitiTexBox"   HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Height="29"/>
             <StackPanel x:Name="PanelRadioButt" Orientation="Horizontal">
-                <RadioButton GroupName="CalcWay" Name="RadHand" Content="Вручную" IsChecked="True" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Width="144" />
+                <RadioButton GroupName="CalcWay" Name="RadHand" Content="Вручную" IsChecked="True"  HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Width="144" />
                 <RadioButton GroupName="CalcWay" Name="RadAuto" Content="Автомат" Checked="RadAuto_Checked"  HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Width="145"/>
             </StackPanel>
             <Label Content="Вехние точки" Background="Bisque" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" />
@@ -34,9 +34,8 @@
                     HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Click="ButtonGroupPoint_Click"/>
             <Button Name="ButtonCalculation" Content="Рассчитать" Margin="1,10" Padding="3" Background="LightCyan" HorizontalContentAlignment="Center" 
                    HorizontalAlignment="Stretch" Click="ButtonCalculation_Click"/>
-            <Label Content="Отобразить сглаживающие прямые" Margin="1" Padding="3" Background="LightCyan" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" />
+            <Button Click="Button_Click" Content="Отобразить сглаживающие прямые" Margin="1" Padding="3" Background="LightCyan" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" />
             <Label Content="Сброс" Margin="1" Padding="3" Background="LightCyan" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" />
-
         </StackPanel>
     </Grid>
 </Window>

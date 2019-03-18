@@ -20,10 +20,16 @@ namespace GoodPlot
   public partial class ModuleValues : Window
   {
     Calculations MyCalc;
+    Chart Mychart;
+    /// <summary>
+    /// Точка начала усреднения
+    /// </summary>
+    DateTime pStart;
     public ModuleValues(File_Acts FA, Chart chart)
     {
       InitializeComponent();
-
+      //График, с которым работаем
+      Mychart=chart;
       MyCalc=new Calculations(FA,chart);
       
       chart.CursorPositionChanged += chart_CursorPositionChanged;
@@ -50,6 +56,37 @@ namespace GoodPlot
       Values_List.ItemsSource = MyCalc.TableList;
       
       
+    }
+    /// <summary>
+    /// Усреднение по 2 точкам
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void ButtonStart_Click(object sender, RoutedEventArgs e)
+    {
+      ButtonStart.Background = Brushes.MediumSeaGreen;
+      pStart= DateTime.FromOADate(Mychart.ChartAreas[0].CursorX.Position);
+       
+      
+          
+    }
+
+    private void ButtonEnd_Click(object sender, RoutedEventArgs e)
+    {
+      ButtonEnd.Background = Brushes.MediumSeaGreen;
+      int Myint = 0;
+      try
+      {
+        Myint = Convert.ToInt32(IntervalSecTexBox.Text);
+
+      }
+      catch (Exception)
+      {
+
+        MessageBox.Show("Необходимо число");
+      }
+      MyCalc.ParametrsOnGraph_Values(Myint, pStart, DateTime.FromOADate(Mychart.ChartAreas[0].CursorX.Position));
+      Values_List.ItemsSource = MyCalc.TableList;     
     }
   }
 }

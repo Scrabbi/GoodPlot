@@ -110,3 +110,5 @@ D:\Progs\C#Projects\GoodPlot\obj\Release\GoodPlot.Properties.Resources.resources
 D:\Progs\C#Projects\GoodPlot\obj\Release\GoodPlot.csproj.GenerateResource.Cache
 D:\Progs\C#Projects\GoodPlot\obj\Release\Calculations.baml
 D:\Progs\C#Projects\GoodPlot\obj\Release\Calculations.g.cs
+D:\Progs\C#Projects\GoodPlot\obj\Release\ModuleValues.baml
+D:\Progs\C#Projects\GoodPlot\obj\Release\ModuleValues.g.cs

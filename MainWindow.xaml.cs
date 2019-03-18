@@ -65,16 +65,10 @@ namespace GoodPlot
         {
           Chart_Acts_One = new Chart_Acts();
           SLC = new SaveLoadClass(Chart1);
-          try
-          {
+          
             InitializeComponent();
-          }
-          catch (Exception)
-          {
             
-            throw;
-          }
-            
+
             //Заполняю список значений имен осей , чтобы координаты курсора соотв. отображать
             ItemsInComboBox = new List<string> ();
             ItemsInComboBox.Add("L1");
@@ -362,16 +356,30 @@ namespace GoodPlot
         {
             //Удалить все параметры. Можно заново загружать файл.
             File_Acts_One.Parameters.Clear();
+            File_Acts_One.ListFiles.Clear();
+            //Очищаем наш комбокс
+            ComBoxWahtFile.Items.Clear();
             List_Parameters.Items.Refresh();
+            Chart1.Series.Clear();
 
             Microsoft.Win32.OpenFileDialog openFileDialog1 = new Microsoft.Win32.OpenFileDialog();
+            openFileDialog1.Multiselect=true;
             if (openFileDialog1.ShowDialog() == true)
             {
-                //В случае нескольких файлов тут надо будет несколько файлов открывать.
-                
-                //Считываем файл
-                File_Acts_One.Read_File(openFileDialog1.FileName, true);
+            //Лист открывающихся файлов
+              foreach (var item in openFileDialog1.FileNames)
+	              {
+		                //Считываем файлы
+                  File_Acts_One.Read_File(item);
+                }
             }
+            //Заполнение комбокса списком файлов
+            
+            foreach (var item in File_Acts_One.ListFiles)
+            {
+              ComBoxWahtFile.Items.Add(item.filename); 
+            }
+             
             //Заполнение списка параметров. (При загрузке приложения.)
             List_Parameters.ItemsSource = File_Acts_One.Parameters;
             //Переносит на вкладочку с видом на данные по выбранному KKS. Фокусимся на графике.
@@ -1062,12 +1070,14 @@ namespace GoodPlot
         private void LoadSvrkNames_Click(object sender, RoutedEventArgs e)
         {
           Microsoft.Win32.OpenFileDialog openFileDialog1 = new Microsoft.Win32.OpenFileDialog();
+          
           if (openFileDialog1.ShowDialog() == true)
           {
-            //В случае нескольких файлов тут надо будет несколько файлов открывать.
 
-            //Считываем файл
-            File_Acts_One.Read_File(openFileDialog1.FileName, true);
+              //Считываем файл
+              File_Acts_One.Read_File(openFileDialog1.FileName);
+            
+            
           }
           //Заполнение списка параметров. 
           //List_Parameters.ItemsSource = File_Acts_One.Parameters;
@@ -1075,17 +1085,34 @@ namespace GoodPlot
           List_Parameters.Items.Refresh();
           Chart1.Focus();
         }
-
+        /// <summary>
+        /// Добавление файлов. Все аналогично, но не затирается график и т.п.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AddFile_Click(object sender, RoutedEventArgs e)
         {
+        //Очищаем наш комбокс
+        ComBoxWahtFile.Items.Clear();
+
           Microsoft.Win32.OpenFileDialog openFileDialog1 = new Microsoft.Win32.OpenFileDialog();
+          openFileDialog1.Multiselect=true;
           if (openFileDialog1.ShowDialog() == true)
           {
             //В случае нескольких файлов тут надо будет несколько файлов открывать.
-
-            //Считываем файл
-            File_Acts_One.Read_File(openFileDialog1.FileName, false);
+            foreach (var item in openFileDialog1.FileNames)
+            {
+              //Считываем файл
+              File_Acts_One.Read_File(item);
+            }
           }
+
+          //Заполнение комбокса списком файлов
+          foreach (var item in File_Acts_One.ListFiles)
+          {
+            ComBoxWahtFile.Items.Add(item.filename);
+          }
+
           //Заполнение списка параметров. (При загрузке приложения.)
           List_Parameters.ItemsSource = File_Acts_One.Parameters;
           //Переносит на вкладочку с видом на данные по выбранному KKS. Фокусимся на графике.
@@ -1125,6 +1152,20 @@ namespace GoodPlot
         {
           ModuleValues ValuesWindow = new ModuleValues(File_Acts_One, Chart1);
           ValuesWindow.Show(); 
+        }
+        /// <summary>
+        /// Сдвинуть времена в выбранном файле.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ButtonShift_Click(object sender, RoutedEventArgs e)
+        {
+                    
+                 File_Acts_One.ShiftIt(ComBoxWahtFile.Text, Convert.ToInt32(TextBoxTime.Text));
+                 List_Parameters.Items.Refresh();
+                 //List_Parameters.ItemsSource = File_Acts_One.Parameters; ;
+               Chart1.Series.Clear();
+                  
         }
 
 

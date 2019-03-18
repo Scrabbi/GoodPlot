@@ -95,7 +95,7 @@ Icon="PerfCenterCpl.ico"
         <!--вкладки-->
         <TabControl x:Name="TabCont1" Grid.Row="1" Grid.ColumnSpan="2" >
             <!--Первая вкладка, параметры и значения-->
-            <TabItem x:Name="Points_Tab" MouseLeftButtonUp="List_Parameters_MouseLeftButtonUp">
+            <TabItem x:Name="Points_Tab" >
                 <!--заголовок "Показания датчиков"-->
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
@@ -113,11 +113,16 @@ Icon="PerfCenterCpl.ico"
                         <ColumnDefinition Width="447*" />
                         <ColumnDefinition Width="5*"/>
                     </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition  ></RowDefinition>
+                        <RowDefinition  Height="90"> </RowDefinition>
+                    </Grid.RowDefinitions>
+
                     <!--плавающая центральная-->
-                    <GridSplitter Grid.Column="2" ShowsPreview="False" Width="3" 
+                    <GridSplitter Grid.Column="2" Grid.RowSpan="2" ShowsPreview="False" Width="3" 
                       HorizontalAlignment="Center" VerticalAlignment="Stretch" />
                     <!--Лист значений параметра выбранного-->
-                    <ListView   x:Name="Points_List" Grid.Column="3" AllowDrop="True" >
+                    <ListView   x:Name="Points_List" Grid.Column="3" Grid.Row="0" AllowDrop="True" Margin="0,0,0,90" Grid.RowSpan="2"  >
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn  DisplayMemberBinding="{Binding Time,Mode=OneWay,UpdateSourceTrigger=PropertyChanged,StringFormat='HH:mm:ss.fff yyyy-MM-dd'}" Width="150" Header="Время" />
@@ -127,7 +132,7 @@ Icon="PerfCenterCpl.ico"
                         </ListView.View>
                     </ListView>
                     <!--Лист списка параметров-->
-                    <ListView   x:Name="List_Parameters"  Grid.Column="0" Grid.ColumnSpan="2"  AllowDrop="True" MouseDoubleClick="List_Parameters_MouseDoubleClick">
+                    <ListView   x:Name="List_Parameters" Grid.RowSpan="2"  Grid.Column="0" Grid.ColumnSpan="2"  AllowDrop="True" MouseDoubleClick="List_Parameters_MouseDoubleClick" MouseLeftButtonUp="List_Parameters_MouseLeftButtonUp">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn  DisplayMemberBinding="{Binding KKS, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Width="150" Header="KKS параметра" />
@@ -144,6 +149,22 @@ Icon="PerfCenterCpl.ico"
                             </ContextMenu>
                         </ListView.ContextMenu>
                     </ListView>
+                    <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Stretch"  >
+                        <StackPanel Grid.Row="1" Orientation="Horizontal"> 
+                        <Label   Content="Выбор файла" Grid.Column="0" Background="Bisque"   />
+                            <ComboBox  x:Name="ComBoxWahtFile"  Width="175" />
+                        </StackPanel>
+                        
+                        <StackPanel Orientation="Horizontal">
+                            <Label Name="LabelSecs"   Content="Сдвиг на сколько секунд?" Grid.Column="0" Background="Bisque"  />
+                            <TextBox Text="3600"  x:Name="TextBoxTime"  Width="175" />
+                        </StackPanel>
+                        <Button x:Name="ButtonShift" Click="ButtonShift_Click" Background="LightGray"  Content="Сдвинуть" />
+                    </StackPanel>
+
+
+
+
                 </Grid>
             </TabItem>
             <!--Вторая вкладка, график-->
@@ -203,11 +224,11 @@ Icon="PerfCenterCpl.ico"
                 <ScrollViewer ScrollViewer.CanContentScroll="True" ScrollViewer.VerticalScrollBarVisibility="Auto" 
                                 ScrollViewer.HorizontalScrollBarVisibility="Auto" >
                     <Grid>
-                    
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="300"/>
-                    </Grid.RowDefinitions>
-                    <DataGrid Grid.Row="0"   AutoGenerateColumns="True" Name="TableCurrent"   Margin="0,0,0,-308">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="300"/>
+                        </Grid.RowDefinitions>
+                        <DataGrid Grid.Row="0"   AutoGenerateColumns="True" Name="TableCurrent"   Margin="0,0,0,-308">
                             <!--<DataGrid.Columns>
                             <DataGridTextColumn  Header="Номер" />
                             <DataGridTextColumn  Header="Н12, %" />
@@ -219,9 +240,9 @@ Icon="PerfCenterCpl.ico"
                             <DataGridTextColumn  Header="dρ, %" />
                             <DataGridTextColumn  Header="dρ:dН, %:см" />
                             </DataGrid.Columns>-->
-                    </DataGrid>
-                    
-                </Grid>
+                        </DataGrid>
+
+                    </Grid>
                 </ScrollViewer>
             </TabItem>
         </TabControl>

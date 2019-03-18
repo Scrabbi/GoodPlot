@@ -34,7 +34,8 @@ namespace GoodPlot
     double dH = 0;
     double dPdH;
 
-    
+    //Получить массив (x,y) , по которому рисовать будем сглаживающие прямые
+    List<Tuple<double, double>> M6 = new List<Tuple<double, double>>();
 
     //Начало - конец участка для анализа.
     DateTime Start; DateTime End;
@@ -311,16 +312,9 @@ namespace GoodPlot
         List<Tuple<double, double>> M5 = new List<Tuple<double, double>>();
         M5 = MyCalc.GiveDelPo_M5(M4,M1);
         //Получить массив (x,y) , по которому рисовать будем сглаживающие прямые
-        List<Tuple<double, double>> M6 = new List<Tuple<double, double>>();
+        M6 = new List<Tuple<double, double>>();
         M6 = MyCalc.GiveXYLine_M6(M2, M4);
-        //Построить кривую изменений реактивности
-        Chart_ref.Series.Add("InterLine");
-        Chart_ref.Series["InterLine"].ChartType = SeriesChartType.Line;
-        Chart_ref.Series["InterLine"].ChartArea = "Area# 1";
-        foreach (var item in M6)
-        {
-          Chart_ref.Series["InterLine"].Points.AddXY(item.Item1, item.Item2);
-        }
+        
 
         
 
@@ -366,6 +360,27 @@ namespace GoodPlot
     private void RadAuto_Checked(object sender, RoutedEventArgs e)
     {
         ButtonTopEnd.IsEnabled=false; ButtonBotStart.IsEnabled=false;ButtonGroupPoint.IsEnabled=false;
+    }
+    /// <summary>
+    /// Строим график. 
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void Button_Click(object sender, RoutedEventArgs e)
+    {
+      if (M6==null)
+      {
+        MessageBox.Show("Не было расчета");
+        return;
+      }
+      //Построить кривую изменений реактивности
+      Chart_ref.Series.Add("InterLine");
+      Chart_ref.Series["InterLine"].ChartType = SeriesChartType.Line;
+      Chart_ref.Series["InterLine"].ChartArea = "Area# 1";
+      foreach (var item in M6)
+      {
+        Chart_ref.Series["InterLine"].Points.AddXY(item.Item1, item.Item2);
+      }
     }
     
     

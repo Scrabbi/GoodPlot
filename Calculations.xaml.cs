@@ -158,6 +158,36 @@ namespace GoodPlot
       return aver;
     }
     /// <summary>
+    /// Перегрузка для поиска среднего по 2 точкам
+    /// </summary>
+    /// <param name="PointList"></param>
+    /// <param name="start"></param>
+    /// <param name="end"></param>
+    /// <returns></returns>
+    double FindAverage(DataPointCollection PointList, DateTime start, DateTime end)
+    {
+      double aver_Start = 0;
+      double aver_End = 0;
+      double aver=0;
+      int pointcount=0;
+
+      aver_Start = FindPoint(PointList, start).XValue;
+      aver_End = FindPoint(PointList, end).XValue;
+      foreach (var item in PointList)
+      {
+        if (item.XValue>aver_Start&&item.XValue<aver_End)
+        {
+        pointcount++;
+          aver+=item.YValues[0];
+        }
+      }
+      aver=aver/pointcount;
+
+
+
+      return aver;
+    }
+    /// <summary>
     /// Найти индекс элемента в списке значений времён с указанным временем
     /// </summary>
     /// <param name="TadList"></param>
@@ -190,6 +220,10 @@ namespace GoodPlot
       /// Среднее за указанное количество точек
       /// </summary>
       public double AverageValue { get; set; }
+      /// <summary>
+      /// Среднее между 2 точками
+      /// </summary>
+      public double AverageValueBTW { get; set; }
     }
     /// <summary>
     /// Список легенд с графика. Значения в месте курсора.
@@ -219,6 +253,32 @@ namespace GoodPlot
       TableList=Rezult;
      // return Rezult;
     }
+
+    public void ParametrsOnGraph_Values(int secforaver, DateTime pstart, DateTime pend)
+    {
+      ObservableCollection<Line_for_Table> Rezult = new ObservableCollection<Line_for_Table>();
+      Line_for_Table line = new Line_for_Table();
+
+      foreach (var item in chart_ref.Series)
+      {
+        try
+        {
+          line.KKS = item.Name;
+          line.Value = FindPoint(item.Points, DateTime.FromOADate(chart_ref.ChartAreas[item.ChartArea].CursorX.Position)).YValues[0];
+          line.AverageValue = FindAverage(item.Points, DateTime.FromOADate(chart_ref.ChartAreas[item.ChartArea].CursorX.Position), secforaver);
+          line.AverageValueBTW=FindAverage(item.Points,pstart,pend);
+          Rezult.Add(line);
+        }
+        catch (Exception)
+        { }
+
+      }
+
+
+
+      TableList = Rezult;
+      // return Rezult;
+    }
     
     
     
@@ -243,7 +303,12 @@ namespace GoodPlot
       Reactivity = Fileacts_ref.Parameters.Find(n => n.KKS.Contains(ReactKKSMainPart));
     }
     catch (Exception)
-    {}
+    { throw; }
+    if (H10==null)
+    {
+      MessageBox.Show("Наверное, забыли изменить характерные KKS");
+      return null;
+    }
    int start = FindIndex(H10.Time_and_Value_List,Start);
    int end = FindIndex(H10.Time_and_Value_List, End);
     if (H12==null)
@@ -345,7 +410,7 @@ namespace GoodPlot
     Times = new List<double>();
     Values = new List<double>();
 
-    for (int i = this.FindIndex(Reactivity.Time_and_Value_List, p_Start); i < this.FindIndex(Reactivity.Time_and_Value_List, p_End); i++)
+    for (int i = this.FindIndex(Reactivity.Time_and_Value_List, p_Start); i <= this.FindIndex(Reactivity.Time_and_Value_List, p_End); i++)
       {
         Times.Add(Reactivity.Time_and_Value_List[i].Time.ToOADate());
         Values.Add(Reactivity.Time_and_Value_List[i].Value);
@@ -362,15 +427,16 @@ namespace GoodPlot
       double DelPo=0;
       for (int i = 0; i < M4.Count-1; i++)
       {
+      //точка по центру
         DateTime PointMiddle =   M1[i*2].AddSeconds(M1[i*2+1].Subtract(M1[i*2]).TotalSeconds / 2);
 
-        DelPo = M4[i].Item1 + M4[i].Item2 * PointMiddle.ToOADate() -
-          (M4[i + 1].Item1 + M4[i + 1].Item2 * PointMiddle.ToOADate());
-        double dH12 = Step_h*( FindPoint(H12.Time_and_Value_List, M1[i * 2]).Value - FindPoint(H12.Time_and_Value_List, M1[i * 2 + 1]).Value);
-        double dH11 = Step_h*(FindPoint(H11.Time_and_Value_List, M1[i * 2]).Value - FindPoint(H11.Time_and_Value_List, M1[i * 2 + 1]).Value);
-        double dH10 = Step_h*(FindPoint(H10.Time_and_Value_List, M1[i * 2]).Value - FindPoint(H10.Time_and_Value_List, M1[i * 2 + 1]).Value);
-        double dH9 = Step_h*(FindPoint(H9.Time_and_Value_List, M1[i * 2]).Value - FindPoint(H9.Time_and_Value_List, M1[i * 2 + 1]).Value);
-        double dH8 = Step_h*(FindPoint(H8.Time_and_Value_List, M1[i * 2]).Value - FindPoint(H8.Time_and_Value_List, M1[i * 2 + 1]).Value);
+        DelPo = Math.Abs( M4[i].Item1 + M4[i].Item2 * PointMiddle.ToOADate() -
+          (M4[i + 1].Item1 + M4[i + 1].Item2 * PointMiddle.ToOADate()));
+        double dH12 = Math.Abs( Step_h*( FindPoint(H12.Time_and_Value_List, M1[i * 2]).Value - FindPoint(H12.Time_and_Value_List, M1[i * 2 + 1]).Value));
+        double dH11 = Math.Abs( Step_h*(FindPoint(H11.Time_and_Value_List, M1[i * 2]).Value - FindPoint(H11.Time_and_Value_List, M1[i * 2 + 1]).Value));
+        double dH10 = Math.Abs( Step_h*(FindPoint(H10.Time_and_Value_List, M1[i * 2]).Value - FindPoint(H10.Time_and_Value_List, M1[i * 2 + 1]).Value));
+        double dH9 = Math.Abs( Step_h*(FindPoint(H9.Time_and_Value_List, M1[i * 2]).Value - FindPoint(H9.Time_and_Value_List, M1[i * 2 + 1]).Value));
+        double dH8 = Math.Abs( Step_h*(FindPoint(H8.Time_and_Value_List, M1[i * 2]).Value - FindPoint(H8.Time_and_Value_List, M1[i * 2 + 1]).Value));
         if (dH12 > 1)
         {
           M5.Add(new Tuple<double,double> (DelPo * B_eff,dH12)); 
