@@ -4,14 +4,15 @@
         Title="Calculations" Height="300" Width="377.82">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="193*"/>
-            <ColumnDefinition Width="177*"/>
+            <ColumnDefinition Width="126*"/>
+            <ColumnDefinition Width="59*"/>
         </Grid.ColumnDefinitions>
         <StackPanel Orientation="Vertical" VerticalAlignment="Stretch" Grid.Column="0">
             <Label Content="Главный признак группы" Background="Bisque" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" />
             <Label Content="Главный признак реактивности" Background="Bisque" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" />
             <Label Content="Шаг группы в см" Background="Bisque" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" />
             <Label Content="Бета эфф" Background="Bisque" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" />
+            <Label Content="Минимальное время перемещения группы,c" Background="Bisque" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Height="28" />
             <Button Name="ButtonAccept" Content="Подтвердить" Background="DarkSeaGreen" HorizontalContentAlignment="Center" HorizontalAlignment="Stretch"
                     Click="ButtonAccept_Click"/>
         </StackPanel>
@@ -21,6 +22,7 @@
             <TextBox Text="247." Name="ReactivitiTexBox"  HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Height="25"/>
             <TextBox Text="3.75" Name="ShagTexBox"  HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Height="29"/>
             <TextBox Text="0.74" Name="BetaTexBox"   HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Height="29"/>
+            <TextBox Text="30" Name="MinTimeTexBox"   HorizontalContentAlignment="Center" HorizontalAlignment="Stretch" Height="29"/>
         </StackPanel>
     </Grid>
 </Window>

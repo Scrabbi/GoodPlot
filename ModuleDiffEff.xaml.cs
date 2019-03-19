@@ -94,7 +94,8 @@ namespace GoodPlot
         return;
       }
       }
-      //Автомат
+
+      //=====================================Автомат
       else
       {
         //Заносим точку. Запомнили точку старта.
@@ -105,7 +106,11 @@ namespace GoodPlot
       
     }
 
-    
+    /// <summary>
+    /// Середина движения группы.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void ButtonGroupPoint_Click(object sender, RoutedEventArgs e)
     {
       ButtonGroupPoint.Background = Brushes.MediumSeaGreen;
@@ -118,8 +123,8 @@ namespace GoodPlot
       ////////////Вручную///////////////////////////////////////////////////////////////////////
       if (RadHand.IsChecked == true)
       {
-        //Заносим точку. Запомнили точку конца на верху.
-        Parameter selectedParam = (Parameter)fileacts_ref.Parameters.Find(n => n.KKS.Contains(ReactivitiTexBox.Text));
+        //Заносим точку. 
+        Parameter selectedParam = (Parameter)fileacts_ref.Parameters.Find(n => n.KKS.Contains(GroupTexBox.Text));
         Time_and_Value TAV = MyCalc.FindPoint(selectedParam.Time_and_Value_List, DateTime.FromOADate(Chart_ref.ChartAreas[0].CursorX.Position));
 
         //Заносим параметр. 
@@ -129,6 +134,11 @@ namespace GoodPlot
 
     }
 
+    /// <summary>
+    /// Точку верх -- конец
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void ButtonTopEnd_Click(object sender, RoutedEventArgs e)
     {
       ButtonTopEnd.Background = Brushes.MediumSeaGreen;
@@ -149,15 +159,20 @@ namespace GoodPlot
         ReactivityMassForDE[1] = TAV;
         return;
       }
-
-
-
-      
     }
     
-
+    /// <summary>
+    /// Низ--старт
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void ButtonBotStart_Click(object sender, RoutedEventArgs e)
     {
+    //TimeSpan ts= new TimeSpan(2,3,15);
+    //int t= ts.Hours;
+    //int tg = ts.Minutes;
+    //int tgggggggg = ts.Seconds;
+
       ButtonBotStart.Background = Brushes.MediumSeaGreen;
       //ПРоверка что курсор нормальный, имеет значение. Если курсора вообще нет на графике.
       if (double.IsNaN(Chart_ref.ChartAreas[0].CursorX.Position))
@@ -177,7 +192,11 @@ namespace GoodPlot
         return;
       }
     }
-
+    /// <summary>
+    /// Низ--конец
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     private void ButtonBotEnd_Click(object sender, RoutedEventArgs e)
     {
       ButtonBotEnd.Background = Brushes.MediumSeaGreen;
@@ -191,7 +210,7 @@ namespace GoodPlot
           return;
         }
       
-        //Заносим точку. Запомнили точку конца на верху.
+        //==================Вручную============================Заносим точку. Запомнили точку конца на верху.
         Parameter selectedParam = (Parameter)fileacts_ref.Parameters.Find(n => n.KKS.Contains(ReactivitiTexBox.Text));
         Time_and_Value TAV = MyCalc.FindPoint(selectedParam.Time_and_Value_List, DateTime.FromOADate(Chart_ref.ChartAreas[0].CursorX.Position));
 
@@ -200,6 +219,8 @@ namespace GoodPlot
         return;
       
       }
+
+      //=================================Автомат======================================
       else
       {
         //Заносим точку. Запомнили точку конца.
@@ -231,7 +252,7 @@ namespace GoodPlot
       double d2 = MyCalc.FindPoint(ChosenGroup.Time_and_Value_List, ReactivityMassForDE[2].Time).Value;
       
       
-      dH = d1 - d2;
+      dH = Math.Abs(d1 - d2);
       dH *= MyCalc.Step_h;
       dPdH = dP/dH;
 
@@ -246,22 +267,24 @@ namespace GoodPlot
         dt.Rows.Add(0,//Номер
           "-", //H12
           "-",//H11 
-          fileacts_ref.Parameters.Find(n => n.KKS.Contains("YVM10FG900")).Time_and_Value_List.Find(n => n.Time.Subtract(ReactivityMassForDE[0].Time).Seconds <= 1 && n.Time.Subtract(ReactivityMassForDE[0].Time).Minutes<= 1 && n.Time.Subtract(ReactivityMassForDE[0].Time).Hours <= 1).Value, //H10
-        fileacts_ref.Parameters.Find(n => n.KKS.Contains("YVM10FG909")).Time_and_Value_List.Find(n => n.Time.Subtract(ReactivityMassForDE[0].Time).Seconds <= 1&& n.Time.Subtract(ReactivityMassForDE[0].Time).Minutes <= 1 && n.Time.Subtract(ReactivityMassForDE[0].Time).Hours <= 1).Value, //H9
-        fileacts_ref.Parameters.Find(n => n.KKS.Contains("YVM10FG908")).Time_and_Value_List.Find(n => n.Time.Subtract(ReactivityMassForDE[0].Time).Seconds <= 1&& n.Time.Subtract(ReactivityMassForDE[0].Time).Minutes <= 1&& n.Time.Subtract(ReactivityMassForDE[0].Time).Hours <= 1).Value, //H8
+          MyCalc.FindPoint(fileacts_ref.Parameters.Find(n => n.KKS.Contains("YVM10FG900")).Time_and_Value_List,ReactivityMassForDE[0].Time).Value, //H10
+        MyCalc.FindPoint(fileacts_ref.Parameters.Find(n => n.KKS.Contains("YVM10FG909")).Time_and_Value_List, ReactivityMassForDE[0].Time).Value, //H9
+        MyCalc.FindPoint(fileacts_ref.Parameters.Find(n => n.KKS.Contains("YVM10FG908")).Time_and_Value_List, ReactivityMassForDE[0].Time).Value, //H8
         0, //dH
         0, //dP
         0);//dP / dH
+
         dt.Rows.Add(1,//Номер
           "-", //H12
           "-",//H11 
-          fileacts_ref.Parameters.Find(n => n.KKS.Contains("YVM10FG900")).Time_and_Value_List.Find(n => n.Time.Subtract(ReactivityMassForDE[2].Time).Seconds <= 1 && n.Time.Subtract(ReactivityMassForDE[2].Time).Minutes <= 1 && n.Time.Subtract(ReactivityMassForDE[2].Time).Hours <= 1).Value, //H10
-        fileacts_ref.Parameters.Find(n => n.KKS.Contains("YVM10FG909")).Time_and_Value_List.Find(n => n.Time.Subtract(ReactivityMassForDE[2].Time).Seconds <= 1 && n.Time.Subtract(ReactivityMassForDE[2].Time).Minutes <= 1 && n.Time.Subtract(ReactivityMassForDE[2].Time).Hours <= 1).Value, //H9
-        fileacts_ref.Parameters.Find(n => n.KKS.Contains("YVM10FG908")).Time_and_Value_List.Find(n => n.Time.Subtract(ReactivityMassForDE[2].Time).Seconds <= 1 && n.Time.Subtract(ReactivityMassForDE[2].Time).Minutes <= 1 && n.Time.Subtract(ReactivityMassForDE[2].Time).Hours <= 1).Value, //H8
+          MyCalc.FindPoint(fileacts_ref.Parameters.Find(n => n.KKS.Contains("YVM10FG900")).Time_and_Value_List, ReactivityMassForDE[2].Time).Value, //H10
+        MyCalc.FindPoint(fileacts_ref.Parameters.Find(n => n.KKS.Contains("YVM10FG909")).Time_and_Value_List, ReactivityMassForDE[2].Time).Value, //H9
+        MyCalc.FindPoint(fileacts_ref.Parameters.Find(n => n.KKS.Contains("YVM10FG908")).Time_and_Value_List, ReactivityMassForDE[2].Time).Value, //H8
         dH, //dH
         dP, //dP
         dPdH);
         datagrid_ref.ItemsSource = dt.DefaultView;
+        return;
       }
 
       //Файл НВАЭС-2
@@ -287,19 +310,28 @@ namespace GoodPlot
         dP.ToString("G2"), //dP
         dPdH.ToString("G2"));
         datagrid_ref.ItemsSource = dt.DefaultView;
+        return;
       }
-      else MessageBox.Show("В обработку пока не дабавлен такой файл");
+      if (!ChosenGroup.KKS.Contains("JDA") || !ChosenGroup.KKS.Contains("YVM"))
+          {
+            MessageBox.Show("В обработку пока не дабавлен такой файл");
+            return;
+          } 
       }
 
-
+      //===========================================АВТОМАТ
       if (RadAuto.IsChecked==true)
       {
         //Найдем М1. Набор перемещений группы (стоять-опуститься, стоять-опуститься, ...)
         List<DateTime> M1 = new List<DateTime>();
         M1 = MyCalc.GiveM1(Start, End);
+        //Группа иногда перемещается шажками без непрерывности. Отсеем пары значений такие, где мало времени между перемещениями.
+        List<DateTime> M1_improove = new List<DateTime>();
+        M1_improove = MyCalc.GiveM1_improove(M1);
+
         //М2. В начало и конец дабавляем точку старта и конца.
         List<DateTime> M2 = new List<DateTime>();
-        M2.AddRange(M1);
+        M2.AddRange(M1_improove);
         M2.Insert(0,Start);
         M2.Add(End);
         //Отступить 33% от положения, когда группа опустилась только.
@@ -310,7 +342,7 @@ namespace GoodPlot
         M4 = MyCalc.Give_ab_Koeffs_M4(M3);
         //Получить приращения
         List<Tuple<double, double>> M5 = new List<Tuple<double, double>>();
-        M5 = MyCalc.GiveDelPo_M5(M4,M1);
+        M5 = MyCalc.GiveDelPo_M5(M4, M1_improove);
         //Получить массив (x,y) , по которому рисовать будем сглаживающие прямые
         M6 = new List<Tuple<double, double>>();
         M6 = MyCalc.GiveXYLine_M6(M2, M4);
@@ -323,11 +355,11 @@ namespace GoodPlot
         dt.Columns.Add("Номер"); dt.Columns.Add("Н12, %"); dt.Columns.Add("Н11, %"); dt.Columns.Add("Н10, %"); dt.Columns.Add("Н9, %"); dt.Columns.Add("Н8, %"); dt.Columns.Add("dН, см"); dt.Columns.Add("dρ, %"); dt.Columns.Add("dρ:dН, %:см"); dt.Columns.Add("Δρ, %");
         //Первая строчка
         dt.Rows.Add(0,//Номер
-          MyCalc.FindPoint(MyCalc.H12.Time_and_Value_List, M1[0]).Value, //H12
-          MyCalc.FindPoint(MyCalc.H11.Time_and_Value_List, M1[0]).Value,//H11 
-          MyCalc.FindPoint(MyCalc.H10.Time_and_Value_List, M1[0]).Value, //H10
-          MyCalc.FindPoint(MyCalc.H9.Time_and_Value_List, M1[0]).Value, //H9
-          MyCalc.FindPoint(MyCalc.H8.Time_and_Value_List, M1[0]).Value, //H8
+          MyCalc.FindPoint(MyCalc.H12.Time_and_Value_List, M1_improove[0]).Value, //H12
+          MyCalc.FindPoint(MyCalc.H11.Time_and_Value_List, M1_improove[0]).Value,//H11 
+          MyCalc.FindPoint(MyCalc.H10.Time_and_Value_List, M1_improove[0]).Value, //H10
+          MyCalc.FindPoint(MyCalc.H9.Time_and_Value_List, M1_improove[0]).Value, //H9
+          MyCalc.FindPoint(MyCalc.H8.Time_and_Value_List, M1_improove[0]).Value, //H8
         0, //dH
         0, //dP
         0,//dP / dH
@@ -338,11 +370,11 @@ namespace GoodPlot
         {
         
           dt.Rows.Add(i+1,//Номер
-          MyCalc.FindPoint(MyCalc.H12.Time_and_Value_List,M1[i*2+1]).Value, //H12
-          MyCalc.FindPoint(MyCalc.H11.Time_and_Value_List, M1[i * 2 + 1]).Value,//H11 
-          MyCalc.FindPoint(MyCalc.H10.Time_and_Value_List, M1[i * 2 + 1]).Value, //H10
-          MyCalc.FindPoint(MyCalc.H9.Time_and_Value_List, M1[i * 2 + 1]).Value, //H9
-          MyCalc.FindPoint(MyCalc.H8.Time_and_Value_List, M1[i * 2 + 1]).Value, //H8
+          MyCalc.FindPoint(MyCalc.H12.Time_and_Value_List, M1_improove[i * 2 + 1]).Value, //H12
+          MyCalc.FindPoint(MyCalc.H11.Time_and_Value_List, M1_improove[i * 2 + 1]).Value,//H11 
+          MyCalc.FindPoint(MyCalc.H10.Time_and_Value_List, M1_improove[i * 2 + 1]).Value, //H10
+          MyCalc.FindPoint(MyCalc.H9.Time_and_Value_List, M1_improove[i * 2 + 1]).Value, //H9
+          MyCalc.FindPoint(MyCalc.H8.Time_and_Value_List, M1_improove[i * 2 + 1]).Value, //H8
           M5[i].Item2,//dH
           M5[i].Item1, //dP
           M5[i].Item1 / ( M5[i].Item2),//dP / dH

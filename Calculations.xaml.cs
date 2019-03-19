@@ -353,6 +353,30 @@ namespace GoodPlot
       return M1;
     }
     /// <summary>
+    /// Улучшает в том смысле, что убирает лишние маленькие перемещения, непригодные для обработки
+    /// </summary>
+    /// <param name="?"></param>
+    /// <returns></returns>
+    public List<DateTime> GiveM1_improove(List<DateTime> m1)
+    {
+    List<DateTime> M1_improove = new List<DateTime>();
+    M1_improove.Add(m1[0]);
+    
+    for (int i = 0; i < m1.Count - 1; i += 1)
+    {
+      
+      if (m1[i + 1].Subtract(m1[i]).TotalSeconds> Convert.ToInt32(MinTimeTexBox.Text))
+      {
+        M1_improove.Add(m1[i]);
+        M1_improove.Add(m1[i+1]);
+      }
+    }
+    M1_improove.Add(m1[m1.Count-1]);
+
+
+    return M1_improove;
+    }
+    /// <summary>
     /// Получить лист с отступами в 33% у каждой точки через одну, начиная с 3-й точки.
     /// </summary>
     /// <param name="M"></param>
