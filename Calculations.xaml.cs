@@ -24,6 +24,7 @@ namespace GoodPlot
   {
     public  double Step_h = 3.52;
     public double B_eff = 0.74;
+    public int Min_TimeReg=30;
     public static string ReactKKSMainPart = "247.";
     public static string GroupKKSMainPart = "YVM";
     public static string GroupKKSMainPart12 = "-----";
@@ -65,6 +66,9 @@ namespace GoodPlot
         Step_h = Convert.ToDouble(FileRead.ReadLine());
         //Считать 4 линию из файла.
         B_eff = Convert.ToDouble(FileRead.ReadLine());
+        //Считать 5 линию из файла.
+        Min_TimeReg = Convert.ToInt32(FileRead.ReadLine());
+
         FileRead.Close();
       }
       catch (Exception)
@@ -365,7 +369,7 @@ namespace GoodPlot
     for (int i = 0; i < m1.Count - 1; i += 1)
     {
       
-      if (m1[i + 1].Subtract(m1[i]).TotalSeconds> Convert.ToInt32(MinTimeTexBox.Text))
+      if (m1[i + 1].Subtract(m1[i]).TotalSeconds> Min_TimeReg)
       {
         M1_improove.Add(m1[i]);
         M1_improove.Add(m1[i+1]);
@@ -532,6 +536,7 @@ namespace GoodPlot
         streamWriter.WriteLine(ReactivitiTexBox.Text);//Главный признак реактивности.
         streamWriter.WriteLine(ShagTexBox.Text);
         streamWriter.WriteLine(BetaTexBox.Text);
+        streamWriter.WriteLine(MinTimeTexBox.Text);
         streamWriter.Close();
     }
     
