@@ -161,12 +161,15 @@ namespace GoodPlot
             {
               return "APIK_Nvaes";
             }
-
+            FileStream = new StreamReader(File_Full_Name, Encoding.GetEncoding("UTF-8"));
+            File_line = FileStream.ReadLine();
             //СВБУ НВАЭС
-            if (File_line.Contains("РќРІРђР­РЎ2  "))
+            if (File_line.Contains("СВБУ"))
             {
               return "SVBU_NVAES";
             }
+            FileStream = new StreamReader(File_Full_Name, Encoding.GetEncoding("Windows-1251"));
+            File_line = FileStream.ReadLine();
             if (File_line.Contains("TypeID") )
             {
               return "SvrkNvaes";
