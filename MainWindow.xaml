@@ -132,7 +132,7 @@ Icon="PerfCenterCpl.ico"
                         </ListView.View>
                     </ListView>
                     <!--Лист списка параметров-->
-                    <ListView   x:Name="List_Parameters" Grid.RowSpan="2"  Grid.Column="0" Grid.ColumnSpan="2"  AllowDrop="True" MouseDoubleClick="List_Parameters_MouseDoubleClick" MouseLeftButtonUp="List_Parameters_MouseLeftButtonUp">
+                    <ListView SelectionMode="Multiple"  x:Name="List_Parameters" Grid.RowSpan="2"  Grid.Column="0" Grid.ColumnSpan="2"  AllowDrop="True" MouseDoubleClick="List_Parameters_MouseDoubleClick" MouseLeftButtonUp="List_Parameters_MouseLeftButtonUp">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn  DisplayMemberBinding="{Binding KKS, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Width="150" Header="KKS параметра" />
@@ -146,6 +146,7 @@ Icon="PerfCenterCpl.ico"
                                 <MenuItem Header="Построить/правая ось" Name="bRight"  Click="BuildRight_Click"></MenuItem>
                                 <MenuItem Header="Построить/вторая левая ось"  Name="bsLeft" Click="bsLeft_Click"></MenuItem>
                                 <MenuItem Header="Построить/вторая правая ось" Name="bsRight" Click="bsRight_Click"></MenuItem>
+                                <MenuItem Header="Сохрани меня в .csv" Name="ToCSV" Click="ToCSV_Click"></MenuItem>
                             </ContextMenu>
                         </ListView.ContextMenu>
                     </ListView>

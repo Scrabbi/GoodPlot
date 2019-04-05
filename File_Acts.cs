@@ -99,10 +99,15 @@ namespace GoodPlot
                 Parameters.AddRange(this.Load_ApikNVAES6(File_Full_Name));
                 ListFiles.Add(new OneFile { filename = File_Full_Name, ParametersOF = Load_ApikNVAES6(File_Full_Name) });
                 break;
-              case "SVBU_NVAES":
+              case "SVBU_NVAES_6":
                 //Load_ApikNVAES6 – считывает файл данных НВАЭС-6 с АПИК.
                 Parameters.AddRange(this.Load_SvbuNVAES(File_Full_Name));
                 ListFiles.Add(new OneFile { filename = File_Full_Name, ParametersOF = Load_SvbuNVAES(File_Full_Name) });
+                break;
+              case "SVBU_NVAES_7":
+                //Load_ApikNVAES6 – считывает файл данных НВАЭС-6 с АПИК.
+                Parameters.AddRange(this.Load_SvbuNVAES_7(File_Full_Name));
+                ListFiles.Add(new OneFile { filename = File_Full_Name, ParametersOF = Load_SvbuNVAES_7(File_Full_Name) });
                 break;
               case "SvrkNvaes":
                 //Load_ApikNVAES6 – считывает файл данных НВАЭС-6 с АПИК.
@@ -164,10 +169,19 @@ namespace GoodPlot
             FileStream = new StreamReader(File_Full_Name, Encoding.GetEncoding("UTF-8"));
             File_line = FileStream.ReadLine();
             //СВБУ НВАЭС
-            if (File_line.Contains("СВБУ"))
+            if (File_line.Contains("CWH") && !File_line.Contains("СВБУ"))
             {
-              return "SVBU_NVAES";
+              return "SVBU_NVAES_6";
             }
+            //СВБУ НВАЭС-7
+            
+            FileStream = new StreamReader(File_Full_Name, Encoding.UTF8);
+            File_line = FileStream.ReadLine();
+            if (File_line.Contains("СВБУ") && File_line.Contains("CWH"))
+            {
+              return "SVBU_NVAES_7";
+            }
+
             FileStream = new StreamReader(File_Full_Name, Encoding.GetEncoding("Windows-1251"));
             File_line = FileStream.ReadLine();
             if (File_line.Contains("TypeID") )
@@ -475,6 +489,115 @@ namespace GoodPlot
              return Parameters0;
             
         }
+
+        /// <summary>
+        /// Метод, производящий обработку файла данных, снятого с СВБУ НВАЭС-7
+        /// </summary>
+        private List<Parameter> Load_SvbuNVAES_7(string File_Full_Name)
+        {
+          //Создаем потому что  добавлять будем файл. 
+          List<Parameter> Parameters0 = new List<Parameter>();
+          //Считать файл. Саздаем поток чтения. Применяем правильную кодировку.
+          StreamReader FileRead = new StreamReader(File_Full_Name, Encoding.UTF8);
+          //Список. Хранит разбитую линию файла. 
+          List<string> File_line_Slices = new List<string>();
+          //Линия файла. 
+          string File_line = FileRead.ReadLine();
+
+          //===============================Этап 1: составим список параметоров.  ========================================      
+          //Переходим к данным в файле
+          int j = 0;
+          while (j < 5)
+          {
+            File_line = FileRead.ReadLine();
+            j++;
+          }
+
+          //Список параметров
+          while (File_line != null)
+          {
+              //Линиия разбивается на кусочки.
+            File_line_Slices = File_line.Split('\t').ToList();
+            
+            //ПРоверим, имеется ли уже параметр
+            bool isIn = false;
+            foreach (Parameter item in Parameters0)
+            {
+              if (item.KKS == File_line_Slices[1])
+              {
+                isIn = true;
+              }
+            }
+            //Если не было , добавим
+            if (!isIn)
+            {
+              Parameters0.Add(new Parameter { KKS = File_line_Slices[1], Description = File_line_Slices[5], Dimention = File_line_Slices[3] });
+            }
+            
+            File_line = FileRead.ReadLine();
+          } 
+
+          //Закрытие потока
+          FileRead.Close();
+
+          //--------------------------------Этап 2. К параметрам добавим значения.===============================
+          //Считать файл. Саздаем поток чтения. Применяем правильную кодировку.
+          StreamReader FileRead2 = new StreamReader(File_Full_Name,Encoding.UTF8);
+          //Линия файла. Переходим на 5.
+          string File_line2 = FileRead2.ReadLine();
+
+          int f = 0;
+          while (f < 4)
+          {
+            File_line2 = FileRead2.ReadLine();
+            f++;
+          }
+
+          //Читаем все строки файла
+          while (File_line2 != null)
+          {
+            //Линиия разбивается на кусочки.
+            File_line_Slices = File_line2.Split('\t').ToList();
+
+                //К параметрам--время.
+            foreach (Parameter item in Parameters0)
+            {
+              if (item.KKS == File_line_Slices[1])
+              {
+              
+              List<string> Str = File_line_Slices[0].Split(' ').ToList();
+              //Время получаем
+              DateTime Dt = DateTime.Parse(Str[0]) + TimeSpan.Parse(CustomConvert(Str[1]));
+
+             
+
+                item.Time_and_Value_List.Add(new Time_and_Value { Time = Dt, Value = Convert.ToDouble(CustomConvert(File_line_Slices[2])), IsOk = File_line_Slices[4] });
+              }
+            }
+
+            
+
+            //К сделующей строке
+            File_line2 = FileRead2.ReadLine();
+          }
+          FileRead2.Close();
+
+
+          foreach (Parameter item in Parameters)
+          {
+            foreach (Parameter item0 in Parameters0)
+            {
+              if (item.KKS == item0.KKS)
+              {
+                item0.KKS += "AOPNvaes_Copy";
+              }
+            }
+          }
+          return Parameters0;
+
+        }
+
+
         
                 //Чтение СВРК с НВАЭС-6
         /// <summary>
@@ -721,12 +844,10 @@ namespace GoodPlot
               {
                   Parameters0[i-2].Time_and_Value_List.Add(new Time_and_Value{Time=CurrTime,Value=Convert.ToDouble( CustomConvert(File_line_Slices[i]))});    
               }
-            
             //К сделующей строке
             File_line2 = FileRead2.ReadLine();
           }
           FileRead2.Close();
-
 
           foreach (Parameter item in Parameters)
           {
@@ -739,8 +860,6 @@ namespace GoodPlot
             }
           }
           return Parameters0;
-
-
         }
         
         private void Load_SvrkNvaesNames(string File_Full_Name)

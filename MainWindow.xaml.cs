@@ -1167,6 +1167,40 @@ namespace GoodPlot
                Chart1.Series.Clear();
                   
         }
+        /// <summary>
+        /// Сохраняем набор параметров выделенных в csv-файл.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ToCSV_Click(object sender, RoutedEventArgs e)
+        {
+          SaveFileDialog saveFileDialog = new SaveFileDialog();
+          saveFileDialog.Filter = "Текстовый документ (*.txt)|*.txt|Все файлы (*.*)|*.*";
+
+          if (saveFileDialog.ShowDialog() == true)
+                {
+                  //Создаем поток записи
+                  System.IO.StreamWriter streamWriter = new System.IO.StreamWriter(saveFileDialog.FileName);
+                  //Создаем массив, куда запишем линии файла
+                  List<string> Myfile = new List<string>();
+                
+                  foreach (Parameter item in List_Parameters.SelectedItems)
+                  {
+                    Myfile.Add(item.KKS + " " + item.Description + " " + item.Dimention + ";" + "Time" + ";" + "Value" );
+                    foreach (Time_and_Value item2 in item.Time_and_Value_List)
+                    {
+                     Myfile.Add(" " + ";" + item2.Time + ";" + item2.Value);
+                    }
+                    
+
+	                 }
+                  for (int i = 0; i < length; i++)
+                  {
+                    
+                  }
+                  streamWriter.Close();  
+	               }
+         }
 
 
       
