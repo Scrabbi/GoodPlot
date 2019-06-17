@@ -6,26 +6,22 @@ xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
 xmlns:dvc="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
 xmlns:local="clr-namespace:GoodPlot"  x:Class="GoodPlot.MainWindow"
 Icon="PerfCenterCpl.ico"
-    Title="Paint_it!" Height="424.373" Width="692.604">
+    Title="Paint_it!" Height="449.373" Width="692.604">
     <!--основное поле-->
-    <Grid Margin="0,0,-8,-2">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="526*"/>
-            <ColumnDefinition Width="167*"/>
-        </Grid.ColumnDefinitions>
+    <Grid Margin="0,0,2,-2">
         <!--2 строки, в первой меню программы, во второй вкладки-->
         <Grid.RowDefinitions>
             <RowDefinition Height="25*"/>
             <RowDefinition Height="378*"/>
         </Grid.RowDefinitions>
         <!--меню программы-->
-        <Menu Name="Main_Menu" Grid.Row="0" Grid.ColumnSpan="2" MinHeight="15" Margin="0,0,10,0">
+        <Menu Name="Main_Menu" Grid.Row="0"  MinHeight="15" Margin="0,0,10,0">
             <!--открывать файл-->
             <MenuItem Header="Начало работы" Name="StartWork">
                 <MenuItem Header="Открыть" x:Name="OpenFile" Click="OpenFile_MenuItem_Click"/>
                 <MenuItem Header="Добавить" x:Name="AddFile" Click="AddFile_Click"/>
             </MenuItem>
-
+            <!--тип графика-->
             <MenuItem Header="Тип графика" RenderTransformOrigin="0.5,0.5">
                 <MenuItem.RenderTransform>
                     <TransformGroup>
@@ -38,6 +34,7 @@ Icon="PerfCenterCpl.ico"
                 <MenuItem Header="1 график, 4 оси"  Name="One_GraphButton" x:FieldModifier="public" Click="One_Graph_Click"/>
                 <MenuItem Header="Друг под другом, 2 оси"  Name="Many_GraphButton" Click="Many_Graph_Click"/>
             </MenuItem>
+            <!--удаление элементов-->
             <MenuItem Header="Удаление" RenderTransformOrigin="0.5,0.5">
                 <MenuItem.RenderTransform>
                     <TransformGroup>
@@ -53,6 +50,7 @@ Icon="PerfCenterCpl.ico"
                 <MenuItem Header="Удалить все надписи и линии" x:Name="DelAllTitles" Click="DelAllTitles_Click"/>
                 <MenuItem Header="Удалить график параметра"  Name="ButtonClearLines" Click="ButtonClearLines_Click"/>
             </MenuItem>
+
             <MenuItem Header="Сохранить изображение" RenderTransformOrigin="0.5,0.5">
                 <MenuItem.RenderTransform>
                     <TransformGroup>
@@ -64,11 +62,13 @@ Icon="PerfCenterCpl.ico"
                 </MenuItem.RenderTransform>
                 <MenuItem Header="Сохранить изображение" x:Name="SaveImage" Click="SaveImage_Click"/>
             </MenuItem>
+
             <MenuItem Header="Печать">
                 <MenuItem Header="Настройка страницы" x:Name="PageOptions" Click="PageOptions_Click"/>
                 <MenuItem Header="Печать – выбор принтера" x:Name="PrintOptions" Click="PrintOptions_Click"/>
                 <MenuItem Header="Печать – предварительный просмотр" x:Name="PreviewPrint" Click="PreviewPrint_Click"/>
             </MenuItem>
+
             <MenuItem Header="Курсор" RenderTransformOrigin="0.5,0.5">
                 <MenuItem.RenderTransform>
                     <TransformGroup>
@@ -80,20 +80,25 @@ Icon="PerfCenterCpl.ico"
                 </MenuItem.RenderTransform>
                 <MenuItem Header="Убрать" x:Name="DelKursorButton" Click="DelKursorButton_Click"/>
             </MenuItem>
+
             <MenuItem Header="Файл" Name="File_Menu">
                 <MenuItem Header="Сахранить" x:Name="SaveMenuItem" Click="SaveMenuItem_Click"/>
                 <MenuItem Header="Загрузить" x:Name="LoadMenuItem" Click="LoadMenuItem_Click"/>
                 <MenuItem Header="Начать заново" x:Name="NewBeginning" Click="NewBeginning_Click"/>
                 <MenuItem Header="СВРК:подгрузить обозначения" x:Name="LoadSvrkNames" Click="LoadSvrkNames_Click"/>
             </MenuItem>
+
             <MenuItem Header="Расчеты" Name="Calculations_Menu">
                 <MenuItem Header="Дифф. эфф." x:Name="DiffEffModule" Click="DiffEffModule_Click"/>
                 <MenuItem Header="Значения" x:Name="Values_Module" Click="Values_Module_Click"/>
                 <MenuItem Header="Настройки расчета" x:Name="CalculOptions" Click="CalculOptions_Click"/>
             </MenuItem>
+
         </Menu>
-        <!--вкладки-->
-        <TabControl x:Name="TabCont1" Grid.Row="1" Grid.ColumnSpan="2" >
+
+        <!--+++++++++++++++++++++++++++++++++ВКЛАДККИ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++-->
+
+        <TabControl x:Name="TabCont1" Grid.Row="1">
             <!--Первая вкладка, параметры и значения-->
             <TabItem x:Name="Points_Tab" >
                 <!--заголовок "Показания датчиков"-->
@@ -103,26 +108,26 @@ Icon="PerfCenterCpl.ico"
                         <TextBlock Margin="3"><Run Text="Показания датчиков"/></TextBlock>
                     </StackPanel>
                 </TabItem.Header>
-                <!--создадим 3 столбца, посередне передвижной, в первом список параметров, вов втором значения параметров-->
+                <!--создадим 4 столбца, посередне передвижной, в первом и втором список параметров, вов 4 значения параметров-->
                 <Grid>
                     <!--три колонки-->
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="187*" />
                         <ColumnDefinition Width="41*"/>
-                        <ColumnDefinition Width="Auto" MinWidth="3" />
+                        <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="447*" />
-                        <ColumnDefinition Width="5*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition  ></RowDefinition>
-                        <RowDefinition  Height="90"> </RowDefinition>
+                        <RowDefinition  Height="90"></RowDefinition>
                     </Grid.RowDefinitions>
 
                     <!--плавающая центральная-->
-                    <GridSplitter Grid.Column="2" Grid.RowSpan="2" ShowsPreview="False" Width="3" 
+                    <GridSplitter Grid.Column="2" Grid.RowSpan="2"  Width="3" 
                       HorizontalAlignment="Center" VerticalAlignment="Stretch" />
+
                     <!--Лист значений параметра выбранного-->
-                    <ListView   x:Name="Points_List" Grid.Column="3" Grid.Row="0" AllowDrop="True" Margin="0,0,0,90" Grid.RowSpan="2"  >
+                    <ListView   x:Name="Points_List" Grid.Column="3" Grid.Row="0"  >
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn  DisplayMemberBinding="{Binding Time,Mode=OneWay,UpdateSourceTrigger=PropertyChanged,StringFormat='HH:mm:ss.fff yyyy-MM-dd'}" Width="150" Header="Время" />
@@ -130,9 +135,15 @@ Icon="PerfCenterCpl.ico"
                                 <GridViewColumn  DisplayMemberBinding="{Binding IsOk,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Width="100" Header="Достоверность" />
                             </GridView>
                         </ListView.View>
+                        <ListView.ContextMenu>
+                            <ContextMenu Closed="ContextMenu_Closed" >
+                                <MenuItem Header="Удалить" Name="Delete"  Click="Delete_Click"></MenuItem>
+                            </ContextMenu>
+                        </ListView.ContextMenu>
                     </ListView>
+
                     <!--Лист списка параметров-->
-                    <ListView SelectionMode="Multiple"  x:Name="List_Parameters" Grid.RowSpan="2"  Grid.Column="0" Grid.ColumnSpan="2"  AllowDrop="True" MouseDoubleClick="List_Parameters_MouseDoubleClick" MouseLeftButtonUp="List_Parameters_MouseLeftButtonUp">
+                    <ListView SelectionMode="Extended"  x:Name="List_Parameters" Grid.RowSpan="2"  Grid.Column="0" Grid.ColumnSpan="2"  MouseDoubleClick="List_Parameters_MouseDoubleClick" MouseLeftButtonUp="List_Parameters_MouseLeftButtonUp">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn  DisplayMemberBinding="{Binding KKS, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Width="150" Header="KKS параметра" />
@@ -141,7 +152,7 @@ Icon="PerfCenterCpl.ico"
                             </GridView>
                         </ListView.View>
                         <ListView.ContextMenu>
-                            <ContextMenu>
+                            <ContextMenu Closed="ContextMenu_Closed" >
                                 <MenuItem Header="Построить/левая ось" Name="bLeft"  Click="BuildLeft_Click"></MenuItem>
                                 <MenuItem Header="Построить/правая ось" Name="bRight"  Click="BuildRight_Click"></MenuItem>
                                 <MenuItem Header="Построить/вторая левая ось"  Name="bsLeft" Click="bsLeft_Click"></MenuItem>
@@ -150,25 +161,26 @@ Icon="PerfCenterCpl.ico"
                             </ContextMenu>
                         </ListView.ContextMenu>
                     </ListView>
+
+                    <!--сдвиг по времени-->
                     <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Stretch"  >
-                        <StackPanel Grid.Row="1" Orientation="Horizontal"> 
-                        <Label   Content="Выбор файла" Grid.Column="0" Background="Bisque"   />
+                        <StackPanel Orientation="Horizontal">
+                            <Label   Content="Выбор файла" Grid.Column="0" Background="Bisque"   />
                             <ComboBox  x:Name="ComBoxWahtFile"  Width="175" />
                         </StackPanel>
-                        
+
                         <StackPanel Orientation="Horizontal">
                             <Label Name="LabelSecs"   Content="Сдвиг на сколько секунд?" Grid.Column="0" Background="Bisque"  />
                             <TextBox Text="3600"  x:Name="TextBoxTime"  Width="175" />
                         </StackPanel>
+
                         <Button x:Name="ButtonShift" Click="ButtonShift_Click" Background="LightGray"  Content="Сдвинуть" />
                     </StackPanel>
-
-
-
-
                 </Grid>
             </TabItem>
-            <!--Вторая вкладка, график-->
+
+            <!--+++++++++++++++++++++++++Вторая вкладка, график+++++++++++++++++++++++++++++++++++++++++-->
+
             <TabItem x:Name="Plot_Tab">
                 <!--Заголовок-->
                 <TabItem.Header>
@@ -177,43 +189,43 @@ Icon="PerfCenterCpl.ico"
                         <TextBlock Margin="3"><Run Text="График"/></TextBlock>
                     </StackPanel>
                 </TabItem.Header>
+
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="82*"/>
-                        <ColumnDefinition Width="601*"/>
+                        <ColumnDefinition Width="53*" />
+                        <ColumnDefinition Width="0*" />
+                        <ColumnDefinition Width="Auto"    />
+                        <ColumnDefinition Width="470*"/>
                     </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="283*" />
-                        <RowDefinition Height="23*"/>
-                    </Grid.RowDefinitions>
-                    <!--Добавляем элемент winforms MS Chart. Строка с графико, номер 2 строка -->
-                    <WindowsFormsHost Grid.Row="1" HorizontalAlignment="Stretch" Grid.ColumnSpan="2">
+                    <!--Раздделители-->
+                    <GridSplitter Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="5"   />
+                    
+
+                    <!--Добавляем элемент winforms MS Chart. -->
+                    <WindowsFormsHost x:Name="ChartHost"  Grid.Column="3"   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"   >
                         <dvc:Chart x:Name="Chart1" x:FieldModifier="public"/>
                     </WindowsFormsHost>
-                    <!--Строка с кнопками, номер 1 строка-->
-                    <StackPanel Grid.Row="0" Orientation="Horizontal" Grid.ColumnSpan="2">
+
+                    <!--Столбец с кнопками-->
+                    <StackPanel Grid.Column="0" Orientation="Vertical"  Grid.ColumnSpan="2" >
                         <TextBox  x:Name="TextBox_Arena_N" Height="20" Text="Area# 1" 
                                    Width="59" Margin="0,2"  />
-
-
-                        <Button Name="ButtonDrowLine" Background="LightGray" Click="ButtonDrowLine_Click" Content="Нарисовать линию"/>
-                        <Button Name="ButtonDrow_Title" Background="LightGray" Click="ButtonDrowTitle_Click" Content="Добавить подпись"/>
-                    </StackPanel>
-                    <!--Строка с координатами, номер 3 строка-->
-                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,5,0,-5" Grid.ColumnSpan="2">
-                        <Label Content="Xcoord" />
-                        <Label Name="LabelXcoord" Content="X" />
-                        <Label Content="Ycoord" />
-                        <Label Name="LabelYcoord" Content="Y" />
-                        <Label Content="Ось для курсора" />
-                        <ComboBox Name="AreasList" Width="88" SelectionChanged ="AreasList_Selected" ItemsSource="{Binding}">
-
+                        <Button Name="ButtonDrowLine" Background="LightGray" Click="ButtonDrowLine_Click" Content="Линия"/>
+                        <Button Name="ButtonDrow_Title" Background="LightGray" Click="ButtonDrowTitle_Click" Content="Подпись"/>
+                        <!--координаты-->
+                        <Label Content="X" />
+                        <Label Name="LabelXcoord"  Content="" />
+                        <Label Content="Y" />
+                        <Label Name="LabelYcoord" Content="" />
+                        <Label Content="Ось" />
+                        <ComboBox Name="AreasList"  SelectionChanged ="AreasList_Selected" ItemsSource="{Binding}">
                         </ComboBox>
                     </StackPanel>
 
+                    
                 </Grid>
             </TabItem>
+
             <TabItem x:Name="RezultCurrent_Tab">
                 <!--Заголовок-->
                 <TabItem.Header>

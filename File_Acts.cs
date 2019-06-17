@@ -127,6 +127,15 @@ namespace GoodPlot
 
                 ListFiles.Add(new OneFile { filename = File_Full_Name, ParametersOF = TempPars });
                 break;
+              case "ProgramFile":
+
+                Parameters.Add(this.Load_PragramFile(File_Full_Name));
+                //Параметр один тут. сделаем список из 1
+                List<Parameter> MyPar = new List<Parameter>();
+                MyPar.Add(Load_PragramFile(File_Full_Name));
+                ListFiles.Add(new OneFile { filename = File_Full_Name, ParametersOF = MyPar });
+                break;
+
 
               //Дозагрузка обозначений параметров
               case "SvrkNamesNvaesFile":
@@ -201,6 +210,11 @@ namespace GoodPlot
               }
               else return "NULL";
             }
+            //Свой файл.
+            if (File_line.Contains("Program_file"))
+            {
+              return "ProgramFile"; 
+            }
             //Считать файл. Саздаем поток чтения. Применяем правильную кодировку.
             FileStream = new StreamReader(File_Full_Name); 
             //Считать линию из файла.
@@ -218,6 +232,7 @@ namespace GoodPlot
               return "AOPNvaes";
             }
                       
+
 
             return "NULL";
         }
@@ -861,7 +876,69 @@ namespace GoodPlot
           }
           return Parameters0;
         }
-        
+
+        //Чтение фала, создаваемого самой программой
+        /// <summary>
+        /// Метод, производящий обработку файла данных, создаваемого самой программой
+        /// </summary>
+        private Parameter Load_PragramFile(string File_Full_Name)
+        {
+          
+          //Считать файл. Саздаем поток чтения. Применяем правильную кодировку.
+          StreamReader FileRead = new StreamReader(File_Full_Name, Encoding.GetEncoding("Windows-1251"));
+          //Список. Хранит разбитую линию файла.
+          List<string> File_line_Slices = new List<string>();
+          //Считать линию 1 из файла. 
+          string File_line = "";
+          File_line = FileRead.ReadLine();
+          
+          //Записываем разбитую линию в список по кускам. Напоминание: здесь названия параметров.
+          File_line_Slices = File_line.Split(';').ToList();
+          //Записываем параметр в список. 
+          
+            Parameter param = new Parameter();
+            param.KKS = File_line_Slices[0];
+            param.Description = "-";
+            param.Dimention = "-";
+
+            //Первую строку файла с названием считали! Дочитаем до 2, где мы встанем перед началом данных
+            File_line = FileRead.ReadLine();
+          
+          //Считываем файл. Записываем данные. Признак конца файла – пустая строка.
+          while (File_line != null)
+          {
+            string[] tempdouble = File_line.Split(';').ToArray(); 
+             
+            Time_and_Value TAD = new Time_and_Value();
+              TAD.Time = DateTime.Parse(tempdouble[0]);
+              TAD.IsOk = tempdouble[2];
+              TAD.Value = Double.Parse(tempdouble[1]);
+            
+                param.Time_and_Value_List.Add(TAD);
+
+            
+            
+            //Линия из файла очередная.
+            File_line = FileRead.ReadLine();
+          }
+          //Закрытие потока
+          FileRead.Close();
+
+
+          foreach (Parameter item in Parameters)
+          {
+
+            if (item.KKS == param.KKS)
+              {
+                param.KKS += "Prog_Copy";
+              }
+            
+          }
+          return param;
+
+        }
+
+
         private void Load_SvrkNvaesNames(string File_Full_Name)
         {
           //Считать файл. Саздаем поток чтения. Применяем правильную кодировку.

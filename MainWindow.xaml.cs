@@ -12,6 +12,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Win32;
 using System.Windows.Forms.DataVisualization.Charting;
+using System.IO;
 
 
 
@@ -31,7 +32,7 @@ namespace GoodPlot
         /// <summary>
         /// Акт. экз. SaveLoadClass
         /// </summary>
-        SaveLoadClass SLC;// = new SaveLoadClass(chart1);
+        
         /// <summary>
         /// Активный экземпляр класса File_Acts.
         /// </summary>
@@ -64,7 +65,6 @@ namespace GoodPlot
         public MainWindow()
         {
           Chart_Acts_One = new Chart_Acts();
-          SLC = new SaveLoadClass(Chart1);
           
             InitializeComponent();
             
@@ -108,12 +108,16 @@ namespace GoodPlot
 
             //Назначим "горячие" КЛАВИШИ.
             Chart1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Chart1_KeyDown);
+            //Клавиши для формы
+            this.KeyDown += MainWindow_KeyDown;
 
             //Координаты курсора
             Chart1.CursorPositionChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(chart1_CursorPositionChanged);
 
           
         }
+
+        
         /// <summary>
         /// Запрещает перемещать элемент графика
         /// </summary>
@@ -298,14 +302,14 @@ namespace GoodPlot
             //Магия
             dynamic selectedItem = List_Parameters.SelectedItem;
 
-            string tempKKS;
+            
             //Проверка потому что не успевает прогрузиться список, и тогда ошибка выбора элемента,
             //т.к. нет выбора элемента.
             if (selectedItem != null)
             {
-                tempKKS = selectedItem.KKS;
+               
                 // Добавим линию, и назначим ее в созданную область по имени текста в TextBox_Arena_N
-                Chart_Acts_One.AddLine(Chart1, tempKKS, TextBox_Arena_N.Text, File_Acts_One, "right","No");
+                Chart_Acts_One.AddLine(Chart1,List_Parameters, List_Parameters.SelectedItems, TextBox_Arena_N.Text, File_Acts_One, "right", "No");
             }
             if (selectedItem == null)
             {
@@ -325,16 +329,13 @@ namespace GoodPlot
         {
             //Магия
             dynamic selectedItem = List_Parameters.SelectedItem;
-            string tempKKS;
+            
             //Проверка потому что не успевает прогрузиться список, и тогда ошибка выбора элемента,
             //т.к. нет выбора элемента.
             if (selectedItem != null)
             {
-                tempKKS = selectedItem.KKS;
-                // Добавим линию, и назначим ее в созданную область по имени текста в TextBox_Arena_N
-
-                Chart_Acts_One.AddLine(Chart1, tempKKS, TextBox_Arena_N.Text, File_Acts_One, "left", "No");
-
+               // Добавим линию, и назначим ее в созданную область по имени текста в TextBox_Arena_N
+               Chart_Acts_One.AddLine(Chart1,List_Parameters, List_Parameters.SelectedItems, TextBox_Arena_N.Text, File_Acts_One, "left", "No");  
             }
             if (selectedItem == null)
             {
@@ -417,6 +418,7 @@ namespace GoodPlot
                     item.AxisX.ScaleView.ZoomReset();
                     item.AxisY.ScaleView.ZoomReset();
                     item.AxisY2.ScaleView.ZoomReset();
+                    //item.AxisX2.ScaleView.ZoomReset(); Ось неактивна.
                 }
 
                 //Chart1.ChartAreas[TextBox_Arena_N.Text].AxisX.ScaleView.ZoomReset();
@@ -438,6 +440,40 @@ namespace GoodPlot
                                                                   - Chart1.ChartAreas[TextBox_Arena_N.Text].AxisY.Minimum) / 100;
             
         }
+      /// <summary>
+      /// Клавиши для формы
+      /// </summary>
+      /// <param name="sender"></param>
+      /// <param name="e"></param>
+        void MainWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+          if (e.Key == System.Windows.Input.Key.D0)
+          {
+            //if (ChartHost.Margin == new System.Windows.Thickness(0, 0, 0, 0))
+            //{
+            //  ChartHost.Margin = new System.Windows.Thickness(-50, -69, -100, 0);
+            //}
+            //else ChartHost.Margin = new System.Windows.Thickness(-0, -0, -0, 0);
+
+            // НА случай если собираемся добавочную ось редактировать добавлено имя арены в вызов конструктора.
+            ChartFormatWindow CFWindow = new ChartFormatWindow(ChartHost);
+            //Вызов окна
+            CFWindow.Show();
+          }
+          //К исходным размерам
+          if (e.Key == System.Windows.Input.Key.D9)
+          {
+            ChartHost.Width = double.NaN;
+            ChartHost.Height = double.NaN;
+          }
+          if (e.Key == System.Windows.Input.Key.D1)
+          {
+            Chart1.Width = (int) (Chart1.Height / 1.41);
+              
+          }
+          
+        }
+
         /// <summary>
         /// Изменение на выделение по оси Х/обратно
         /// </summary>
@@ -525,33 +561,19 @@ namespace GoodPlot
 
             //Магия
             dynamic selectedItem = List_Parameters.SelectedItem;
-            string tempKKS="";
+           
             //Проверка потому что не успевает прогрузиться список, и тогда ошибка выбора элемента,
             //т.к. нет выбора элемента.
 
             if (selectedItem != null)
             {
-                tempKKS = selectedItem.KKS;
+              //Добавляем линию 
+              Chart_Acts_One.AddLine(Chart1, List_Parameters, List_Parameters.SelectedItems, TextBox_Arena_N.Text, File_Acts_One, "left", "Yes");
+              TabCont1.SelectedIndex = 1;
+              Chart1.Focus();
                 // Добавим линию, и назначим ее в созданную область по имени текста в TextBox_Arena_N
             }
 
-            //Для повторного добавления. Вначале, при добавлении одного параметры на график по доп. оси, нет никакго "b".
-            foreach (var item in Chart1.ChartAreas)
-            {
-                if (item.Name.Contains("1b"))
-                {
-
-                  Chart_Acts_One.AddLine(Chart1, tempKKS, "Area# 11a", File_Acts_One, "left", "No");
-                    TabCont1.SelectedIndex = 1;
-                    Chart1.Focus();
-                    return;
-                } 
-            }
-
-            //Добавляем линию 
-            Chart_Acts_One.AddLine(Chart1, tempKKS, TextBox_Arena_N.Text, File_Acts_One, "left", "L");
-            TabCont1.SelectedIndex = 1;
-            Chart1.Focus();
         }
         /// <summary>
         /// Строить по дополнительной правой оси.
@@ -577,31 +599,18 @@ namespace GoodPlot
 
             //Магия
             dynamic selectedItem = List_Parameters.SelectedItem;
-            string tempKKS = "";
+           
             //Проверка потому что не успевает прогрузиться список, и тогда ошибка выбора элемента,
             //т.к. нет выбора элемента.
 
             if (selectedItem != null)
             {
-                tempKKS = selectedItem.KKS;
+              //Для начала строим просто справа.
+              Chart_Acts_One.AddLine(Chart1, List_Parameters, List_Parameters.SelectedItems, TextBox_Arena_N.Text, File_Acts_One, "right", "Yes");
+              TabCont1.SelectedIndex = 1;
+              Chart1.Focus();
                 // Добавим линию, и назначим ее в созданную область по имени текста в TextBox_Arena_N
             }
-            //Дополнительные линии к дополнительной оси.
-            foreach (var item in Chart1.ChartAreas)
-            {
-                if (item.Name.Contains("2b"))
-                {
-                  Chart_Acts_One.AddLine(Chart1, tempKKS, "Area# 12a", File_Acts_One, "right", "No");
-                    TabCont1.SelectedIndex = 1;
-                    Chart1.Focus();
-                    return;
-                }
-            }
-            
-            //Для начала строим просто справа.
-            Chart_Acts_One.AddLine(Chart1, tempKKS, TextBox_Arena_N.Text, File_Acts_One, "right", "R");
-            TabCont1.SelectedIndex = 1;
-            Chart1.Focus();
         }
         /// <summary>
         /// Строить 1 график, но с 4 осями. Разблокировать такую возможность. Заблокировать добавление снизу.
@@ -863,20 +872,25 @@ namespace GoodPlot
         /// <param name="e"></param>
         private void SaveMenuItem_Click(object sender, RoutedEventArgs e)
         {
+          //Диалог сохранения организоввыаем
+          SaveFileDialog saveFileDialog = new SaveFileDialog();
+          saveFileDialog.Filter = "Бинарный файл (*.bin)|*.bin";
+          string fileName="f.bin";
+          if (saveFileDialog.ShowDialog() == true)
+          {
+            fileName = saveFileDialog.FileName;
+          }
 
-            if (Chart1.ChartAreas.Count==1)
-            {
-               //Запускаем метод, который запишет, что надо.
-                SaveLoadClass.Save_Condition("Simple", Chart1, File_Acts_One); 
-            }
-            if (One_GraphButton.Background==System.Windows.Media.Brushes.BurlyWood)
-            {
-                SaveLoadClass.Save_Condition("1_4_Graph", Chart1, File_Acts_One); 
-            }
-            if (Many_GraphButton.Background == System.Windows.Media.Brushes.BurlyWood)
-            {
-                SaveLoadClass.Save_Condition("Many_Each_Down", Chart1, File_Acts_One);
-            }
+          // Save chart into the memory stream
+          Chart1.Serializer.Content = SerializationContents.All;
+          MemoryStream ms = new MemoryStream();
+          Chart1.Serializer.Save(ms);
+
+          //Запись MemoryStream
+          FileStream fileStr = new FileStream(fileName, FileMode.Create);
+          ms.CopyTo(fileStr);
+          fileStr.Close();
+          ms.Close();
         }
         /// <summary>
         /// Загрузить состояние
@@ -885,16 +899,24 @@ namespace GoodPlot
         /// <param name="e"></param>
         private void LoadMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            //Проверим, что открывался файл данных
-            if (File_Acts_One.Parameters.Count==0)
-            {
-                MessageBox.Show("Нет. Вначале необходимо открыть файл данных, затем загружать файл сохранения.");
-                return;
-            }
-            SaveLoadClass.Load_Condition(Chart1, File_Acts_One,List_Parameters,this);
-            //НА вкладку с графиком. Фокусимся на графике.
-            TabCont1.SelectedIndex = 1;
-            Chart1.Focus();
+          //Диалог организуем
+          OpenFileDialog openFileDialog = new OpenFileDialog();
+          openFileDialog.Filter = "Бинарный файл (*.bin)|*.bin";
+          string fileName = "f.bin";
+          if (openFileDialog.ShowDialog() == true)
+          {
+            fileName = openFileDialog.FileName;
+          }
+
+          MemoryStream ms = new MemoryStream();
+          FileStream fileStr = new FileStream(fileName, FileMode.Open);
+          fileStr.CopyTo(ms);
+
+
+          ms.Seek(0, SeekOrigin.Begin);
+          Chart1.Serializer.Load(ms);
+          ms.Close();
+          fileStr.Close();
         }
         /// <summary>
         /// Событие изменения курсара. Отображать его
@@ -1055,16 +1077,21 @@ namespace GoodPlot
             //Начать с новым графиком
         private void NewBeginning_Click(object sender, RoutedEventArgs e)
         {
+          //Удалить все элементы графика
         Chart1.Series.Clear();
         Chart1.Titles.Clear();
         Chart1.Annotations.Clear();
-        foreach (var item in Chart1.ChartAreas)
-        {
-          item.AxisX.ScaleView.ZoomReset(100);
-          item.AxisY.ScaleView.ZoomReset(100);
-          item.AxisY2.ScaleView.ZoomReset(100);
-        }
-        //Chart1
+        Chart1.Legends.Clear();
+        Chart1.ChartAreas.Clear();
+          //Название арены начальное
+        TextBox_Arena_N.Text = "Area# 1";
+
+          //Начальная арена
+        bsLeft.IsEnabled = false;
+        bsRight.IsEnabled = false;
+        Chart_Acts_One.LoadNEWArena(Chart1, Chart1.ChartAreas.Count() + 1);          
+
+        //Элементы в меню закрасить по умолчанию
         }
 
         private void LoadSvrkNames_Click(object sender, RoutedEventArgs e)
@@ -1134,7 +1161,7 @@ namespace GoodPlot
           ModuleDiffEff DiffEffWindow = new ModuleDiffEff(Chart1, File_Acts_One, TableCurrent);
           DiffEffWindow.Show(); 
         }
-
+      //Под войному щелчку копировать название KKS.
         private void List_Parameters_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
           ListBox lb = (ListBox)(sender);
@@ -1175,32 +1202,56 @@ namespace GoodPlot
         private void ToCSV_Click(object sender, RoutedEventArgs e)
         {
           SaveFileDialog saveFileDialog = new SaveFileDialog();
-          saveFileDialog.Filter = "Текстовый документ (*.txt)|*.txt|Все файлы (*.*)|*.*";
-
-          if (saveFileDialog.ShowDialog() == true)
-                {
-                  //Создаем поток записи
-                  System.IO.StreamWriter streamWriter = new System.IO.StreamWriter(saveFileDialog.FileName);
+          //Сохранит все выделенные файлы в файлы по отдельности с названиями KKS.
                   //Создаем массив, куда запишем линии файла
                   List<string> Myfile = new List<string>();
-                
+
+                  
+                  // Запишем каждый из параметров в свой файл. Счетчик для разделения файлов
+                  int MyI = 0;
                   foreach (Parameter item in List_Parameters.SelectedItems)
                   {
-                    Myfile.Add(item.KKS + " " + item.Description + " " + item.Dimention + ";" + "Time" + ";" + "Value" );
-                    foreach (Time_and_Value item2 in item.Time_and_Value_List)
-                    {
-                     Myfile.Add(" " + ";" + item2.Time + ";" + item2.Value);
-                    }
-                    
+                    MyI++;
+                    //Создаем поток записи
+                    string dsf = saveFileDialog.InitialDirectory;
+                    System.IO.StreamWriter streamWriter = new System.IO.StreamWriter(saveFileDialog.InitialDirectory+item.KKS+".csv");
+                    streamWriter.WriteLine(item.KKS + ";" + "Program_file" + ";");
+                    foreach (var item1 in item.Time_and_Value_List)
+	                  {
+                      streamWriter.WriteLine(item1.Time + ";" + item1.Value + ";" + item1.IsOk + ";");
+	                  }
+                    streamWriter.Close(); 
+                  }      
+        }
 
-	                 }
-                  for (int i = 0; i < length; i++)
-                  {
-                    
-                  }
-                  streamWriter.Close();  
-	               }
-         }
+      // Для очистки выделения параметров, а это удобство
+      private void ContextMenu_Closed(object sender, RoutedEventArgs e)
+      {
+        List_Parameters.UnselectAll();
+      }
+
+      //Удалить точки данных 
+      private void Delete_Click(object sender, RoutedEventArgs e)
+      {
+        //Можно выделить несколько параметров, у которых удалить точки данных
+        foreach (Parameter item in List_Parameters.SelectedItems)
+        {
+          //У каждого искать и удалить соответствующее время
+          foreach (Time_and_Value item1 in Points_List.SelectedItems)
+          {
+            for (int i = 0; i < item.Time_and_Value_List.Count; i++)
+            {
+              if (item.Time_and_Value_List[i].Time==item1.Time)
+              {
+                 item.Time_and_Value_List.Remove(item.Time_and_Value_List[i]);
+              }
+            }
+            
+          }
+        }
+      }
+
+       
 
 
       

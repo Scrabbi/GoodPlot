@@ -1,5 +1,0 @@
-Many_Each_Down
-2
-KKS|Наименование|Название арены|Лев./прав. ось|Max|Min
-8 12CLB75FX013BXQ1|М Н ККНП|Area# 1|Primary|0,1|0
-21 11CLA75FX001CXQ1|Ч ДИ ККНП|Area# 2|Secondary|5E-12|0

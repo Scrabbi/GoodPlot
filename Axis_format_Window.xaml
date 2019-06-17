@@ -2,17 +2,21 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        Title="Axis_Format_Window" Height="381.41" Width="225.149">
+        Title="Axis_Format_Window" Height="393.133" Width="661.833">
     <Grid >
         <Grid.RowDefinitions>
             <RowDefinition Height="12*" ></RowDefinition>
             <RowDefinition Height="25*" ></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition ></ColumnDefinition>
-            <ColumnDefinition ></ColumnDefinition>
+            <ColumnDefinition Width="77*" ></ColumnDefinition>
+            <ColumnDefinition Width="161*" ></ColumnDefinition>
+            <ColumnDefinition Width="73*" ></ColumnDefinition>
+            <ColumnDefinition Width="106*" ></ColumnDefinition>
+            <ColumnDefinition Width="101*"></ColumnDefinition>
+            <ColumnDefinition Width="136*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
-        <StackPanel Grid.Row="0" Grid.ColumnSpan="2" Orientation="Vertical" VerticalAlignment="Stretch">
+        <StackPanel Grid.Row="0" Grid.ColumnSpan="6" Orientation="Vertical" VerticalAlignment="Stretch">
             <Label Content="Название оси" Background="Aqua" HorizontalAlignment="Center" />
             <TextBox Name="Axis_name" Text="TextBox" Background="AntiqueWhite" HorizontalAlignment="Stretch"/>
         </StackPanel>
@@ -25,6 +29,7 @@
             <Label Content="Количество делений" Background="Aquamarine" HorizontalAlignment="Stretch" Height="27"/>
             <Label Content="Офсет" Background="Aquamarine" HorizontalAlignment="Stretch" Height="27"/>
             <Label Content="Ширина" Background="Aquamarine" HorizontalAlignment="Stretch" Height="27"/>
+
         </StackPanel>
         <StackPanel Grid.Row="1" Grid.Column="1" VerticalAlignment="Stretch">
             <TextBox Name="TextBoxMax" Height="35">
@@ -37,6 +42,50 @@
             <TextBox Name="MarksCountTextBox" Height="26" TextWrapping="Wrap" Text="5"/>
             <TextBox Name="OfsetTextBox" Height="26" TextWrapping="Wrap" Text="5"/>
             <TextBox Name="WideTextBox" Height="26" TextWrapping="Wrap" Text="5"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Grid.Column="2" VerticalAlignment="Stretch">
+            <Label Content="Основные деления" Background="LemonChiffon" HorizontalAlignment="Stretch" Height="35" />
+            <Label Content="Интервал" Background="Khaki" HorizontalAlignment="Stretch" Height="34" />
+            <Label Content="Ширина" Background="Khaki" HorizontalAlignment="Stretch" Height="33"  />
+            <Label Content="Цвет" Background="Khaki" HorizontalAlignment="Stretch" Height="36"/>
+            <Label Content="Стиль" Background="Khaki" HorizontalAlignment="Stretch" Height="27"/>
+            <Label Content="Длина (риски)" Background="LightCoral" HorizontalAlignment="Stretch" Height="27"/>
+            <Label Content="Вид (риски)" Background="LightCoral" HorizontalAlignment="Stretch" Height="27"/>
+
+        </StackPanel>
+        <StackPanel Grid.Row="1" Grid.Column="3" VerticalAlignment="Stretch">
+            <ComboBox Name="TickorGridMarks" Height="35"/>
+            <TextBox Name="TextBoxInterval" Height="32" TextChanged="TextBoxInterval_TextChanged"></TextBox>
+            <TextBox Name="TextBoxWidth" TextChanged="TextBoxWidth_TextChanged" Height="35"></TextBox>
+            <xctk:ColorPicker  Name="ColorBoxMainTick" SelectedColorChanged="ColorBoxMainTick_SelectedColorChanged" Height="33"/>
+            <ComboBox Name="ComboBoxStyleMain" SelectionChanged="ComboBoxStyleMain_SelectionChanged" Height="28"/>
+            <TextBox Name="TextBoxLength" Height="30" TextChanged="TextBoxLength_TextChanged"></TextBox>
+            <ComboBox Name="ComboBoxView" SelectionChanged="ComboBoxView_TextChanged" Height="27"/>
+
+
+        </StackPanel>
+
+        <!--Для промежуточных делений-->
+
+        <StackPanel Grid.Row="1" Grid.Column="4" VerticalAlignment="Stretch">
+            <Label Content="Промежуточные деления" Background="LemonChiffon" HorizontalAlignment="Stretch" Height="35" />
+            <Label Content="Интервал" Background="Khaki" HorizontalAlignment="Stretch" Height="34" />
+            <Label Content="Ширина" Background="Khaki" HorizontalAlignment="Stretch" Height="33"  />
+            <Label Content="Цвет" Background="Khaki" HorizontalAlignment="Stretch" Height="36"/>
+            <Label Content="Стиль" Background="Khaki" HorizontalAlignment="Stretch" Height="27"/>
+            <Label Content="Длина (риски)" Background="LightCoral" HorizontalAlignment="Stretch" Height="27"/>
+            <Label Content="Вид (риски)" Background="LightCoral" HorizontalAlignment="Stretch" Height="27"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Grid.Column="5" VerticalAlignment="Stretch">
+            <ComboBox Name="TickorGridMarks_Minor" Height="38"/>
+            <TextBox Name="TextBoxInterval_Minor" Height="33" TextChanged="TextBoxInterval_Minor_TextChanged"></TextBox>
+            <TextBox Name="TextBoxWidth_Minor" TextChanged="TextBoxWidth_Minor_TextChanged" Height="35"></TextBox>
+            <xctk:ColorPicker  Name="ColorBox_Minor" SelectedColorChanged="ColorBox_Minor_SelectedColorChanged" Height="33"/>
+            <ComboBox Name="ComboBoxStyle_Minor" SelectionChanged="ComboBoxStyleMain_Minor_SelectionChanged" Height="28"/>
+            <TextBox Name="TextBoxLength_Minor" Height="24" TextChanged="TextBoxLength_Minor_TextChanged"></TextBox>
+            <ComboBox Name="ComboBoxView_Minor" SelectionChanged="ComboBoxView_Minor_TextChanged" Height="28"/>
+
         </StackPanel>
     </Grid>
 </Window>

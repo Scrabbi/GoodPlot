@@ -44,6 +44,64 @@ namespace GoodPlot
 
             //Название серии текущее. А изменения нет и не надо.
             Axis_name.Text = Axis_ref.Name;
+
+            //Заполнение стилей для делений ДЛЯ ОСНОВНОЙ
+            foreach (string lineName in Enum.GetNames(typeof(System.Windows.Forms.DataVisualization.Charting.ChartDashStyle)))
+            {
+              this.ComboBoxStyleMain.Items.Add(lineName);
+              //this.MajorLineDashStyle.Items.Add(lineName);
+            }
+            //Заполнение стилей для делений ДЛЯ ВТОРОСТЕПЕННОЙ
+            foreach (string lineName in Enum.GetNames(typeof(System.Windows.Forms.DataVisualization.Charting.ChartDashStyle)))
+            {
+              this.ComboBoxStyle_Minor.Items.Add(lineName);
+              //this.MajorLineDashStyle.Items.Add(lineName);
+            }
+            //Выбор, что менять: линии или деления
+            TickorGridMarks.Items.Add("GridMarks");
+            TickorGridMarks.Items.Add("TickMarks");
+            TickorGridMarks_Minor.Items.Add("GridMarks");
+            TickorGridMarks_Minor.Items.Add("TickMarks");
+            
+          //Заполнение вариатов вида рисок
+          foreach (string lineName in Enum.GetNames(typeof(System.Windows.Forms.DataVisualization.Charting.TickMarkStyle)))
+            {
+              this.ComboBoxView.Items.Add(lineName);
+              //this.MajorLineDashStyle.Items.Add(lineName);
+            }
+          //Для второстепенной оси
+          foreach (string lineName in Enum.GetNames(typeof(System.Windows.Forms.DataVisualization.Charting.TickMarkStyle)))
+          {
+            this.ComboBoxView_Minor.Items.Add(lineName);
+            //this.MajorLineDashStyle.Items.Add(lineName);
+          }
+
+          ////Отобразить или стили линий сетки или стили рисок
+          //  if (TickorGridMarks.SelectedItem == "GridMarks")
+          //  {
+          //    //Интервал текущий отобразить
+          //    TextBoxInterval.Text = Axis_ref.MajorGrid.Interval.ToString();
+          //    //Ширина текущая
+          //    TextBoxWidth.Text = Axis_ref.MajorGrid.LineWidth.ToString();
+          //    //Цвет текущий
+          //    ColorBoxMainTick.SelectedColor = System.Windows.Media.Color.FromArgb(Axis_ref.MajorGrid.LineColor.A, Axis_ref.MajorGrid.LineColor.R, Axis_ref.MajorGrid.LineColor.G, Axis_ref.MajorGrid.LineColor.B);
+          //    //Стиль текущий
+          //    ComboBoxStyleMain.SelectedItem = Axis_ref.MajorGrid.LineDashStyle;
+          //  }
+          //  else
+          //  {
+          //    //Интервал текущий отобразить
+          //    TextBoxInterval.Text = Axis_ref.MajorTickMark.Interval.ToString();
+          //    //Ширина текущая
+          //    TextBoxWidth.Text = Axis_ref.MajorTickMark.LineWidth.ToString();
+          //    //Цвет текущий
+          //    ColorBoxMainTick.SelectedColor = System.Windows.Media.Color.FromArgb(Axis_ref.MajorTickMark.LineColor.A, Axis_ref.MajorTickMark.LineColor.R, Axis_ref.MajorTickMark.LineColor.G, Axis_ref.MajorTickMark.LineColor.B);
+          //    //Стиль текущий
+          //    ComboBoxStyleMain.SelectedItem = Axis_ref.MajorTickMark.LineDashStyle;
+            
+          //  }
+
+
             
             //-----------------------------------------------------------МИНИМУМ
             //Изменение
@@ -52,16 +110,11 @@ namespace GoodPlot
             //-----------------------------------------------------------МАКСИМУМ
             if (Axis_ref.Name.Contains("X"))
             {
-            //Избежать неправльного начала оси времени
-              DateTime time = DateTime.FromOADate(Axis_ref.Minimum);
-              DateTime rounded = time.AddMilliseconds(-time.Millisecond).AddSeconds(-time.Second).AddMinutes(-time.Minute);
-              TextBoxMin.Text = rounded.ToString();
               ////Избежать неправльного начала оси времени
               //DateTime time1 = DateTime.FromOADate(Axis_ref.Maximum);
               //DateTime rounded1 = time1.AddMilliseconds(-time1.Millisecond).AddSeconds(-time1.Second).AddMinutes(-time1.Minute);
               //TextBoxMax.Text = rounded1.ToString();
               ////chart1_ref.Invalidate();
-
               TextBoxMax.Text = DateTime.FromOADate(Axis_ref.Maximum).ToString();
               TextBoxMin.Text = DateTime.FromOADate(Axis_ref.Minimum).ToString();
             }
@@ -432,16 +485,351 @@ namespace GoodPlot
                         chart1_ref.ChartAreas["Area#" + " " + chartAreaName_ref[6] + "1b"].Position.Width = Convert.ToInt32(WideTextBox.Text);
                         chart1_ref.ChartAreas["Area#" + " " + chartAreaName_ref[6] + "2a"].Position.Width = Convert.ToInt32(WideTextBox.Text);
                         chart1_ref.ChartAreas["Area#" + " " + chartAreaName_ref[6] + "2b"].Position.Width = Convert.ToInt32(WideTextBox.Text);
-                    
-
-                    
                 }
                     }
             catch (Exception) { }
-            
-
-
-            
         }
+
+      //Основные деления. Формат
+      //Изменение интервала
+        private void TextBoxInterval_TextChanged(object sender, TextChangedEventArgs e)
+        {
+          //Интревал времени всегда глючит, если не задать, какой именно выираем.
+          if (Axis_ref.Name.Contains("X"))
+          {
+            Axis_ref.MajorGrid.IntervalType = DateTimeIntervalType.Minutes;
+            Axis_ref.MajorTickMark.IntervalType = DateTimeIntervalType.Minutes;
+          }
+
+          try
+          {
+            if (Convert.ToDouble(TextBoxInterval.Text) < 0)
+            {
+              return;
+            }
+            
+
+            if (TickorGridMarks.SelectedItem == "GridMarks" )
+          {
+            Axis_ref.MajorGrid.Interval = 0;
+            Axis_ref.MajorGrid.Interval = Convert.ToDouble(TextBoxInterval.Text);
+            
+          }
+            if (TickorGridMarks.SelectedItem == "TickMarks" )
+          {
+            Axis_ref.MajorTickMark.Interval = 0;
+            Axis_ref.MajorTickMark.Interval = Convert.ToDouble(TextBoxInterval.Text);
+            
+          }
+            }
+          catch (FormatException)
+          {}
+
+          //Если друг под другом арены
+          if (chart1_ref.ChartAreas.Count>1)
+          {
+            foreach (ChartArea item in chart1_ref.ChartAreas)
+            {
+              try
+              {
+                if (Convert.ToDouble(TextBoxInterval.Text) > 0)
+                {
+                  item.AxisX.MajorGrid.Interval = Convert.ToDouble(TextBoxInterval.Text);
+                  item.AxisX.MajorTickMark.Interval = Convert.ToDouble(TextBoxInterval.Text); 
+                }
+                
+              }
+              catch (FormatException)
+              {}
+            }
+          }
+        }
+
+      //Изменение ширины
+        private void TextBoxWidth_TextChanged(object sender, TextChangedEventArgs e)
+        {
+          try
+          {
+            if (TickorGridMarks.SelectedItem == "GridMarks")
+            {
+              Axis_ref.MajorGrid.LineWidth = Convert.ToInt32(TextBoxWidth.Text);
+            }
+            else
+            {
+              Axis_ref.MajorTickMark.LineWidth = int.Parse(TextBoxWidth.Text);
+            }
+          }
+          catch (Exception)
+          { }
+
+          //Если друг под другом арены
+          if (chart1_ref.ChartAreas.Count > 1)
+          {
+            foreach (ChartArea item in chart1_ref.ChartAreas)
+            {
+              try
+              {
+                item.AxisX.MajorGrid.LineWidth = Convert.ToInt32(TextBoxWidth.Text);
+                item.AxisX.MajorTickMark.LineWidth = int.Parse(TextBoxWidth.Text);
+              }
+              catch (Exception)
+              { }
+            }
+          }
+        }
+      //Цвет
+        private void ColorBoxMainTick_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
+        {
+          //Это приходитс так как херня какая-то с пространством имен колорпикера, там ? в конце
+          System.Windows.Media.Color clr = (System.Windows.Media.Color)ColorBoxMainTick.SelectedColor;
+          try
+          {
+            if (TickorGridMarks.SelectedItem == "GridMarks")
+            {
+              //Стандартна процедура
+               Axis_ref.MajorGrid.LineColor = System.Drawing.Color.FromArgb(clr.A,clr.R,clr.G, clr.B);
+            }
+            else
+            {
+              //Стандартна процедура
+              Axis_ref.MajorTickMark.LineColor = System.Drawing.Color.FromArgb(clr.A, clr.R, clr.G, clr.B);
+            }
+          }
+          catch (Exception)
+          { }
+
+          //Если друг под другом арены
+          if (chart1_ref.ChartAreas.Count > 1)
+          {
+            foreach (ChartArea item in chart1_ref.ChartAreas)
+            {
+              try
+              {
+                item.AxisX.MajorGrid.LineColor = System.Drawing.Color.FromArgb(clr.A, clr.R, clr.G, clr.B);
+                item.AxisX.MajorTickMark.LineColor = System.Drawing.Color.FromArgb(clr.A, clr.R, clr.G, clr.B);
+              }
+              catch (Exception)
+              { }
+            }
+          }
+        }
+      //Стиль
+        private void ComboBoxStyleMain_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+          try
+          {
+            if (TickorGridMarks.SelectedItem == "GridMarks")
+            {
+              Axis_ref.MajorGrid.LineDashStyle = (ChartDashStyle)ChartDashStyle.Parse(typeof(ChartDashStyle), ComboBoxStyleMain.SelectedItem.ToString());
+            }
+            else
+            {
+              Axis_ref.MajorTickMark.LineDashStyle = (ChartDashStyle)ChartDashStyle.Parse(typeof(ChartDashStyle), ComboBoxStyleMain.SelectedItem.ToString());
+            }
+          }
+          catch (Exception)
+          { }
+
+          //Если друг под другом арены
+          if (chart1_ref.ChartAreas.Count > 1)
+          {
+            foreach (ChartArea item in chart1_ref.ChartAreas)
+            {
+              try
+              {
+                item.AxisX.MajorGrid.LineDashStyle = (ChartDashStyle)ChartDashStyle.Parse(typeof(ChartDashStyle), ComboBoxStyleMain.SelectedItem.ToString());
+                item.AxisX.MajorTickMark.LineDashStyle = (ChartDashStyle)ChartDashStyle.Parse(typeof(ChartDashStyle), ComboBoxStyleMain.SelectedItem.ToString());
+              }
+              catch (Exception)
+              { }
+            }
+          }
+        }
+
+      //Второстепенные деления
+      //Интервал
+        private void TextBoxInterval_Minor_TextChanged(object sender, TextChangedEventArgs e)
+        {
+          //Интревал времени всегда глючит, если не задать, какой именно выираем.
+          if (Axis_ref.Name.Contains("X"))
+          {
+            Axis_ref.MinorGrid.IntervalType = DateTimeIntervalType.Minutes;
+            Axis_ref.MinorTickMark.IntervalType = DateTimeIntervalType.Minutes;
+          }
+
+          try
+          {
+            if (Convert.ToDouble(TextBoxInterval_Minor.Text) < 0)
+            {
+              return;
+            }
+            Axis_ref.MinorGrid.Interval = 0;
+            if (TickorGridMarks_Minor.SelectedItem == "GridMarks")
+            {
+              //Отображение разрешаем
+              Axis_ref.MinorGrid.Enabled = true;
+              Axis_ref.MinorTickMark.Enabled = true;
+
+              
+              
+              //Задаем интервал 
+              
+              Axis_ref.MinorGrid.Interval = Convert.ToDouble(TextBoxInterval_Minor.Text);
+            }
+            else
+            {
+              Axis_ref.MinorTickMark.Interval = Convert.ToDouble(TextBoxInterval_Minor.Text);
+            }
+          }
+          catch (FormatException)
+          { }
+
+          //Если друг под другом арены
+          if (chart1_ref.ChartAreas.Count > 1)
+          {
+            foreach (ChartArea item in chart1_ref.ChartAreas)
+            {
+              try
+              {
+                //Отображение разрешаем
+                item.AxisX.MinorGrid.Enabled = true;
+                item.AxisX.MinorTickMark.Enabled = true;
+                //Тип интервала задаем
+                item.AxisX.MinorGrid.IntervalType = DateTimeIntervalType.Minutes;
+                item.AxisX.MinorTickMark.IntervalType = DateTimeIntervalType.Minutes;
+
+
+                item.AxisX.MinorGrid.Interval = Convert.ToDouble(TextBoxInterval_Minor.Text);
+                item.AxisX.MinorTickMark.Interval = Convert.ToDouble(TextBoxInterval_Minor.Text);
+              }
+              catch (Exception)
+              { }
+            }
+          }
+        }
+
+      //Ширина
+        private void TextBoxWidth_Minor_TextChanged(object sender, TextChangedEventArgs e)
+        {
+          try
+          {
+            if (TickorGridMarks_Minor.SelectedItem == "GridMarks")
+            {
+              Axis_ref.MinorGrid.LineWidth = Convert.ToInt32(TextBoxWidth_Minor.Text);
+            }
+            else
+            {
+              Axis_ref.MinorTickMark.LineWidth = int.Parse(TextBoxWidth_Minor.Text);
+            }
+          }
+          catch (Exception)
+          { }
+
+          //Если друг под другом арены
+          if (chart1_ref.ChartAreas.Count > 1)
+          {
+            foreach (ChartArea item in chart1_ref.ChartAreas)
+            {
+              try
+              {
+                item.AxisX.MinorGrid.LineWidth = int.Parse(TextBoxWidth_Minor.Text);
+                item.AxisX.MinorTickMark.LineWidth = int.Parse(TextBoxWidth_Minor.Text);
+              }
+              catch (Exception)
+              { }
+            }
+          }
+
+        }
+      //Цвет
+        private void ColorBox_Minor_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
+        {
+          //Это приходитс так как херня какая-то с пространством имен колорпикера, там ? в конце
+          System.Windows.Media.Color clr = (System.Windows.Media.Color)ColorBox_Minor.SelectedColor;
+
+            if (TickorGridMarks_Minor.SelectedItem == "GridMarks")
+            {
+             //Стандартна процедура
+              Axis_ref.MinorGrid.LineColor = System.Drawing.Color.FromArgb(clr.A, clr.R, clr.G, clr.B);
+            }
+            else
+            {
+              //Стандартна процедура
+              Axis_ref.MinorTickMark.LineColor = System.Drawing.Color.FromArgb(clr.A, clr.R, clr.G, clr.B);
+            }
+          
+
+          //Если друг под другом арены
+          if (chart1_ref.ChartAreas.Count > 1)
+          {
+            foreach (ChartArea item in chart1_ref.ChartAreas)
+            {
+              item.AxisX.MinorGrid.LineColor = System.Drawing.Color.FromArgb(clr.A, clr.R, clr.G, clr.B);
+              item.AxisX.MinorTickMark.LineColor = System.Drawing.Color.FromArgb(clr.A, clr.R, clr.G, clr.B);
+            }
+          }
+        }
+
+        //Стиль
+        private void ComboBoxStyleMain_Minor_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (TickorGridMarks_Minor.SelectedItem == "GridMarks")
+            {
+             Axis_ref.MinorGrid.LineDashStyle = (ChartDashStyle)ChartDashStyle.Parse(typeof(ChartDashStyle), ComboBoxStyle_Minor.SelectedItem.ToString());
+            }
+            else
+            {
+             Axis_ref.MinorTickMark.LineDashStyle = (ChartDashStyle)ChartDashStyle.Parse(typeof(ChartDashStyle), ComboBoxStyle_Minor.SelectedItem.ToString());
+            }
+          
+          //Если друг под другом арены
+          if (chart1_ref.ChartAreas.Count > 1)
+          {
+            foreach (ChartArea item in chart1_ref.ChartAreas)
+            {
+              item.AxisX.MinorGrid.LineDashStyle = (ChartDashStyle)ChartDashStyle.Parse(typeof(ChartDashStyle), ComboBoxStyle_Minor.SelectedItem.ToString());
+              item.AxisX.MinorTickMark.LineDashStyle = (ChartDashStyle)ChartDashStyle.Parse(typeof(ChartDashStyle), ComboBoxStyle_Minor.SelectedItem.ToString());
+            }
+          }
+        }
+
+      //Длина главных рисочек
+        private void TextBoxLength_TextChanged(object sender, TextChangedEventArgs e)
+        {
+          try
+          {
+            Axis_ref.MajorTickMark.Size = (float)Convert.ToDouble(TextBoxLength.Text);
+          }
+          catch (Exception)
+          {}
+         
+        }
+      //Вид
+        private void ComboBoxView_TextChanged(object sender, SelectionChangedEventArgs e)
+        {
+          Axis_ref.MajorTickMark.TickMarkStyle = (TickMarkStyle)TickMarkStyle.Parse(typeof(TickMarkStyle), ComboBoxView.SelectedItem.ToString());
+        }
+      //Длина второстепенных
+        private void TextBoxLength_Minor_TextChanged(object sender, TextChangedEventArgs e)
+        {
+          try
+          {
+            Axis_ref.MinorTickMark.Size = (float)Convert.ToDouble(TextBoxLength_Minor.Text);
+          }
+          catch (Exception)
+          {}
+          
+        }
+      //Вид второстепенных
+        private void ComboBoxView_Minor_TextChanged(object sender, SelectionChangedEventArgs e)
+        {
+          Axis_ref.MinorTickMark.TickMarkStyle = (TickMarkStyle)TickMarkStyle.Parse(typeof(TickMarkStyle), ComboBoxView_Minor.SelectedItem.ToString());
+        }
+
+
+       
+          
+          
+        
     }
 }
