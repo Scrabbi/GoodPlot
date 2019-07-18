@@ -262,7 +262,7 @@ namespace GoodPlot
         /// <param name="e"></param>
         void AFWindow_Closed(object sender, EventArgs e)
         {
-          if (Chart1.ChartAreas[Chart1.ChartAreas.Count - 1].AxisX.Maximum!=1)
+          if (Many_GraphButton.Background == System.Windows.Media.Brushes.BurlyWood)
           {
             for (int i = 0; i < Chart1.ChartAreas.Count - 1; i++)
             {
@@ -1251,15 +1251,71 @@ namespace GoodPlot
         }
       }
 
-       
+    
+    //Редактировать ось Х
+    private void X_Format_Click(object sender, RoutedEventArgs e)
+    {
+      // Axis item result
+      Axis AxisItem = Chart1.ChartAreas[TextBox_Arena_N.Text].AxisX;
 
+      // НА случай если собираемся добавочную ось редактировать добавлено имя арены в вызов конструктора.
+      Axis_format_Window AFWindow = new Axis_format_Window(AxisItem, Chart1, TextBox_Arena_N.Text);
+      //Вызов окна
+      AFWindow.Show();
+      //По закрытии будем все оси времени объединять. Но только в случае друг под другом построения.
+      AFWindow.Closing += AFWindow_Closed;
+    }
 
-      
+    private void Yleft_Format_Click(object sender, RoutedEventArgs e)
+    {
+      // Axis item result
+      Axis AxisItem = Chart1.ChartAreas[TextBox_Arena_N.Text].AxisY;
 
-       
+      // НА случай если собираемся добавочную ось редактировать добавлено имя арены в вызов конструктора.
+      Axis_format_Window AFWindow = new Axis_format_Window(AxisItem, Chart1, TextBox_Arena_N.Text);
+      //Вызов окна
+      AFWindow.Show();
+      //По закрытии будем все оси времени объединять. Но только в случае друг под другом построения.
+      AFWindow.Closing += AFWindow_Closed;
+    }
 
+    private void Yright_Format_Click(object sender, RoutedEventArgs e)
+    {
+      // Axis item result
+      Axis AxisItem = Chart1.ChartAreas[TextBox_Arena_N.Text].AxisY2;
 
-        
-        
+      // НА случай если собираемся добавочную ось редактировать добавлено имя арены в вызов конструктора.
+      Axis_format_Window AFWindow = new Axis_format_Window(AxisItem, Chart1, TextBox_Arena_N.Text);
+      //Вызов окна
+      AFWindow.Show();
+      //По закрытии будем все оси времени объединять. Но только в случае друг под другом построения.
+      AFWindow.Closing += AFWindow_Closed;
+    }
+
+    private void Y2left_Format_Click(object sender, RoutedEventArgs e)
+    {
+      // Axis item result
+      Axis AxisItem = Chart1.ChartAreas[TextBox_Arena_N.Text+"1b"].AxisY;
+
+      // НА случай если собираемся добавочную ось редактировать добавлено имя арены в вызов конструктора.
+      Axis_format_Window AFWindow = new Axis_format_Window(AxisItem, Chart1, TextBox_Arena_N.Text);
+      //Вызов окна
+      AFWindow.Show();
+      //По закрытии будем все оси времени объединять. Но только в случае друг под другом построения.
+      AFWindow.Closing += AFWindow_Closed;
+    }
+
+    private void Y2right_Format_Click(object sender, RoutedEventArgs e)
+    {
+      // Axis item result
+      Axis AxisItem = Chart1.ChartAreas[TextBox_Arena_N.Text + "2b"].AxisY2;
+
+      // НА случай если собираемся добавочную ось редактировать добавлено имя арены в вызов конструктора.
+      Axis_format_Window AFWindow = new Axis_format_Window(AxisItem, Chart1, TextBox_Arena_N.Text);
+      //Вызов окна
+      AFWindow.Show();
+      //По закрытии будем все оси времени объединять. Но только в случае друг под другом построения.
+      AFWindow.Closing += AFWindow_Closed;
+    }
   }
 }

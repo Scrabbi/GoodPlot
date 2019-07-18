@@ -93,6 +93,13 @@ Icon="PerfCenterCpl.ico"
                 <MenuItem Header="Значения" x:Name="Values_Module" Click="Values_Module_Click"/>
                 <MenuItem Header="Настройки расчета" x:Name="CalculOptions" Click="CalculOptions_Click"/>
             </MenuItem>
+            <MenuItem Header="Оси" Name="Axes_Menu">
+                <MenuItem Header="Редактировать ось Х" x:Name="X_Format" Click="X_Format_Click"/>
+                <MenuItem Header="Редактировать ось Y слева" x:Name="Yleft_Format" Click="Yleft_Format_Click"/>
+                <MenuItem Header="Редактировать ось Y справа" x:Name="Yright_Format" Click="Yright_Format_Click"/>
+                <MenuItem Header="Редактировать ось Y2 слева" x:Name="Y2left_Format" Click="Y2left_Format_Click"/>
+                <MenuItem Header="Редактировать ось Y2 справа" x:Name="Y2right_Format" Click="Y2right_Format_Click"/>
+            </MenuItem>
 
         </Menu>
 

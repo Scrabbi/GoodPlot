@@ -229,3 +229,7 @@ D:\Progs\C#Projects\GoodPlot\obj\Debug\ModuleValues.baml
 D:\Progs\C#Projects\GoodPlot\obj\Debug\ModuleValues.g.cs
 D:\Progs\C#Projects\GoodPlot\obj\Debug\ChartFormatWindow.baml
 D:\Progs\C#Projects\GoodPlot\obj\Debug\ChartFormatWindow.g.cs
+E:\Work\C#Progs\GoodPlot\obj\Debug\ChartFormatWindow.baml
+E:\Work\C#Progs\GoodPlot\obj\Debug\ModuleValues.baml
+E:\Work\C#Progs\GoodPlot\obj\Debug\ChartFormatWindow.g.cs
+E:\Work\C#Progs\GoodPlot\obj\Debug\ModuleValues.g.cs
