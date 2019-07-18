@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Collections.ObjectModel;
 namespace GoodPlot
 {
     /// <summary>
@@ -52,7 +53,9 @@ namespace GoodPlot
         /// </summary>
         public string Add_Info { get; set; }
     }
-
+    /// <summary>
+    /// Хранит имена открытых файлов
+    /// </summary>
     public class OneFile
     {
     /// <summary>
@@ -71,13 +74,14 @@ namespace GoodPlot
         /// <summary>
         /// Для сдвига по времени организовал такой отдельный список.
         /// </summary>
-        public List<OneFile> ListFiles =new List<OneFile>();
+      public List<OneFile> ListFiles = new List<OneFile>();
         
 
         /// <summary>
         /// Список классов Parameter. (Список параметров с данными их.)
         /// </summary>
-        public  List<Parameter> Parameters = new List<Parameter>();
+      public List<Parameter> Parameters = new List<Parameter>();
+
         /// <summary>
         /// Запускает методы : определить какой файл, "разобраться" с файлом (создать список Parameters).
         /// </summary>

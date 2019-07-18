@@ -236,7 +236,7 @@ namespace GoodPlot
             }
             catch (ArgumentException)
             {
-              System.Windows.MessageBox.Show("Данная линия уже имеется.");
+              Chart1.Series.Add(new Series(item.KKS+"_1"));
               return;
             }
 

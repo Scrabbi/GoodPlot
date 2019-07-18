@@ -61,6 +61,10 @@ namespace GoodPlot
         /// Список имеющихся осей отмечать, откуда брать координаты.
         /// </summary>
         private readonly List<string> ItemsInComboBox;
+        /// <summary>
+        /// Для счета разностей
+        /// </summary>
+        private int D=1;
 
         public MainWindow()
         {
@@ -1249,6 +1253,63 @@ namespace GoodPlot
             
           }
         }
+      }
+      /// <summary>
+      /// Вычисление разности 2-х параметров
+      /// </summary>
+      /// <param name="sender"></param>
+      /// <param name="e"></param>
+      private void Substraction_Men_Item_Click(object sender, RoutedEventArgs e)
+      {
+      //Если выделено не 2 параметра ровно, ничего не делать, предупредив пользователя.
+        if (List_Parameters.SelectedItems.Count!=2)
+        { 
+        MessageBox.Show("Выделите ровно 2 параметра");
+        return;
+        }
+
+        
+        //Сюда разность сохраним
+        Parameter NewParametrSubstr = new Parameter();
+        //Первый выделенный , по его значениям идем для вычисления разности
+        Parameter selectedParametr0 = (Parameter)List_Parameters.SelectedItems[0];
+        Parameter selectedParametr1 = (Parameter)List_Parameters.SelectedItems[1];
+        //Пошли
+        for (int i = 0; i < selectedParametr0.Time_and_Value_List.Count; i++)
+        {
+          //Создадим точку данных по разности
+          Time_and_Value TaV = new Time_and_Value();
+          TaV.Time = selectedParametr0.Time_and_Value_List[i].Time;
+          TaV.Value = selectedParametr0.Time_and_Value_List[i].Value - selectedParametr1.Time_and_Value_List[i].Value;
+          //Добавим точечку
+          NewParametrSubstr.Time_and_Value_List.Add(TaV);
+          NewParametrSubstr.KKS = "Разность" +D.ToString();
+          D++;
+        }
+        //Простое диалоговое окно да/нет.
+        MessageBoxResult MResult = MessageBox.Show("Вычитается из параметра сверху параметр снизу", "Раззница параметров", MessageBoxButton.YesNo);
+        //Если да, то как мы и сделали
+        if (MResult == MessageBoxResult.Yes)
+        {
+        //Описываем, что получили.
+        NewParametrSubstr.Description=selectedParametr0.KKS + " - " + selectedParametr1.KKS;
+        }
+        //Знаки меняем, так как наоборот вычитаем
+        if (MResult == MessageBoxResult.No)
+        {
+          NewParametrSubstr.Time_and_Value_List.ForEach(n => n.Value = -1 * n.Value);
+          NewParametrSubstr.Description = selectedParametr1.KKS + " - " + selectedParametr0.KKS;
+        }
+        File_Acts_One.Parameters.Add(NewParametrSubstr);
+
+
+        //Привязка
+        //List_Parameters.ItemsSource = File_Acts_One.Parameters;
+        List_Parameters.Items.Refresh();
+
+
+
+
       }
 
     
