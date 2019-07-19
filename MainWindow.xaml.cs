@@ -156,7 +156,8 @@ namespace GoodPlot
           {
             // Legend item result
             LegendItem legendItem = (LegendItem)result.Object;
-            Legend_Format_Window LFWindow = new Legend_Format_Window(Chart1, Chart1.Series[legendItem.SeriesName]);
+            
+            Legend_Format_Window LFWindow = new Legend_Format_Window(Chart1, Chart1.Series[legendItem.SeriesName], legendItem.Legend);
             LFWindow.Show();
           }
           //НА ось
@@ -1377,6 +1378,15 @@ namespace GoodPlot
       AFWindow.Show();
       //По закрытии будем все оси времени объединять. Но только в случае друг под другом построения.
       AFWindow.Closing += AFWindow_Closed;
+    }
+    /// <summary>
+    /// Редактирование легенды
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void Legend_Format_Click(object sender, RoutedEventArgs e)
+    {
+      
     }
   }
 }

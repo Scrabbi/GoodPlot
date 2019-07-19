@@ -100,6 +100,10 @@ Icon="PerfCenterCpl.ico"
                 <MenuItem Header="Редактировать ось Y2 слева" x:Name="Y2left_Format" Click="Y2left_Format_Click"/>
                 <MenuItem Header="Редактировать ось Y2 справа" x:Name="Y2right_Format" Click="Y2right_Format_Click"/>
             </MenuItem>
+            
+            <MenuItem Header="Легенда/линии" Name="Legend_Menu">
+                <MenuItem Header="Редактировать легенду" x:Name="Legend_Format" Click="Legend_Format_Click"/>
+            </MenuItem>
 
         </Menu>
 

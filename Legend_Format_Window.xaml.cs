@@ -28,17 +28,27 @@ namespace GoodPlot
         /// Передавайемый график
         /// </summary>
         Chart chart_ref;
-        public Legend_Format_Window(Chart chart1, Series Seria)
+        /// <summary>
+        /// Передать легенду
+        /// </summary>
+        Legend legendHere;
+        public Legend_Format_Window(Chart chart1, Series Seria, Legend legend)
         {
             InitializeComponent();
             //Ссылаемся на серию
             Seria_ref = Seria;
             chart_ref = chart1;
+            
+            //На легенду
+            legendHere=legend;
 
             //Название серии текущее
             KKS_Text.Text = Seria_ref.Name;
             //Обработчик изменения названия
             KKS_Text.TextChanged+=KKS_Text_TextChanged;
+
+            //Название арены
+            TextBoxArenaName.Text = legend.Name;
 
                     //СТИЛЬ серии текущий
             ComBoxLineType.Text = Seria_ref.BorderDashStyle.ToString();
@@ -49,6 +59,10 @@ namespace GoodPlot
             ColorBox.SelectedColor = System.Windows.Media.Color.FromArgb(Seria_ref.Color.A, Seria_ref.Color.R, Seria_ref.Color.G, Seria_ref.Color.B);
             //Обработчик изменения цвета
             ColorBox.SelectedColorChanged += ColorBox_SelectedColorChanged;
+
+            //Текущий цвет ГРАНИЦЫ легенды
+            ColorBox_legend.SelectedColor = System.Windows.Media.Color.FromArgb(legendHere.BorderColor.A, legendHere.BorderColor.R, legendHere.BorderColor.G, legendHere.BorderColor.B);
+            
 
                   //Текущая ШИРИНА
             LineWidhtTextBox.Text = Seria_ref.BorderWidth.ToString();
@@ -252,6 +266,24 @@ namespace GoodPlot
 			        chart_ref.Series[i].MarkerStyle = (MarkerStyle) (rnd.Next(0,9));   
 			      }
          
+        }
+        /// <summary>
+        /// Скрыть легенду
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void BUtHideLeg_Click(object sender, RoutedEventArgs e)
+        {
+          legendHere.Enabled = !legendHere.Enabled;
+        }
+        /// <summary>
+        /// Изменение цвета границы
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ColorBox_legend_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
+        {
+          legendHere.BorderColor = System.Drawing.Color.FromArgb(ColorBox_legend.SelectedColor.Value.A, ColorBox_legend.SelectedColor.Value.R, ColorBox_legend.SelectedColor.Value.G, ColorBox_legend.SelectedColor.Value.B);
         }
   }
 }

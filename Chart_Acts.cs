@@ -13,15 +13,8 @@ namespace GoodPlot
     
     class Chart_Acts
     {
-    //Chart chart_ref;
-    //public Chart_Acts(Chart chart)
-    //{
-    //chart_ref=chart;
-    //}
-        ///// <summary>
-        ///// Передавайемый из MainWindow чарт
-        ///// </summary>
-        //Chart Chart1 = new Chart();
+
+    int I=0;
         /// <summary>
         /// Создает арену "по умолчанию": ось времени, значений, цвет курсора, масштабируема по все осям. Имеет меню
         /// </summary>
@@ -226,22 +219,26 @@ namespace GoodPlot
         /// </summary>
         public void AddLine(Chart Chart1, System.Windows.Controls.ListView LW_given, System.Collections.IList tempKKSs, string chartareaName, File_Acts File_Acts_One, string lrAxis, string ISsecond)
         {
+          string SerName="";
           //Можно много параметров выделить потому что.
           foreach (Parameter item in tempKKSs)
           {
             //Добавлем серию
-            try
+            SerName=item.KKS;
+
+            if (!Chart1.Series.IsUniqueName(SerName))
             {
-              Chart1.Series.Add(new Series(item.KKS));
-            }
-            catch (ArgumentException)
-            {
-              Chart1.Series.Add(new Series(item.KKS+"_1"));
-              return;
+              I++;
+              SerName+=I;
+              
             }
 
+
+            Chart1.Series.Add(new Series(SerName));
+            
+
             //Легенда.
-            Chart1.Series[item.KKS].IsVisibleInLegend = true;
+            Chart1.Series[SerName].IsVisibleInLegend = true;
             //Если нет дополнительных осей, на соответсвтвующую новую арену легенду
             bool noAxis=true;
             foreach (var item1 in Chart1.ChartAreas)
@@ -253,15 +250,15 @@ namespace GoodPlot
             }
             if (noAxis)
 	            {
-                Chart1.Series[item.KKS].Legend = chartareaName;
+               Chart1.Series[SerName].Legend = chartareaName;
 	            }
             //Если есть, то и тип графика с 4 осями, на основную арену легенду наносим.
             else
-                Chart1.Series[item.KKS].Legend = "Area# 1";
+              Chart1.Series[SerName].Legend = "Area# 1";
 
             //Тип линии
-            Chart1.Series[item.KKS].ChartType = SeriesChartType.Line;
-            Chart1.Series[item.KKS].BorderDashStyle = ChartDashStyle.Solid;
+            Chart1.Series[SerName].ChartType = SeriesChartType.Line;
+            Chart1.Series[SerName].BorderDashStyle = ChartDashStyle.Solid;
 
             
 
@@ -271,22 +268,22 @@ namespace GoodPlot
             //По какой оси
             if (lrAxis == "left")
             {
-              Chart1.Series[item.KKS].YAxisType = AxisType.Primary;
+              Chart1.Series[SerName].YAxisType = AxisType.Primary;
             }
             else
             {
-              Chart1.Series[item.KKS].YAxisType = AxisType.Secondary;
+              Chart1.Series[SerName].YAxisType = AxisType.Secondary;
             }
 
             
             //Пополнение серии.   
-            foreach (Time_and_Value item1 in File_Acts_One.Find_Parametr(item.KKS).Time_and_Value_List)
+            foreach (Time_and_Value item1 in File_Acts_One.Find_Parametr(SerName.Substring(0,SerName.Length-2)).Time_and_Value_List)
             {
-              Chart1.Series[item.KKS].Points.AddXY(item1.Time, item1.Value);
+              Chart1.Series[SerName].Points.AddXY(item1.Time, item1.Value);
             }
 
             //Арена линии соответствующая
-            Chart1.Series[item.KKS].ChartArea = chartareaName;
+            Chart1.Series[SerName].ChartArea = chartareaName;
           
             //ЕСЛИ на допоплнительных осях строим в первый раз.
           bool IsarenaReadyLeft = false;
@@ -301,13 +298,13 @@ namespace GoodPlot
           if (ISsecond == "Yes" && !IsarenaReadyLeft && lrAxis=="left")
             {
               //Теперь переносим ее.
-              this.CreateSecondYAxis("L", Chart1, Chart1.ChartAreas[chartareaName], Chart1.Series[item.KKS], 4, 0);
+              this.CreateSecondYAxis("L", Chart1, Chart1.ChartAreas[chartareaName], Chart1.Series[SerName], 4, 0);
             }
           if (ISsecond == "Yes" && IsarenaReadyLeft)
           {
             //Теперь переносим ее.
             // Добавим линию, и назначим ее в созданную область.
-            Chart1.Series[item.KKS].ChartArea = Chart1.ChartAreas[chartareaName].Name + "1a";
+            Chart1.Series[SerName].ChartArea = Chart1.ChartAreas[chartareaName].Name + "1a";
           }
 
 
@@ -329,7 +326,7 @@ namespace GoodPlot
           {
             //Теперь переносим ее.
             // Добавим линию, и назначим ее в созданную область.
-            Chart1.Series[item.KKS].ChartArea = Chart1.ChartAreas[chartareaName].Name + "2a";
+            Chart1.Series[SerName].ChartArea = Chart1.ChartAreas[chartareaName].Name + "2a";
           }
 
           //ПРи удалении единственной линии на оси дополнительной, мы ее крыли. Откроем
