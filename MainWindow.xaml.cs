@@ -30,6 +30,10 @@ namespace GoodPlot
         Title MovingTitle = null;
         Legend MovingLegend=null;
         /// <summary>
+        /// Выделенный элемент
+        /// </summary>
+        HitTestResult result;
+        /// <summary>
         /// Акт. экз. SaveLoadClass
         /// </summary>
         
@@ -177,12 +181,16 @@ namespace GoodPlot
           //-------------------------ПЕРЕМЕЩАТЬ ОБЪЕКТЫ ГРАФИКА
         void Chart1_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
         {
-            HitTestResult result = Chart1.HitTest(e.X, e.Y, false);
+          //Запомним, что за элемент.
+            result = Chart1.HitTest(e.X, e.Y, false);
+            
           
+
           //Определяем, что за элемент и поехали. Сейчас Title
           if (result.ChartElementType == ChartElementType.Title && e.Button == System.Windows.Forms.MouseButtons.Left)
           {
             MovingTitle = (Title)result.Object;
+            
           }
 
           if (MovingTitle!=null)
@@ -362,9 +370,9 @@ namespace GoodPlot
         {
             //Удалить все параметры. Можно заново загружать файл.
             File_Acts_One.Parameters.Clear();
-            File_Acts_One.ListFiles.Clear();
+            //File_Acts_One.ListFiles.Clear();
             //Очищаем наш комбокс
-            ComBoxWahtFile.Items.Clear();
+            
             List_Parameters.Items.Refresh();
             Chart1.Series.Clear();
 
@@ -379,35 +387,24 @@ namespace GoodPlot
                   File_Acts_One.Read_File(item);
                 }
             }
-            //Заполнение комбокса списком файлов
             
-            foreach (var item in File_Acts_One.ListFiles)
-            {
-              ComBoxWahtFile.Items.Add(item.filename); 
-            }
              
             //Заполнение списка параметров. (При загрузке приложения.)
             List_Parameters.ItemsSource = File_Acts_One.Parameters;
-            //Переносит на вкладочку с видом на данные по выбранному KKS. Фокусимся на графике.
+            //Обновить список параметров
             List_Parameters.Items.Refresh();
+            //Заполним начальное и конечное времена у файла
+            if (File_Acts_One.read_satus=="ok")
+            {
+              TextBoxStartTime.Text = File_Acts_One.Parameters[0].Time_and_Value_List[0].Time.ToString();
+              TextBoxEndTime.Text = File_Acts_One.Parameters[File_Acts_One.Parameters.Count - 1].Time_and_Value_List[File_Acts_One.Parameters[File_Acts_One.Parameters.Count - 1].Time_and_Value_List.Count - 1].Time.ToString();
+            }
+            
+            //Переносит на вкладочку с видом на данные по выбранному KKS. Фокусимся на графике.
             TabCont1.SelectedIndex = 0;
             Chart1.Focus();
         }
 
-        //________________________________________Функции для графика. Горячие клавиши.
-        /// <summary>
-        /// Удалить линии с конца. По одной.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void ButtonClearLines_Click (object sender, RoutedEventArgs e)
-        {
-            for (int i = Chart1.Series.Count-1; i >= 0; i--)
-            {
-                Chart1.Series.RemoveAt(i);
-                return;
-            }
-        }
         /// <summary>
         /// Горячие клавиши
         /// </summary>
@@ -686,7 +683,7 @@ namespace GoodPlot
             PolylineAnnotation polyline = new PolylineAnnotation();
             polyline.LineColor = System.Drawing.Color.Black;
             //По ширине линии аннотации далее вычислетя тип ее. Поэтому, внимательно здесь, есть свзь.
-            polyline.LineWidth = 2;
+            polyline.LineWidth = 1;
             
             polyline.AllowPathEditing = true;
             polyline.AllowSelecting = true;
@@ -698,70 +695,35 @@ namespace GoodPlot
             
         }
         /// <summary>
-        /// Удалить предыдущую линию
+        /// Удалить выделенный элемент.
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void DelLastLine_Click(object sender, RoutedEventArgs e)
+        private void DelChosen_Click(object sender, RoutedEventArgs e)
         {
-            if (Chart1.Annotations.Count > 0)
+            if (Chart1.Titles.Count > 0)
             {
-                // remove the last annotation object that was added
-                Chart1.Annotations.RemoveAt(Chart1.Annotations.Count-1);
-                            
+              // Удалить  подпись
+              if (result.ChartElementType == ChartElementType.Title)
+              Chart1.Titles.Remove((Title) result.Object);
+              //Удалить аннотацию
+              if (result.ChartElementType == ChartElementType.Annotation)
+              Chart1.Annotations.Remove((Annotation)result.Object);
             }
         }
         /// <summary>
-        /// Все дулаить линии
+        /// Удалить все линии линии
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void DelAllLines_Click(object sender, RoutedEventArgs e)
         {
-            if (Chart1.Annotations.Count > 0)
-            {
-                // if in drawing mode, end the drawing mode...
-                if (ButtonDrowLine.Content.ToString() == "Рисуем линию")
-                {
-                    MessageBox.Show("Не закочено рисование линии. Щелкните по кнопке 'Рисуем линию'");
-                    return;
-                    //// uncheck the drawing mode button, which will cause
-                    //// the end placement method to be called for the check changed event
-                    //ButtonDrowLine.Content = "Нарисовать линию";
-
-                    //// Call self to remove the annotation... as simply removing the 
-                    //// annotation does not work 
-                    //DelLastLine_Click(sender, e);
-                }
-                if (ButtonDrowLine.Content.ToString() == "Нарисовать линию")
-                {
-                    
-                    for (int i = 0; i < Chart1.Annotations.Count; i++)
-                    {
-                        //Tсть свзь между шириной линии аннотации и ее типом.
-                        if (Chart1.Annotations[i].LineWidth == 2)
-                        {
-                            Chart1.Annotations.RemoveAt(i);
-                            i = i-1;
-                            //Chart1.Annotations.Remove(Chart1.Annotations[Chart1.Annotations.Count - 1]);
-                        }
-                    }
-                }
-            }
-        }
-        
-        /// <summary>
-        /// Удалить последний заголовок
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void DelTitle_Click(object sender, RoutedEventArgs e)
-        {
-            if (Chart1.Titles.Count>0)
-            {
-                Chart1.Titles.RemoveAt(Chart1.Titles.Count-1);  
-            }
-           
+          if (Chart1.Annotations.Count > 0)
+          {
+            // if in drawing mode, end the drawing mode...
+                Chart1.Annotations.Clear();
+                
+          }
         }
         /// <summary>
         /// Удалить все заголовки
@@ -1044,7 +1006,6 @@ namespace GoodPlot
         //Вертикальная подпись
         private void ButtonDrowTitle_Click(object sender, RoutedEventArgs e)
         {
-
           System.Windows.Forms.DataVisualization.Charting.Title new_tile = new System.Windows.Forms.DataVisualization.Charting.Title();
           //new_tile.TextOrientation = TextOrientation.Rotated90;
           new_tile.Text = "Назови меня и перемести";
@@ -1124,8 +1085,7 @@ namespace GoodPlot
         /// <param name="e"></param>
         private void AddFile_Click(object sender, RoutedEventArgs e)
         {
-        //Очищаем наш комбокс
-        ComBoxWahtFile.Items.Clear();
+       
 
           Microsoft.Win32.OpenFileDialog openFileDialog1 = new Microsoft.Win32.OpenFileDialog();
           openFileDialog1.Multiselect=true;
@@ -1139,11 +1099,7 @@ namespace GoodPlot
             }
           }
 
-          //Заполнение комбокса списком файлов
-          foreach (var item in File_Acts_One.ListFiles)
-          {
-            ComBoxWahtFile.Items.Add(item.filename);
-          }
+          
 
           //Заполнение списка параметров. (При загрузке приложения.)
           List_Parameters.ItemsSource = File_Acts_One.Parameters;
@@ -1182,7 +1138,7 @@ namespace GoodPlot
 
         private void Values_Module_Click(object sender, RoutedEventArgs e)
         {
-          ModuleValues ValuesWindow = new ModuleValues(File_Acts_One, Chart1);
+          ModuleValues ValuesWindow = new ModuleValues(File_Acts_One, Chart1, List_Parameters);
           ValuesWindow.Show(); 
         }
         /// <summary>
@@ -1192,11 +1148,64 @@ namespace GoodPlot
         /// <param name="e"></param>
         private void ButtonShift_Click(object sender, RoutedEventArgs e)
         {
-                    
-                 File_Acts_One.ShiftIt(ComBoxWahtFile.Text, Convert.ToInt32(TextBoxTime.Text));
-                 List_Parameters.Items.Refresh();
-                 //List_Parameters.ItemsSource = File_Acts_One.Parameters; ;
-               Chart1.Series.Clear();
+        //Сдвиг
+
+          //File_Acts_One.ShiftIt(ComBoxWahtFile.Text, Convert.ToInt32(TextBoxTime.Text));
+          //ПРоверка числа вводимого
+          int secs = 0;
+          int.TryParse(TextBoxTime.Text, out secs);
+          if (secs == 0)
+          {
+            return;
+          }
+
+          
+          //Выделенный , по его значениям идем. Проверим, что выделен параметр.
+          if (List_Parameters.SelectedItems.Count == 0)
+          {
+            MessageBox.Show("Выделите параметр");
+            return;
+          }
+          //Запомним, что выделили из параметров
+          List<Parameter> selectedParametrs =new List<Parameter>();
+          foreach (var item in List_Parameters.SelectedItems)
+          {
+            selectedParametrs.Add((Parameter) item);
+          }
+          
+
+          //Пошли
+          foreach (var item in selectedParametrs)
+          {
+            //Сюда сдвинутый параметр сохраним
+            Parameter NewParametrSubstr = new Parameter();
+
+            for (int i = 0; i < item.Time_and_Value_List.Count; i++)
+            {
+              //Создадим точку данных по разности
+              Time_and_Value TaV = new Time_and_Value();
+              TaV.Time = item.Time_and_Value_List[i].Time + TimeSpan.FromSeconds(secs);
+              TaV.Value = item.Time_and_Value_List[i].Value;
+              //Добавим точечку
+              NewParametrSubstr.Time_and_Value_List.Add(TaV);
+            }
+            //Описываем, что получили.
+            NewParametrSubstr.KKS = "сдвиг_" + TextBoxTime.Text + "_"+ item.KKS;
+            
+            NewParametrSubstr.Description = item.KKS;
+
+
+            File_Acts_One.Parameters.Add(NewParametrSubstr);
+          }
+
+          
+
+
+          //Привязка
+          //List_Parameters.ItemsSource = File_Acts_One.Parameters;
+          List_Parameters.Items.Refresh();
+          //Перестройка графика       
+          //Chart1.Series.Clear();
                   
         }
         /// <summary>
@@ -1262,7 +1271,7 @@ namespace GoodPlot
       /// <param name="e"></param>
       private void Substraction_Men_Item_Click(object sender, RoutedEventArgs e)
       {
-      //Если выделено не 2 параметра ровно, ничего не делать, предупредив пользователя.
+        //Если выделено не 2 параметра ровно, ничего не делать, предупредив пользователя.
         if (List_Parameters.SelectedItems.Count!=2)
         { 
         MessageBox.Show("Выделите ровно 2 параметра");
@@ -1380,13 +1389,40 @@ namespace GoodPlot
       AFWindow.Closing += AFWindow_Closed;
     }
     /// <summary>
-    /// Редактирование легенды
+    /// Удалить параметр
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    private void Legend_Format_Click(object sender, RoutedEventArgs e)
+    private void Delete_Men_Item_Click(object sender, RoutedEventArgs e)
     {
-      
+        File_Acts_One.Parameters.RemoveAll(x => List_Parameters.SelectedItems.Contains(x));
+        List_Parameters.Items.Refresh();
     }
+
+    /// <summary>
+    /// Обрезать время
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    private void ButtonCutTime_Click(object sender, RoutedEventArgs e)
+    {
+    //Начальное и конечное времена
+    DateTime TimeStart;
+    DateTime TimeEnd;
+    //Проверка на корректность ввода
+    if ( !(DateTime.TryParse(TextBoxStartTime.Text, out TimeStart) && DateTime.TryParse(TextBoxEndTime.Text, out TimeEnd)) )
+      {
+        return;
+      }
+      //Обрезание
+      foreach (Parameter item in File_Acts_One.Parameters)
+	      {
+        item.Time_and_Value_List = item.Time_and_Value_List.FindAll(n => n.Time >= DateTime.Parse(TextBoxStartTime.Text) && n.Time <= DateTime.Parse(TextBoxEndTime.Text));
+	      }
+    
+    }
+    
+
+    
   }
 }

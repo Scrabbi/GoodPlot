@@ -6,7 +6,7 @@ xmlns:wf="clr-namespace:System.Windows.Forms;assembly=System.Windows.Forms"
 xmlns:dvc="clr-namespace:System.Windows.Forms.DataVisualization.Charting;assembly=System.Windows.Forms.DataVisualization"
 xmlns:local="clr-namespace:GoodPlot"  x:Class="GoodPlot.MainWindow"
 Icon="PerfCenterCpl.ico"
-    Title="Paint_it!" Height="449.373" Width="692.604">
+    Title="Paint_it!" Height="448.373" Width="694.604">
     <!--основное поле-->
     <Grid Margin="0,0,2,-2">
         <!--2 строки, в первой меню программы, во второй вкладки-->
@@ -44,11 +44,9 @@ Icon="PerfCenterCpl.ico"
                         <TranslateTransform/>
                     </TransformGroup>
                 </MenuItem.RenderTransform>
-                <MenuItem Header="Убрать линию" x:Name="DelLastLine" Click="DelLastLine_Click"/>
-                <MenuItem Header="Убрать все линии" x:Name="DelAllLines" Click="DelAllLines_Click"/>
-                <MenuItem Header="Удалить надпись" x:Name="DelTitle" Click="DelTitle_Click"/>
-                <MenuItem Header="Удалить все надписи и линии" x:Name="DelAllTitles" Click="DelAllTitles_Click"/>
-                <MenuItem Header="Удалить график параметра"  Name="ButtonClearLines" Click="ButtonClearLines_Click"/>
+                <MenuItem Header="Удалить (линию или надпись)" x:Name="DelLastLine" Click="DelChosen_Click"/>
+                <MenuItem Header="Удалить все линии" x:Name="DelAllLines" Click="DelAllLines_Click"/>
+                <MenuItem Header="Удалить все надписи" x:Name="DelAllTitles" Click="DelAllTitles_Click"/>
             </MenuItem>
 
             <MenuItem Header="Сохранить изображение" RenderTransformOrigin="0.5,0.5">
@@ -82,7 +80,7 @@ Icon="PerfCenterCpl.ico"
             </MenuItem>
 
             <MenuItem Header="Файл" Name="File_Menu">
-                <MenuItem Header="Сахранить" x:Name="SaveMenuItem" Click="SaveMenuItem_Click"/>
+                <MenuItem Header="Сохранидь" x:Name="SaveMenuItem" Click="SaveMenuItem_Click"/>
                 <MenuItem Header="Загрузить" x:Name="LoadMenuItem" Click="LoadMenuItem_Click"/>
                 <MenuItem Header="Начать заново" x:Name="NewBeginning" Click="NewBeginning_Click"/>
                 <MenuItem Header="СВРК:подгрузить обозначения" x:Name="LoadSvrkNames" Click="LoadSvrkNames_Click"/>
@@ -100,10 +98,8 @@ Icon="PerfCenterCpl.ico"
                 <MenuItem Header="Редактировать ось Y2 слева" x:Name="Y2left_Format" Click="Y2left_Format_Click"/>
                 <MenuItem Header="Редактировать ось Y2 справа" x:Name="Y2right_Format" Click="Y2right_Format_Click"/>
             </MenuItem>
-            
-            <MenuItem Header="Легенда/линии" Name="Legend_Menu">
-                <MenuItem Header="Редактировать легенду" x:Name="Legend_Format" Click="Legend_Format_Click"/>
-            </MenuItem>
+
+
 
         </Menu>
 
@@ -170,24 +166,35 @@ Icon="PerfCenterCpl.ico"
                                 <MenuItem Header="Построить/вторая правая ось" Name="bsRight" Click="bsRight_Click"></MenuItem>
                                 <MenuItem Header="Сохрани меня в .csv" Name="ToCSV" Click="ToCSV_Click"></MenuItem>
                                 <MenuItem Header="Добавить разность" Name="Substraction_Men_Item" Click="Substraction_Men_Item_Click"></MenuItem>
+                                <MenuItem Header="Удалить" Name="Delete_Men_Item" Click="Delete_Men_Item_Click"></MenuItem>
+
                             </ContextMenu>
                         </ListView.ContextMenu>
                     </ListView>
 
                     <!--сдвиг по времени-->
                     <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Stretch"  >
-                        <StackPanel Orientation="Horizontal">
-                            <Label   Content="Выбор файла" Grid.Column="0" Background="Bisque"   />
-                            <ComboBox  x:Name="ComBoxWahtFile"  Width="175" />
-                        </StackPanel>
 
-                        <StackPanel Orientation="Horizontal">
+                        <StackPanel Orientation="Horizontal" Height="24">
                             <Label Name="LabelSecs"   Content="Сдвиг на сколько секунд?" Grid.Column="0" Background="Bisque"  />
                             <TextBox Text="3600"  x:Name="TextBoxTime"  Width="175" />
                         </StackPanel>
 
-                        <Button x:Name="ButtonShift" Click="ButtonShift_Click" Background="LightGray"  Content="Сдвинуть" />
+                        <Button x:Name="ButtonShift" Click="ButtonShift_Click" Background="LightGray"  Content="Сдвинуть" Height="20" />
                     </StackPanel>
+
+                    <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Stretch" Margin="0,47,0,0"  >
+
+                        <StackPanel Orientation="Horizontal" Height="23">
+                            <Label   Content="Оставить время с" Grid.Column="0" Background="Bisque"  />
+                            <TextBox x:Name="TextBoxStartTime"  Width="175" />
+                            <Label   Content="по" Grid.Column="0" Background="Bisque"  />
+                            <TextBox x:Name="TextBoxEndTime"  Width="175" />
+                        </StackPanel>
+
+                        <Button x:Name="ButtonCutTime" Click="ButtonCutTime_Click" Background="LightGray"  Content="Обрезать" Height="20" />
+                    </StackPanel>
+
                 </Grid>
             </TabItem>
 
@@ -211,7 +218,7 @@ Icon="PerfCenterCpl.ico"
                     </Grid.ColumnDefinitions>
                     <!--Раздделители-->
                     <GridSplitter Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="5"   />
-                    
+
 
                     <!--Добавляем элемент winforms MS Chart. -->
                     <WindowsFormsHost x:Name="ChartHost"  Grid.Column="3"   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"   >
@@ -234,7 +241,7 @@ Icon="PerfCenterCpl.ico"
                         </ComboBox>
                     </StackPanel>
 
-                    
+
                 </Grid>
             </TabItem>
 

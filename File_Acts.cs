@@ -71,12 +71,14 @@ namespace GoodPlot
     /// </summary>
     public class File_Acts
     {
+      //  /// <summary>
+      //  /// Для сдвига по времени организовал такой отдельный список.
+      //  /// </summary>
+      //public List<OneFile> ListFiles = new List<OneFile>();
         /// <summary>
-        /// Для сдвига по времени организовал такой отдельный список.
+        /// Прочитался ли файл
         /// </summary>
-      public List<OneFile> ListFiles = new List<OneFile>();
-        
-
+      public string read_satus = "no";
         /// <summary>
         /// Список классов Parameter. (Список параметров с данными их.)
         /// </summary>
@@ -97,31 +99,31 @@ namespace GoodPlot
               case "APIK_Bush":
                 
                 Parameters.AddRange(this.Load_ApikBnpp(File_Full_Name));
-                ListFiles.Add(new OneFile { filename = File_Full_Name, ParametersOF = Load_ApikBnpp(File_Full_Name) });
+                //ListFiles.Add(new OneFile { filename = File_Full_Name, ParametersOF = Load_ApikBnpp(File_Full_Name) });
                 break;
           //2
               case "APIK_Nvaes":
                 
                 Parameters.AddRange(this.Load_ApikNVAES6(File_Full_Name));
-                ListFiles.Add(new OneFile { filename = File_Full_Name, ParametersOF = Load_ApikNVAES6(File_Full_Name) });
+                
                 break;
           //3
               case "SVBU_NVAES_6":
                 
                 Parameters.AddRange(this.Load_SvbuNVAES(File_Full_Name));
-                ListFiles.Add(new OneFile { filename = File_Full_Name, ParametersOF = Load_SvbuNVAES(File_Full_Name) });
+                
                 break;
           //4
               case "SVBU_NVAES_7":
                 
                 Parameters.AddRange(this.Load_SvbuNVAES_7(File_Full_Name));
-                ListFiles.Add(new OneFile { filename = File_Full_Name, ParametersOF = Load_SvbuNVAES_7(File_Full_Name) });
+                
                 break;
           //5
               case "SvrkNvaes":
                 
                 Parameters.AddRange(this.Load_SvrkNvaes(File_Full_Name));
-                ListFiles.Add(new OneFile { filename = File_Full_Name, ParametersOF = Load_SvrkNvaes(File_Full_Name) });
+                
                 break;
         //6
         case "ProgramFile":
@@ -131,35 +133,40 @@ namespace GoodPlot
           //Параметр один тут. сделаем список из 1
           List<Parameter> MyPar = new List<Parameter>();
           MyPar.Add(Load_PragramFile(File_Full_Name));
-          ListFiles.Add(new OneFile { filename = File_Full_Name, ParametersOF = MyPar });
+          
           break;
           //7
               case "AOP_summ_Nvaes":
                 
                 Parameters.AddRange(this.Load_AOP_Sum_Nvaes(File_Full_Name));
-                ListFiles.Add(new OneFile { filename = File_Full_Name, ParametersOF = Load_AOP_Sum_Nvaes(File_Full_Name) });
+                
                 break;
 
               case "AOPNvaes":
                 
                 Parameters.AddRange(this.Load_AOP_Nvaes(File_Full_Name));
-                ListFiles.Add(new OneFile { filename = File_Full_Name, ParametersOF = this.Load_AOP_Nvaes(File_Full_Name) });
+               
                 break;
         //8
         case "SVRKtxt":
 
           Parameters.AddRange(this.Load_SVRKtxt_Nvaes(File_Full_Name));
-          ListFiles.Add(new OneFile { filename = File_Full_Name, ParametersOF = Load_SVRKtxt_Nvaes(File_Full_Name) });
+          
           break;
 
         //9
         case "CSV":
 
           Parameters.AddRange(this.Load_CSV(File_Full_Name));
-          ListFiles.Add(new OneFile { filename = File_Full_Name, ParametersOF = Load_CSV(File_Full_Name) });
+          
           break;
 
+        //10
+        case "Korona":
 
+          Parameters.AddRange(this.Load_Korona(File_Full_Name));
+          
+          break;
 
         //Дозагрузка обозначений параметров
         case "SvrkNamesNvaesFile":
@@ -168,7 +175,7 @@ namespace GoodPlot
                 break;
 
               default:
-                MessageBox.Show("На данный момент поддерживаются файлы: \n1) АПИК Бушер-1; \n2)АПИК НВАЭС-6; \n3)СВБУ НВАЭС-6; \n4)СВБУ НВАЭС-7; \n5)СВРК НВАЭС--rsa; \n6)Свой файл; \n7)АОП-7 блок; \n8)СВРК НВАЭС--txt;   \n9)Файл csv; \nтакже можно дозагрузить обозначения параметров СВРК. \n Один из файлов не соответствует описанию.");
+                MessageBox.Show("На данный момент поддерживаются файлы: \n1) АПИК Бушер-1; \n2)АПИК НВАЭС-6; \n3)СВБУ НВАЭС-6; \n4)СВБУ НВАЭС-7; \n5)СВРК НВАЭС--rsa; \n6)Свой файл; \n7)АОП-7 блок; \n8)СВРК НВАЭС--txt;   \n9)Файл csv;  \n10)Файл с короны; \nтакже можно дозагрузить обозначения параметров СВРК. \n Один из файлов не соответствует описанию.");
                 break;
             }
           
@@ -183,7 +190,7 @@ namespace GoodPlot
         {
             //Почитаем файл...
             //Считать файл. Саздаем поток чтения. Применяем правильную кодировку.
-            StreamReader FileStream = new StreamReader(File_Full_Name); //, Encoding.GetEncoding("Windows-1251")
+          StreamReader FileStream = new StreamReader(File_Full_Name, Encoding.GetEncoding("Windows-1251")); //, Encoding.GetEncoding("Windows-1251")
             //Считать линию из файла.
             string File_line = FileStream.ReadLine();
             //Теперь можем понять, откуда он:
@@ -191,6 +198,7 @@ namespace GoodPlot
         //Бушер
             if (File_line.Contains("002.") && File_line.Contains("003. 10YQR00FX901XQ01 - N CORE, MW"))
             {
+                read_satus = "ok";
                 return "APIK_Bush";
             }
             FileStream.Close();
@@ -201,6 +209,7 @@ namespace GoodPlot
             //НВАЭС-6
             if (File_line.Contains("2 Время СКУД") && File_line.Contains("М Н ККНП"))
             {
+              read_satus = "ok";
               return "APIK_Nvaes";
             }
       FileStream.Close();
@@ -210,6 +219,7 @@ namespace GoodPlot
             //СВБУ НВАЭС
             if (File_line.Contains("CWH") && !File_line.Contains("СВБУ"))
             {
+              read_satus = "ok";
               return "SVBU_NVAES_6";
             }
       FileStream.Close();
@@ -219,6 +229,7 @@ namespace GoodPlot
             File_line = FileStream.ReadLine();
             if (File_line.Contains("СВБУ") && File_line.Contains("CWH"))
             {
+              read_satus = "ok";
               return "SVBU_NVAES_7";
             }
       FileStream.Close();
@@ -227,6 +238,7 @@ namespace GoodPlot
             File_line = FileStream.ReadLine();
             if (File_line.Contains("TypeID") )
             {
+              read_satus = "ok";
               return "SvrkNvaes";
             }
       FileStream.Close();
@@ -243,6 +255,7 @@ namespace GoodPlot
               }
               if (File_line.Contains("Идентификатор"))
               {
+                read_satus = "ok";
                 return "SvrkNamesNvaesFile";
               }
              
@@ -255,6 +268,7 @@ namespace GoodPlot
             File_line = FileStream.ReadLine();
             if (File_line.Contains("Program_file"))
             {
+              read_satus = "ok";
               return "ProgramFile"; 
             }
       FileStream.Close();
@@ -264,7 +278,9 @@ namespace GoodPlot
             //Считать линию из файла.
             File_line = FileStream.ReadLine();
             if (File_line.Contains("Дата;Время;KKS;Параметр;Значение"))
+
             {
+              read_satus = "ok";
               return "AOP_summ_Nvaes";
             }
       FileStream.Close();
@@ -275,6 +291,7 @@ namespace GoodPlot
             File_line = FileStream.ReadLine();
             if (File_line.Contains("Дата Время") && !File_line.Contains("Значение"))
             {
+              read_satus = "ok";
               return "AOPNvaes";
             }
       FileStream.Close();
@@ -286,6 +303,7 @@ namespace GoodPlot
       File_line = FileStream.ReadLine();
       if (File_line.Contains("HВАЭС            Кампания") && File_line.Contains("опер. архив"))
       {
+        read_satus = "ok";
         return "SVRKtxt";
       }
       FileStream.Close();
@@ -294,9 +312,22 @@ namespace GoodPlot
         //ПРосто по расширению распознаем
       if (File_Full_Name.Contains(".csv"))
       {
+        read_satus = "ok";
         return "CSV";
       }
-     
+
+      //корона
+      FileStream = new StreamReader(File_Full_Name, Encoding.GetEncoding("Windows-1251"));
+      //Считать линию из файла.
+      File_line = FileStream.ReadLine();
+
+      if ( File_line.Contains("T,сек") )
+
+      {
+        read_satus = "ok";
+        return "Korona";
+      }
+      FileStream.Close();
 
 
       return "NULL";
@@ -676,8 +707,6 @@ namespace GoodPlot
           return Parameters0;
 
         }
-
-
         
                 //Чтение СВРК с НВАЭС-6
         /// <summary>
@@ -1127,6 +1156,101 @@ namespace GoodPlot
     }
 
 
+    /// <summary>
+    /// Парс короны
+    /// </summary>
+    /// <param name="File_Full_Name"></param>
+    /// <param name="IsFirst"></param>
+    private List<Parameter> Load_Korona(string File_Full_Name)
+    {
+      //Создаем потому что  добавлять будем файл. 
+      List<Parameter> Parameters0 = new List<Parameter>();
+      //Считать файл. Саздаем поток чтения. Применяем правильную кодировку.
+      StreamReader FileRead = new StreamReader(File_Full_Name, Encoding.GetEncoding("Windows-1251"));
+      //Список. Хранит разбитую линию файла. 
+      List<string> File_line_Slices = new List<string>();
+
+      //Линия файла. Надо на 1, к списку параметров
+      string File_line = FileRead.ReadLine();
+
+
+
+
+      //===============================Этап 1: составим список параметоров.  ========================================      
+      //Линиия разбивается на кусочки.
+      File_line_Slices = File_line.Split('\t').ToList();
+      // составим список параметров
+      for (int i = 1; i < File_line_Slices.Count; i++)
+      {
+
+        Parameters0.Add(new Parameter { KKS = File_line_Slices[i], Description = "-", Dimention = "-" });
+      }
+      //Закрытие потока
+      FileRead.Close();
+
+      //--------------------------------Этап 2. К параметрам добавим значения.===============================
+      //Заполняем значения
+      //Считать файл. Саздаем поток чтения. Применяем правильную кодировку.
+      StreamReader FileRead2 = new StreamReader(File_Full_Name);
+      //Линия файла. Переходим на 2-ю.
+      string File_line2 = FileRead2.ReadLine();
+      for (int i = 0; i < 2; i++)
+      {
+        File_line2 = FileRead2.ReadLine();
+      }
+
+      //Читаем все строки файла
+      while (File_line2 != null)
+      {
+        //Линиия разбивается на кусочки.
+        File_line_Slices = File_line2.Split('\t').ToList();
+        //Время получаем
+        DateTime CurrTime = DateTime.Parse("01.01.2001 0:00:00.000") + TimeSpan.FromSeconds(Convert.ToDouble(File_line_Slices[0]));   
+        //Добавляем значения
+        for (int i = 1; i <  File_line_Slices.Count; i++)
+        {
+          //Если дискрет, то вкл выкл обозначается. 1 и 0 заменим. Для этого сии действия:
+          double Value_ = 777;
+          Double.TryParse(CustomConvert(File_line_Slices[i]), out Value_);
+          //Здесь нуль значит , согласно, методу трайпарс, означает неуспешность преобразования
+          if (Value_ == 0)
+          {
+            if (File_line_Slices[i] == "Вкл")
+            {
+              Value_ = 1;
+            }
+            if (File_line_Slices[i] == "Выкл")
+            {
+              Value_ = 0;
+            }
+          }
+
+          Parameters0[i - 1].Time_and_Value_List.Add(new Time_and_Value { Time = CurrTime, Value = Value_ });
+        }
+        //К сделующей строке
+        File_line2 = FileRead2.ReadLine();
+      }
+      FileRead2.Close();
+
+
+      //Если повторяющиеся параметры на другой время, к примеру.
+      foreach (Parameter item in Parameters)
+      {
+        foreach (Parameter item0 in Parameters0)
+        {
+          if (item.KKS == item0.KKS)
+          {
+            item0.KKS += "AOPNvaes_Copy";
+          }
+        }
+      }
+      return Parameters0;
+    }
+
+
+
+
+
     //Чтение фала, создаваемого самой программой
     /// <summary>
     /// Метод, производящий обработку файла данных, создаваемого самой программой
@@ -1258,52 +1382,53 @@ namespace GoodPlot
           s = s.Replace(",", System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator);
           return s;
         }
-        /// <summary>
-        /// Сдвинуть на время
-        /// </summary>
-        /// <param name="Pars"></param>
-        /// <param name="secs"></param>
-        public void ShiftIt(string FileName, int secs)
-        {
-          //Найти какой из файлов сдвинуть
-          List<Parameter> Chosen_Par = new List<Parameter>();
-          foreach (var item in ListFiles)
-          {
-            if (item.filename==FileName)
-            {
-              Chosen_Par = item.ParametersOF;
-            }
-          }
-          ////Определим, куда сдвигать
-          //TimeSpan TimeShift= new TimeSpan();
-          //if (secs>0)
-          //{
-          //  TimeShift=TimeSpan.FromSeconds(secs);
-          //}
-          //else TimeShift = -TimeSpan.FromSeconds(-secs);
-          //Сдвинуть
-          for (int j=0;j< Chosen_Par.Count;j++)
-          {
-            for (int i = 0; i < Chosen_Par[j].Time_and_Value_List.Count; i++)
-	              {
-                 
-                    //Структуру менять как класс не получится. Ссылки не так работают
-                    Time_and_Value Tad=new Time_and_Value();//Создали
-                    Tad=Chosen_Par[j].Time_and_Value_List[i];//Копия
-                    
-                    Tad.Time = Chosen_Par[j].Time_and_Value_List[i].Time + TimeSpan.FromSeconds(secs);//Значение копии, сам СВДИГ
-                    Chosen_Par[j].Time_and_Value_List[i]=Tad;//Запись
-                 
-               }
-          }
-          Parameters.Clear();
-          //Переписали параметры.
-          foreach (var item in ListFiles)
-          {
-            Parameters.AddRange(item.ParametersOF);
-          }
 
-        }
+        ///// <summary>
+        ///// Сдвинуть на время
+        ///// </summary>
+        ///// <param name="Pars"></param>
+        ///// <param name="secs"></param>
+        //public void ShiftIt(string FileName, int secs)
+        //{
+        //  //Найти какой из файлов сдвинуть
+        //  List<Parameter> Chosen_Par = new List<Parameter>();
+        //  foreach (var item in ListFiles)
+        //  {
+        //    if (item.filename==FileName)
+        //    {
+        //      Chosen_Par = item.ParametersOF;
+        //    }
+        //  }
+        //  ////Определим, куда сдвигать
+        //  //TimeSpan TimeShift= new TimeSpan();
+        //  //if (secs>0)
+        //  //{
+        //  //  TimeShift=TimeSpan.FromSeconds(secs);
+        //  //}
+        //  //else TimeShift = -TimeSpan.FromSeconds(-secs);
+        //  //Сдвинуть
+        //  for (int j=0;j< Chosen_Par.Count;j++)
+        //  {
+        //    for (int i = 0; i < Chosen_Par[j].Time_and_Value_List.Count; i++)
+        //       {
+                 
+        //            //Структуру менять как класс не получится. Ссылки не так работают
+        //            Time_and_Value Tad=new Time_and_Value();//Создали
+        //            Tad=Chosen_Par[j].Time_and_Value_List[i];//Копия
+                    
+        //            Tad.Time = Chosen_Par[j].Time_and_Value_List[i].Time + TimeSpan.FromSeconds(secs);//Значение копии, сам СВДИГ
+        //            Chosen_Par[j].Time_and_Value_List[i]=Tad;//Запись
+                 
+        //       }
+        //  }
+        //  Parameters.Clear();
+        //  //Переписали параметры.
+        //  foreach (var item in ListFiles)
+        //  {
+        //    Parameters.AddRange(item.ParametersOF);
+        //  }
+
+        //}
 
        
     }

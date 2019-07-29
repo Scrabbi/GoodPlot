@@ -54,7 +54,13 @@ namespace GoodPlot
 
     void FontSizeBox_TextChanged(object sender, TextChangedEventArgs e)
     {
+    double d=0;
+    double.TryParse(FontSizeBox.Text,out d);
+    if (d>0)
+    {
       TitleGiven.Font = new System.Drawing.Font("Times New Roman", (float)Convert.ToDouble(FontSizeBox.Text), System.Drawing.FontStyle.Regular); 
+    }
+      
     }
 
     void ColorBox_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)

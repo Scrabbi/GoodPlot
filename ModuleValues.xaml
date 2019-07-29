@@ -16,13 +16,15 @@
                 <DataGridTextColumn  Binding="{Binding KKS,Mode=OneWay,UpdateSourceTrigger=PropertyChanged,StringFormat='HH:mm:ss.fff yyyy-MM-dd'}" Width="150" Header="Параметры" />
                 <DataGridTextColumn  Binding="{Binding Value,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Width="100" Header="Значение" />
                 <DataGridTextColumn  Binding="{Binding AverageValue,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Width="100" Header="Среднее" />
+                <DataGridTextColumn  Binding="{Binding PointTime,Mode=OneWay,UpdateSourceTrigger=PropertyChanged,StringFormat='HH:mm:ss.fff yyyy-MM-dd'}" Width="100" Header="Время" />
                 <DataGridTextColumn  Binding="{Binding AverageValueBTW,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Width="100" Header="Среднее 2тчк" />
             </DataGrid.Columns>
         </DataGrid>
         <StackPanel Orientation="Vertical"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="0">
             <Label   Content="Полуинтервал усреднения" Grid.Column="0" Background="Bisque"  Width="182"  />
             <Label  Content="Усреднить между" Grid.Column="0" Background="Bisque" Width="182"  />
-
+            <Label  Content="Домножить на число" Grid.Column="0" Background="Bisque" Width="182"  />
+            
         </StackPanel>
 
         <StackPanel Orientation="Vertical"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.Row="1" Grid.Column="1">
@@ -30,6 +32,10 @@
             <StackPanel Orientation="Horizontal"   Grid.Row="1" Grid.Column="1">
                 <Button x:Name="ButtonStart" Click="ButtonStart_Click" Background="LightGray"  Content="Начало" RenderTransformOrigin="0.441,1.682" Height="30" Width="83"/>
                 <Button x:Name="ButtonEnd" Click="ButtonEnd_Click" Background="LightGray"  Content="Конец" Width="97"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <TextBox x:Name="TBNumber" Width="57"  />
+                <Button x:Name="ButtonMulty" Click="ButtonMulty_Click" Background="LightGray"  Content="Домножить" Width="123"/>
             </StackPanel>
         </StackPanel>
 

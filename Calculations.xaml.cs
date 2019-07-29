@@ -108,7 +108,8 @@ namespace GoodPlot
       double FrecvencyRegistration = TadList[1].Time.Subtract(TadList[0].Time).TotalSeconds;
       foreach (var item in TadList)
       {
-        if (item.Time.Hour == Dt.Hour && item.Time.Minute == Dt.Minute && Math.Abs(item.Time.Second - Dt.Second) <= FrecvencyRegistration/2)
+        if (item.Time.Subtract(Dt).TotalSeconds <= FrecvencyRegistration+0.5 )
+        //if (item.Time.Hour == Dt.Hour && item.Time.Minute == Dt.Minute && Math.Abs(item.Time.Second - Dt.Second) <= FrecvencyRegistration/2)
           return item;
       }
       MessageBox.Show("Не найдено совпадение времени с курсором");
@@ -125,7 +126,8 @@ namespace GoodPlot
       double FrecvencyRegistration = DateTime.FromOADate(PointList[1].XValue).Subtract(DateTime.FromOADate(PointList[0].XValue)).TotalSeconds;
       foreach (var item in PointList)
       {
-        if (DateTime.FromOADate(item.XValue).Hour == Dt.Hour && DateTime.FromOADate(item.XValue).Minute == Dt.Minute && Math.Abs(DateTime.FromOADate(item.XValue).Second - Dt.Second) <= FrecvencyRegistration/2)
+        //if (DateTime.FromOADate(item.XValue).Hour == Dt.Hour && DateTime.FromOADate(item.XValue).Minute == Dt.Minute && Math.Abs(DateTime.FromOADate(item.XValue).Second - Dt.Second) <= FrecvencyRegistration/2)
+        if (DateTime.FromOADate(item.XValue).Subtract(Dt).TotalSeconds <= FrecvencyRegistration+0.5)
           return item;
       }
       MessageBox.Show("Не найдено совпадение времени с курсором");
@@ -221,6 +223,10 @@ namespace GoodPlot
       /// </summary>
       public double Value { get; set; }
       /// <summary>
+      /// Время точки
+      /// </summary>
+      public DateTime PointTime { get; set; }
+      /// <summary>
       /// Среднее за указанное количество точек
       /// </summary>
       public double AverageValue { get; set; }
@@ -244,6 +250,7 @@ namespace GoodPlot
         {
           line.KKS = item.Name;
           line.Value = FindPoint(item.Points, DateTime.FromOADate(chart_ref.ChartAreas[item.ChartArea].CursorX.Position)).YValues[0];
+          line.PointTime=DateTime.FromOADate(chart_ref.ChartAreas[item.ChartArea].CursorX.Position);
           line.AverageValue=FindAverage(item.Points,DateTime.FromOADate(chart_ref.ChartAreas[item.ChartArea].CursorX.Position),secforaver);
           Rezult.Add(line);
         }
@@ -269,6 +276,7 @@ namespace GoodPlot
         {
           line.KKS = item.Name;
           line.Value = FindPoint(item.Points, DateTime.FromOADate(chart_ref.ChartAreas[item.ChartArea].CursorX.Position)).YValues[0];
+          line.PointTime = DateTime.FromOADate(chart_ref.ChartAreas[item.ChartArea].CursorX.Position);
           line.AverageValue = FindAverage(item.Points, DateTime.FromOADate(chart_ref.ChartAreas[item.ChartArea].CursorX.Position), secforaver);
           line.AverageValueBTW=FindAverage(item.Points,pstart,pend);
           Rezult.Add(line);

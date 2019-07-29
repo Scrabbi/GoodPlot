@@ -102,6 +102,21 @@ namespace GoodPlot
 	           
                   //обработчик
             ComBoxType.DropDownClosed += ComBoxType_DropDownClosed;
+
+            //Обработчик изменения положения легенды. Размеров
+            chart1.CustomizeLegend += chart1_CustomizeLegend;
+        }
+        /// <summary>
+        /// Отображение изменения положения и размеров легенды
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void chart1_CustomizeLegend(object sender, CustomizeLegendEventArgs e)
+        {
+        CoordX.Text=legendHere.Position.X.ToString();
+        CoordY.Text = legendHere.Position.Y.ToString();
+        WideTB.Text = legendHere.Position.Width.ToString();
+        HeightT.Text = legendHere.Position.Height.ToString();
         }
 
         //Изменение типа линии
@@ -277,13 +292,107 @@ namespace GoodPlot
           legendHere.Enabled = !legendHere.Enabled;
         }
         /// <summary>
-        /// Изменение цвета границы
+        /// Изменение цвета
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private void ColorBox_legend_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
-          legendHere.BorderColor = System.Drawing.Color.FromArgb(ColorBox_legend.SelectedColor.Value.A, ColorBox_legend.SelectedColor.Value.R, ColorBox_legend.SelectedColor.Value.G, ColorBox_legend.SelectedColor.Value.B);
+          legendHere.BackColor = System.Drawing.Color.FromArgb(ColorBox_legend.SelectedColor.Value.A, ColorBox_legend.SelectedColor.Value.R, ColorBox_legend.SelectedColor.Value.G, ColorBox_legend.SelectedColor.Value.B);
         }
+        /// <summary>
+        /// Изменение цвета границы
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ColorBox_legend_board_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
+        {
+          legendHere.BorderColor = System.Drawing.Color.FromArgb(ColorBox_legend_board.SelectedColor.Value.A, ColorBox_legend_board.SelectedColor.Value.R, ColorBox_legend_board.SelectedColor.Value.G, ColorBox_legend_board.SelectedColor.Value.B);
+        }
+        /// <summary>
+        /// Изменение стиля границы
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ComBoxType_board_DropDownClosed(object sender, EventArgs e)
+        {
+          switch (ComBoxType_board.Text)
+          {
+            case "Линия":
+              legendHere.BorderDashStyle = ChartDashStyle.Solid;
+              break;
+            case "Точка":
+              legendHere.BorderDashStyle = ChartDashStyle.Dot;
+              break;
+            case "Черта":
+              legendHere.BorderDashStyle = ChartDashStyle.Dash;
+              break;
+
+            default: break;
+          }
+        }
+        //Изменение рзмера границы
+        private void ComBType_DropDownClosed(object sender, EventArgs e)
+        {
+          legendHere.BorderWidth = int.Parse(ComBType.Text);
+        }
+        /// <summary>
+        /// Изменение координаты "Х"
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CoordX_TextChanged(object sender, TextChangedEventArgs e)
+        {
+        double Rezult=0;
+        double.TryParse(CoordX.Text, out Rezult);
+
+          if (0<Rezult && Rezult<100)
+          {
+            legendHere.Position.X = (float)double.Parse(CoordX.Text);  
+          }
+          
+        }
+        /// <summary>
+        /// Изменение координаты "Y"
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void CoordY_TextChanged(object sender, TextChangedEventArgs e)
+        {
+          double Rezult=0;
+        double.TryParse(CoordX.Text, out Rezult);
+
+        if (0 < Rezult && Rezult < 100)
+          {
+            legendHere.Position.Y = (float)double.Parse(CoordY.Text); 
+          }
+        }
+        /// <summary>
+        /// Изменение ширины легенды
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void WideTB_TextChanged(object sender, TextChangedEventArgs e)
+        {
+          double Rezult = 0;
+          double.TryParse(WideTB.Text, out Rezult);
+
+          if (0 < Rezult && Rezult < 100)
+          {
+            legendHere.Position.Width = (float)double.Parse(WideTB.Text);
+          }
+        }
+
+        private void HeightT_TextChanged(object sender, TextChangedEventArgs e)
+        {
+          double Rezult = 0;
+          double.TryParse(HeightT.Text, out Rezult);
+
+          if (0 < Rezult && Rezult < 100)
+          {
+            legendHere.Position.Height = (float)double.Parse(HeightT.Text);
+          }
+        }
+
   }
 }

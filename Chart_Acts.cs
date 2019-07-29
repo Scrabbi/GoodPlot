@@ -277,7 +277,7 @@ namespace GoodPlot
 
             
             //Пополнение серии.   
-            foreach (Time_and_Value item1 in File_Acts_One.Find_Parametr(SerName.Substring(0,SerName.Length-2)).Time_and_Value_List)
+            foreach (Time_and_Value item1 in File_Acts_One.Find_Parametr(SerName).Time_and_Value_List)
             {
               Chart1.Series[SerName].Points.AddXY(item1.Time, item1.Value);
             }
@@ -352,6 +352,13 @@ namespace GoodPlot
         /// <param name="Chart1"></param>
         public void Add_Area_Bottom(Chart Chart1)
         {
+          ////Сохраняем позиции по оси "Х", которые у надписей отчего-то сбиваются
+          //List <float> Xpos = new List<float>(); 
+          //foreach (var item in Chart1.Titles)
+          //{
+          // Xpos.Add(item.Position.X);
+          //}
+
             //Добавляем арена с номером СЛЕДУЮЩИМ
             LoadNEWArena(Chart1, Chart1.ChartAreas.Count + 1);
             //Получаем теперь , уже настоящий, этот номер.
@@ -368,10 +375,11 @@ namespace GoodPlot
             //Шрифт одинаковый сделать
             Chart1.ChartAreas[i].AxisX.LabelStyle.Font = new System.Drawing.Font("Arial", 10);
             Chart1.ChartAreas[i].AxisY.LabelStyle.Font = new System.Drawing.Font("Arial", 10);
-            //Полоение по высоте
-            Chart1.ChartAreas[i].Position.Y = i * (New_size_H+3);
+            //Положение по высоте
+            Chart1.ChartAreas[i].Position.Y = i * (New_size_H)+3;
+
           }
-            //Выравнивание
+          //Выравнивание
           for (int i = 1; i < Chart1.ChartAreas.Count; i++)
           {
             Chart1.ChartAreas[i].AlignWithChartArea = "Area" + "# " + 1;//1 площадка рисования
@@ -379,6 +387,21 @@ namespace GoodPlot
               //Chart1.ChartAreas[i].AlignmentStyle=AreaAlignmentStyles.AxesView;
               //ChartFromForm.ChartAreas[i].AlignmentStyle = AreaAlignmentStyles.PlotPosition;
           }
+          //Работает довольно точно. Единственно, при ломаной линии есть косяк, сложно его исправить. Начало же хорошо перемещается. Но остальное можно и руками перетащить.
+          for (int i = 0; i < Chart1.Annotations.Count; i++)
+          {
+            Chart1.Annotations[i].Y = (GraphCounter - 1) * (Chart1.Annotations[i].Y) / GraphCounter;
+            Chart1.Annotations[i].Width = Chart1.Annotations[i].Width * (GraphCounter - 1) / GraphCounter;
+            Chart1.Annotations[i].Height = Chart1.Annotations[i].Height * (GraphCounter - 1) / GraphCounter;
+
+          }
+          for (int i = 0; i < Chart1.Titles.Count; i++)
+          {
+            Chart1.Titles[i].Position.Y = (GraphCounter - 1) * (Chart1.Titles[i].Position.Y) / GraphCounter;
+            Chart1.Titles[i].Font = new System.Drawing.Font("Times New Roman", 9, System.Drawing.FontStyle.Regular);
+          }
+
+         
         }
         
 
