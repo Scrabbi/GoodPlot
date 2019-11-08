@@ -223,23 +223,23 @@ namespace GoodPlot
           //Можно много параметров выделить потому что.
           foreach (Parameter item in tempKKSs)
           {
-            //Добавлем серию
+            //Добавлем имя серии
             SerName=item.KKS;
 
-            if (!Chart1.Series.IsUniqueName(SerName))
-            {
-              I++;
-              SerName+=I;
-              
-            }
-
-
+            ////Если серия уже была, не уникальна, имя серии для нее назовем с добавлением номера, сколько раз уже строили дополнительные линии аналогичные, в конце.
+            //РЕШИл, ЧТО ЭТО ЛИШНЕЕ
+            //if (!Chart1.Series.IsUniqueName(SerName))
+            //{
+            //  I++;
+            //  SerName+=I;
+            //} 
+            //Добавили серию в список графика
             Chart1.Series.Add(new Series(SerName));
             
-
-            //Легенда.
+            //Легенда видимая будет.
             Chart1.Series[SerName].IsVisibleInLegend = true;
-            //Если нет дополнительных осей, на соответсвтвующую новую арену легенду
+
+            //Определяем, строились ли дополнительные оси.
             bool noAxis=true;
             foreach (var item1 in Chart1.ChartAreas)
             {
@@ -248,6 +248,7 @@ namespace GoodPlot
                 noAxis=false;
               }
             }
+            //Если нет дополнительной оси. Легенду привязываем к указанной арене. 
             if (noAxis)
 	            {
                Chart1.Series[SerName].Legend = chartareaName;

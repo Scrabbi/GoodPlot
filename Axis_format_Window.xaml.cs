@@ -398,9 +398,9 @@ namespace GoodPlot
                 {
                     if (Convert.ToDouble(TextBoxMax.Text) > Axis_ref.Minimum)
                     {
-                      chart1_ref.Invalidate();
+                      //chart1_ref.Invalidate();
                       Axis_ref.Maximum = Convert.ToDouble(TextBoxMax.Text);
-                      chart1_ref.Invalidate();
+                      //chart1_ref.Invalidate();
                     }
                 }
                 catch (FormatException) { }
@@ -497,8 +497,8 @@ namespace GoodPlot
           //Интревал времени всегда глючит, если не задать, какой именно выираем.
           if (Axis_ref.Name.Contains("X"))
           {
-            Axis_ref.MajorGrid.IntervalType = DateTimeIntervalType.Minutes;
-            Axis_ref.MajorTickMark.IntervalType = DateTimeIntervalType.Minutes;
+            Axis_ref.MajorGrid.IntervalType = DateTimeIntervalType.Seconds;
+            Axis_ref.MajorTickMark.IntervalType = DateTimeIntervalType.Seconds;
           }
 
           try
@@ -653,8 +653,8 @@ namespace GoodPlot
           //Интревал времени всегда глючит, если не задать, какой именно выираем.
           if (Axis_ref.Name.Contains("X"))
           {
-            Axis_ref.MinorGrid.IntervalType = DateTimeIntervalType.Minutes;
-            Axis_ref.MinorTickMark.IntervalType = DateTimeIntervalType.Minutes;
+            Axis_ref.MinorGrid.IntervalType = DateTimeIntervalType.Seconds;
+            Axis_ref.MinorTickMark.IntervalType = DateTimeIntervalType.Seconds;
           }
 
           try
@@ -695,8 +695,8 @@ namespace GoodPlot
                 item.AxisX.MinorGrid.Enabled = true;
                 item.AxisX.MinorTickMark.Enabled = true;
                 //Тип интервала задаем
-                item.AxisX.MinorGrid.IntervalType = DateTimeIntervalType.Minutes;
-                item.AxisX.MinorTickMark.IntervalType = DateTimeIntervalType.Minutes;
+                item.AxisX.MinorGrid.IntervalType = DateTimeIntervalType.Seconds;
+                item.AxisX.MinorTickMark.IntervalType = DateTimeIntervalType.Seconds;
 
 
                 item.AxisX.MinorGrid.Interval = Convert.ToDouble(TextBoxInterval_Minor.Text);

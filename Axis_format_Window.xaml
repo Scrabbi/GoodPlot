@@ -46,7 +46,7 @@
 
         <StackPanel Grid.Row="1" Grid.Column="2" VerticalAlignment="Stretch">
             <Label Content="Основные деления" Background="LemonChiffon" HorizontalAlignment="Stretch" Height="35" />
-            <Label Content="Интервал" Background="Khaki" HorizontalAlignment="Stretch" Height="34" />
+            <Label Content="Интервал,c" Background="Khaki" HorizontalAlignment="Stretch" Height="34" />
             <Label Content="Ширина" Background="Khaki" HorizontalAlignment="Stretch" Height="33"  />
             <Label Content="Цвет" Background="Khaki" HorizontalAlignment="Stretch" Height="36"/>
             <Label Content="Стиль" Background="Khaki" HorizontalAlignment="Stretch" Height="27"/>
@@ -70,7 +70,7 @@
 
         <StackPanel Grid.Row="1" Grid.Column="4" VerticalAlignment="Stretch">
             <Label Content="Промежуточные деления" Background="LemonChiffon" HorizontalAlignment="Stretch" Height="35" />
-            <Label Content="Интервал" Background="Khaki" HorizontalAlignment="Stretch" Height="34" />
+            <Label Content="Интервал,c" Background="Khaki" HorizontalAlignment="Stretch" Height="34" />
             <Label Content="Ширина" Background="Khaki" HorizontalAlignment="Stretch" Height="33"  />
             <Label Content="Цвет" Background="Khaki" HorizontalAlignment="Stretch" Height="36"/>
             <Label Content="Стиль" Background="Khaki" HorizontalAlignment="Stretch" Height="27"/>

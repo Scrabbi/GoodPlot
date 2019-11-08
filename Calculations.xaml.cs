@@ -105,10 +105,10 @@ namespace GoodPlot
     /// <returns></returns>
     public Time_and_Value FindPoint(List<Time_and_Value> TadList, DateTime Dt)
     {
-      double FrecvencyRegistration = TadList[1].Time.Subtract(TadList[0].Time).TotalSeconds;
+      double FrecvencyRegistration = TadList[1].Time.Subtract(TadList[0].Time).TotalMilliseconds;
       foreach (var item in TadList)
       {
-        if (item.Time.Subtract(Dt).TotalSeconds <= FrecvencyRegistration+0.5 )
+        if (item.Time.Subtract(Dt).TotalMilliseconds <= FrecvencyRegistration )
         //if (item.Time.Hour == Dt.Hour && item.Time.Minute == Dt.Minute && Math.Abs(item.Time.Second - Dt.Second) <= FrecvencyRegistration/2)
           return item;
       }
@@ -123,14 +123,26 @@ namespace GoodPlot
     /// <returns></returns>
     public static DataPoint FindPoint(DataPointCollection PointList, DateTime Dt)
     {
-      double FrecvencyRegistration = DateTime.FromOADate(PointList[1].XValue).Subtract(DateTime.FromOADate(PointList[0].XValue)).TotalSeconds;
+      if (DateTime.FromOADate(PointList[0].XValue).Subtract(Dt).TotalMilliseconds > 0 || DateTime.FromOADate(PointList[PointList.Count-1].XValue).Subtract(Dt).TotalMilliseconds < 0)
+      {
+        MessageBox.Show("Усреднение не произвено. Выбран интервал усреднения, заходящий за начало данных");
+        return new DataPoint();
+      }
+      else
+      {
+      double FrecvencyRegistration = DateTime.FromOADate(PointList[1].XValue).Subtract(DateTime.FromOADate(PointList[0].XValue)).TotalMilliseconds;
+     
+      TimeSpan MyTS;
       foreach (var item in PointList)
       {
         //if (DateTime.FromOADate(item.XValue).Hour == Dt.Hour && DateTime.FromOADate(item.XValue).Minute == Dt.Minute && Math.Abs(DateTime.FromOADate(item.XValue).Second - Dt.Second) <= FrecvencyRegistration/2)
-        if (DateTime.FromOADate(item.XValue).Subtract(Dt).TotalSeconds <= FrecvencyRegistration+0.5)
+        MyTS= DateTime.FromOADate(item.XValue).Subtract(Dt);
+
+        if (Math.Abs(MyTS.TotalMilliseconds) <= FrecvencyRegistration)
           return item;
       }
       MessageBox.Show("Не найдено совпадение времени с курсором");
+      }
       return new DataPoint();
     }
     /// <summary>
@@ -146,9 +158,11 @@ namespace GoodPlot
       double aver_End = 0;
       double aver=0;
       int pointcount=0;
-      TimeSpan ts= new TimeSpan(0,0,SecCount_for_Aver);
+      TimeSpan ts= new TimeSpan(0,0,0,SecCount_for_Aver,0);
+      
       aver_Start = FindPoint(PointList, Dat.Subtract(ts)).XValue;
       aver_End = FindPoint(PointList, Dat.Add(ts)).XValue;
+      
       foreach (var item in PointList)
       {
         if (item.XValue>aver_Start&&item.XValue<aver_End)
@@ -255,7 +269,7 @@ namespace GoodPlot
           Rezult.Add(line);
         }
         catch (Exception)
-        {}
+        {MessageBox.Show("Ошибка в поиске в классе culculations");}
         
       }
 

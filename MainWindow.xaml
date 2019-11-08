@@ -47,6 +47,7 @@ Icon="PerfCenterCpl.ico"
                 <MenuItem Header="Удалить (линию или надпись)" x:Name="DelLastLine" Click="DelChosen_Click"/>
                 <MenuItem Header="Удалить все линии" x:Name="DelAllLines" Click="DelAllLines_Click"/>
                 <MenuItem Header="Удалить все надписи" x:Name="DelAllTitles" Click="DelAllTitles_Click"/>
+                <MenuItem Header="Удалить все графики" x:Name="DelAllGraphs" Click="DelAllGraphs_Click"/>
             </MenuItem>
 
             <MenuItem Header="Сохранить изображение" RenderTransformOrigin="0.5,0.5">
@@ -176,8 +177,9 @@ Icon="PerfCenterCpl.ico"
                     <StackPanel Orientation="Vertical" Grid.Row="1" Grid.Column="3" HorizontalAlignment="Stretch"  >
 
                         <StackPanel Orientation="Horizontal" Height="24">
-                            <Label Name="LabelSecs"   Content="Сдвиг на сколько секунд?" Grid.Column="0" Background="Bisque"  />
-                            <TextBox Text="3600"  x:Name="TextBoxTime"  Width="175" />
+                            <Label Name="LabelSecs"   Content="Сдвиг на сколько,с?" Grid.Column="0" Background="Bisque" Width="118"  />
+                            <TextBox Text="3600"  x:Name="TextBoxTime"  Width="71" />
+                            
                         </StackPanel>
 
                         <Button x:Name="ButtonShift" Click="ButtonShift_Click" Background="LightGray"  Content="Сдвинуть" Height="20" />
@@ -213,7 +215,7 @@ Icon="PerfCenterCpl.ico"
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="53*" />
                         <ColumnDefinition Width="0*" />
-                        <ColumnDefinition Width="Auto"    />
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="470*"/>
                     </Grid.ColumnDefinitions>
                     <!--Раздделители-->

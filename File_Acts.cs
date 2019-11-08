@@ -1205,7 +1205,7 @@ namespace GoodPlot
         //Линиия разбивается на кусочки.
         File_line_Slices = File_line2.Split('\t').ToList();
         //Время получаем
-        DateTime CurrTime = DateTime.Parse("01.01.2001 0:00:00.000") + TimeSpan.FromSeconds(Convert.ToDouble(File_line_Slices[0]));   
+        DateTime CurrTime = DateTime.Parse("10.10.2000 0:00:00.000") + TimeSpan.FromSeconds(Convert.ToDouble(File_line_Slices[0]));   
         //Добавляем значения
         for (int i = 1; i <  File_line_Slices.Count; i++)
         {
@@ -1365,7 +1365,7 @@ namespace GoodPlot
             
             foreach (Parameter one in Parameters)
             {
-                if (one.Description.Contains(Text) || one.KKS.Contains(Text))
+              if (one.KKS.Contains(Text)) //one.Description.Contains(Text) ||
                     return one;
             }
             MessageBox.Show("Была запущена процедура поиска параметра Find_Parametr, но параметр не был обнаружен!");

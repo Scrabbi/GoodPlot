@@ -83,5 +83,10 @@ namespace GoodPlot
     {
       TitleGiven.Text = Title_Text.Text;
     }
+
+    private void ComboBoxStyle_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+
+    }
   }
 }

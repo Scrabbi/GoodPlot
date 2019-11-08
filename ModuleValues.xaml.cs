@@ -34,8 +34,11 @@ namespace GoodPlot
       Mychart=chart;
       MyCalc=new Calculations(FA,chart);
       MylistV=listVgiven;
-      MyFileActs =FA;
+      MyFileActs = FA;
+
       
+
+
       chart.CursorPositionChanged += chart_CursorPositionChanged;
       //Values_List.ItemsSource =   File_Acts_One.Find_Parametr(tempKKS).Time_and_Value_List;
     }
