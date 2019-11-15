@@ -40,11 +40,11 @@ namespace GoodPlot
     /// <summary>
     /// Активный экземпляр класса File_Acts.
     /// </summary>
-    File_Acts File_Acts_One = new File_Acts();
+    File_Acts myFileActs = new File_Acts();
     /// <summary>
     /// Активный экземпляр класса Chart_Acts.
     /// </summary>
-    Chart_Acts Chart_Acts_One;
+    Chart_Acts myChart_Acts;
 
     //Задаем контекстное меню на график
     System.Windows.Forms.ContextMenu ContMenuChart = new System.Windows.Forms.ContextMenu();
@@ -72,11 +72,11 @@ namespace GoodPlot
 
     public MainWindow()
     {
-      Chart_Acts_One = new Chart_Acts();
+      myChart_Acts = new Chart_Acts();
 
       InitializeComponent();
 
-
+      
       //Заполняю список значений имен осей , чтобы координаты курсора соотв. отображать
       ItemsInComboBox = new List<string>();
       ItemsInComboBox.Add("L1");
@@ -86,20 +86,19 @@ namespace GoodPlot
       AreasList.ItemsSource = ItemsInComboBox;
 
       //Создадим арену "по умолчанию"
-      bsLeft.IsEnabled = false;
-      bsRight.IsEnabled = false;
-      Chart_Acts_One.LoadNEWArena(Chart1, Chart1.ChartAreas.Count() + 1);
+      
+      myChart_Acts.LoadFirstArena(myChart);
 
       //Перемещать элемент графика.
-      Chart1.MouseDown += Chart1_MouseDown;
-      Chart1.MouseLeave += Chart1_MouseLeave;
+      myChart.MouseDown += Chart1_MouseDown;
+      myChart.MouseLeave += Chart1_MouseLeave;
 
 
       //Редактировать элементы графика
-      Chart1.MouseDoubleClick += Chart1_M_DoubleClick;
+      myChart.MouseDoubleClick += Chart1_M_DoubleClick;
 
       //Задаем собитие для обнаружения нахождения курсора над элементом 
-      Chart1.MouseClick += new System.Windows.Forms.MouseEventHandler(Chart1_Click);
+      myChart.MouseClick += new System.Windows.Forms.MouseEventHandler(Chart1_Click);
 
       //Меню
       allotment_X_menuItem.Text = "Выделять по X";
@@ -112,17 +111,17 @@ namespace GoodPlot
       //Добавление элементов меню в меню
       ContMenuChart.MenuItems.AddRange(new[] { allotment_X_menuItem, allotment_Y_menuItem, Add_Area_menuItem });
       //Привязка этого меню к меню графика
-      Chart1.ContextMenu = ContMenuChart;
+      myChart.ContextMenu = ContMenuChart;
 
 
 
       //Назначим "горячие" КЛАВИШИ.
-      Chart1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Chart1_KeyDown);
+      myChart.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Chart1_KeyDown);
       //Клавиши для формы
       this.KeyDown += MainWindow_KeyDown;
 
       //Координаты курсора
-      Chart1.CursorPositionChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(chart1_CursorPositionChanged);
+      myChart.CursorPositionChanged += new System.EventHandler<System.Windows.Forms.DataVisualization.Charting.CursorEventArgs>(chart1_CursorPositionChanged);
 
 
     }
@@ -142,12 +141,12 @@ namespace GoodPlot
     //--------------------РЕДАКТИРОВАТЬ ОБЪЕКТЫ ГРАФИКА
     void Chart1_M_DoubleClick(object sender, System.Windows.Forms.MouseEventArgs e)
     {
-      Chart1.Focus();
+      myChart.Focus();
       //Перемещение отменяем
       MovingTitle = null;
       MovingLegend = null;
       // Call HitTest. 
-      HitTestResult result = Chart1.HitTest(e.X, e.Y, true);
+      HitTestResult result = myChart.HitTest(e.X, e.Y, true);
 
       //Определяем, что за элемент и поехали
       if (result.ChartElementType == ChartElementType.Title)
@@ -163,7 +162,7 @@ namespace GoodPlot
         // Legend item result
         LegendItem legendItem = (LegendItem)result.Object;
 
-        Legend_Format_Window LFWindow = new Legend_Format_Window(Chart1, Chart1.Series[legendItem.SeriesName], legendItem.Legend);
+        Legend_Format_Window LFWindow = new Legend_Format_Window(myChart, myChart.Series[legendItem.SeriesName], legendItem.Legend);
         LFWindow.Show();
       }
       //НА ось
@@ -173,7 +172,7 @@ namespace GoodPlot
         Axis AxisItem = (Axis)result.Object;
 
         // НА случай если собираемся добавочную ось редактировать добавлено имя арены в вызов конструктора.
-        Axis_format_Window AFWindow = new Axis_format_Window(AxisItem, Chart1, TextBox_Arena_N.Text);
+        Axis_format_Window AFWindow = new Axis_format_Window(AxisItem, myChart, textBox_Arena_N.Text);
         //Вызов окна
         AFWindow.Show();
         //По закрытии будем все оси времени объединять. Но только в случае друг под другом построения.
@@ -184,7 +183,7 @@ namespace GoodPlot
     void Chart1_MouseDown(object sender, System.Windows.Forms.MouseEventArgs e)
     {
       //Запомним, что за элемент.
-      result = Chart1.HitTest(e.X, e.Y, false);
+      result = myChart.HitTest(e.X, e.Y, false);
 
 
 
@@ -197,8 +196,8 @@ namespace GoodPlot
 
       if (MovingTitle != null)
       {
-        MovingTitle.Position.X = e.X * 100F / (float)(Chart1.Size.Width - 1);
-        MovingTitle.Position.Y = e.Y * 100F / (float)(Chart1.Size.Height - 1);
+        MovingTitle.Position.X = e.X * 100F / (float)(myChart.Size.Width - 1);
+        MovingTitle.Position.Y = e.Y * 100F / (float)(myChart.Size.Height - 1);
       }
 
       //Определяем, что за элемент и поехали. Сейчас Legend
@@ -207,10 +206,10 @@ namespace GoodPlot
         MovingLegend = (Legend)result.Object;
       }
 
-      if (MovingLegend != null && e.X * 100F / (float)(Chart1.Size.Width) < 90 && e.Y * 100F / (float)(Chart1.Size.Height) < 90)
+      if (MovingLegend != null && e.X * 100F / (float)(myChart.Size.Width) < 90 && e.Y * 100F / (float)(myChart.Size.Height) < 90)
       {
-        MovingLegend.Position.X = e.X * 100F / (float)(Chart1.Size.Width - 1);
-        MovingLegend.Position.Y = e.Y * 100F / (float)(Chart1.Size.Height - 1);
+        MovingLegend.Position.X = e.X * 100F / (float)(myChart.Size.Width - 1);
+        MovingLegend.Position.Y = e.Y * 100F / (float)(myChart.Size.Height - 1);
       }
 
       ////Сейчас -- легенду
@@ -235,35 +234,35 @@ namespace GoodPlot
     {
 
       // Call HitTest. 
-      HitTestResult result = Chart1.HitTest(e.X, e.Y, true);
+      HitTestResult result = myChart.HitTest(e.X, e.Y, true);
       if (result.Object is ChartArea)
       {
-        TextBox_Arena_N.Text = ((ChartArea)result.ChartArea).Name;
+        textBox_Arena_N.Text = ((ChartArea)result.ChartArea).Name;
       }
 
       // Покрасим в цвет текстбокс в соответствии с выбранной ареной. Красим по порядку классическому цветов.
-      switch (TextBox_Arena_N.Text)
+      switch (textBox_Arena_N.Text)
       {
         case "Area# 1":
-          TextBox_Arena_N.Background = System.Windows.Media.Brushes.Red;
+          textBox_Arena_N.Background = System.Windows.Media.Brushes.Red;
           break;
         case "Area# 2":
-          TextBox_Arena_N.Background = System.Windows.Media.Brushes.Orange;
+          textBox_Arena_N.Background = System.Windows.Media.Brushes.Orange;
           break;
         case "Area# 3":
-          TextBox_Arena_N.Background = System.Windows.Media.Brushes.Yellow;
+          textBox_Arena_N.Background = System.Windows.Media.Brushes.Yellow;
           break;
         case "Area# 4":
-          TextBox_Arena_N.Background = System.Windows.Media.Brushes.Green;
+          textBox_Arena_N.Background = System.Windows.Media.Brushes.Green;
           break;
         case "Area# 5":
-          TextBox_Arena_N.Background = System.Windows.Media.Brushes.Blue;
+          textBox_Arena_N.Background = System.Windows.Media.Brushes.Blue;
           break;
         case "Area# 6":
-          TextBox_Arena_N.Background = System.Windows.Media.Brushes.Indigo;
+          textBox_Arena_N.Background = System.Windows.Media.Brushes.Indigo;
           break;
         case "Area# 7":
-          TextBox_Arena_N.Background = System.Windows.Media.Brushes.Violet;
+          textBox_Arena_N.Background = System.Windows.Media.Brushes.Violet;
           break;
         default:
           //System.Windows.MessageBox.Show("Не выбрана площадка для графика");
@@ -279,10 +278,10 @@ namespace GoodPlot
     {
       if (Many_GraphButton.Background == System.Windows.Media.Brushes.BurlyWood)
       {
-        for (int i = 0; i < Chart1.ChartAreas.Count - 1; i++)
+        for (int i = 0; i < myChart.ChartAreas.Count - 1; i++)
         {
-          Chart1.ChartAreas[i].AxisX.Minimum = Chart1.ChartAreas[Chart1.ChartAreas.Count - 1].AxisX.Minimum;
-          Chart1.ChartAreas[i].AxisX.Maximum = Chart1.ChartAreas[Chart1.ChartAreas.Count - 1].AxisX.Maximum;
+          myChart.ChartAreas[i].AxisX.Minimum = myChart.ChartAreas[myChart.ChartAreas.Count - 1].AxisX.Minimum;
+          myChart.ChartAreas[i].AxisX.Maximum = myChart.ChartAreas[myChart.ChartAreas.Count - 1].AxisX.Maximum;
         }
       }
 
@@ -297,13 +296,13 @@ namespace GoodPlot
     private void List_Parameters_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
     {
       //Магия
-      dynamic selectedItem = List_Parameters.SelectedItem;
+      dynamic selectedItem = list_Parameters.SelectedItem;
       //Проверка потому что не успевает прогрузиться список, и тогда ошибка выбора элемента.
       if (selectedItem != null)
       {
         string tempKKS = selectedItem.KKS;
         //Добавление в таб информации           
-        Points_List.ItemsSource = File_Acts_One.Find_Parametr(tempKKS).Time_and_Value_List;
+        Points_List.ItemsSource = myFileActs.Find_Parametr(tempKKS).Time_and_Value_List;
         //Points_List.Items.Add(File_Acts_One.Find_Parametr(tempKKS).Time_and_Value_List);
       }
     }
@@ -315,25 +314,20 @@ namespace GoodPlot
     private void BuildRight_Click(object sender, RoutedEventArgs e)
     {
       //Магия
-      dynamic selectedItem = List_Parameters.SelectedItem;
-
-
+      dynamic selectedItem = list_Parameters.SelectedItem;
       //Проверка потому что не успевает прогрузиться список, и тогда ошибка выбора элемента,
-      //т.к. нет выбора элемента.
       if (selectedItem != null)
       {
-
-        // Добавим линию, и назначим ее в созданную область по имени текста в TextBox_Arena_N
-        Chart_Acts_One.AddLine(Chart1, List_Parameters, List_Parameters.SelectedItems, TextBox_Arena_N.Text, File_Acts_One, "right", "No");
+              // Добавим линию, и назначим ее в созданную область по имени текста в TextBox_Arena_N
+        myChart_Acts.AddMainLine(myChart, list_Parameters.SelectedItems, textBox_Arena_N.Text, myFileActs, "right");
       }
       if (selectedItem == null)
       {
         return;
       }
-
-      //На вкладку с графиком переход.
+            //На вкладку с графиком переход.
       TabCont1.SelectedIndex = 1;
-      Chart1.Focus();
+      myChart.Focus();
     }
     /// <summary>
     /// Построить по левой оси.
@@ -342,24 +336,21 @@ namespace GoodPlot
     /// <param name="e"></param>
     private void BuildLeft_Click(object sender, RoutedEventArgs e)
     {
-      //Магия
-      dynamic selectedItem = List_Parameters.SelectedItem;
-
-      //Проверка потому что не успевает прогрузиться список, и тогда ошибка выбора элемента,
-      //т.к. нет выбора элемента.
+            //Магия. Передача выбранного элемента из списка
+      dynamic selectedItem = list_Parameters.SelectedItem;
+            //Проверка потому что не успевает прогрузиться список, и тогда ошибка выбора элемента,
       if (selectedItem != null)
       {
-        // Добавим линию, и назначим ее в созданную область по имени текста в TextBox_Arena_N
-        Chart_Acts_One.AddLine(Chart1, List_Parameters, List_Parameters.SelectedItems, TextBox_Arena_N.Text, File_Acts_One, "left", "No");
+              // Добавим линию, и назначим ее в созданную область по имени текста в TextBox_Arena_N
+        myChart_Acts.AddMainLine(myChart, list_Parameters.SelectedItems, textBox_Arena_N.Text, myFileActs, "left");
       }
       if (selectedItem == null)
       {
         return;
       }
-
-      //На вкладку с графиком переход.
+            //На вкладку с графиком переход.
       TabCont1.SelectedIndex = 1;
-      Chart1.Focus();
+      myChart.Focus();
     }
 
 
@@ -371,12 +362,12 @@ namespace GoodPlot
     private void OpenFile_MenuItem_Click(object sender, RoutedEventArgs e)
     {
       //Удалить все параметры. Можно заново загружать файл.
-      File_Acts_One.Parameters.Clear();
+      myFileActs.Parameters.Clear();
       //File_Acts_One.ListFiles.Clear();
       //Очищаем наш комбокс
 
-      List_Parameters.Items.Refresh();
-      Chart1.Series.Clear();
+      list_Parameters.Items.Refresh();
+      myChart.Series.Clear();
 
       Microsoft.Win32.OpenFileDialog openFileDialog1 = new Microsoft.Win32.OpenFileDialog();
       openFileDialog1.Multiselect = true;
@@ -386,25 +377,25 @@ namespace GoodPlot
         foreach (var item in openFileDialog1.FileNames)
         {
           //Считываем файлы
-          File_Acts_One.Read_File(item);
+          myFileActs.Read_File(item);
         }
       }
 
 
       //Заполнение списка параметров. (При загрузке приложения.)
-      List_Parameters.ItemsSource = File_Acts_One.Parameters;
+      list_Parameters.ItemsSource = myFileActs.Parameters;
       //Обновить список параметров
-      List_Parameters.Items.Refresh();
+      list_Parameters.Items.Refresh();
       //Заполним начальное и конечное времена у файла
-      if (File_Acts_One.read_satus == "ok")
+      if (myFileActs.read_satus == "ok")
       {
-        TextBoxStartTime.Text = File_Acts_One.Parameters[0].Time_and_Value_List[0].Time.ToString();
-        TextBoxEndTime.Text = File_Acts_One.Parameters[File_Acts_One.Parameters.Count - 1].Time_and_Value_List[File_Acts_One.Parameters[File_Acts_One.Parameters.Count - 1].Time_and_Value_List.Count - 1].Time.ToString();
+        TextBoxStartTime.Text = myFileActs.Parameters[0].Time_and_Value_List[0].Time.ToString();
+        TextBoxEndTime.Text = myFileActs.Parameters[myFileActs.Parameters.Count - 1].Time_and_Value_List[myFileActs.Parameters[myFileActs.Parameters.Count - 1].Time_and_Value_List.Count - 1].Time.ToString();
       }
 
       //Переносит на вкладочку с видом на данные по выбранному KKS. Фокусимся на графике.
       TabCont1.SelectedIndex = 0;
-      Chart1.Focus();
+      myChart.Focus();
     }
 
     /// <summary>
@@ -417,7 +408,7 @@ namespace GoodPlot
       //Вернуть масштаб
       if (e.KeyCode == System.Windows.Forms.Keys.Back)
       {
-        foreach (var item in Chart1.ChartAreas)
+        foreach (var item in myChart.ChartAreas)
         {
           item.AxisX.ScaleView.ZoomReset();
           item.AxisY.ScaleView.ZoomReset();
@@ -431,17 +422,17 @@ namespace GoodPlot
       }
       //Передвигать клавой курсор шагами 1/100
       if (e.KeyCode == System.Windows.Forms.Keys.NumPad4)
-        Chart1.ChartAreas[TextBox_Arena_N.Text].CursorX.Position -= (Chart1.ChartAreas[TextBox_Arena_N.Text].AxisX.Maximum
-                                                          - Chart1.ChartAreas[TextBox_Arena_N.Text].AxisX.Minimum) / 100;
+        myChart.ChartAreas[textBox_Arena_N.Text].CursorX.Position -= (myChart.ChartAreas[textBox_Arena_N.Text].AxisX.Maximum
+                                                          - myChart.ChartAreas[textBox_Arena_N.Text].AxisX.Minimum) / 100;
       if (e.KeyCode == System.Windows.Forms.Keys.NumPad6)
-        Chart1.ChartAreas[TextBox_Arena_N.Text].CursorX.Position += (Chart1.ChartAreas[TextBox_Arena_N.Text].AxisX.Maximum
-                                                          - Chart1.ChartAreas[TextBox_Arena_N.Text].AxisX.Minimum) / 100;
+        myChart.ChartAreas[textBox_Arena_N.Text].CursorX.Position += (myChart.ChartAreas[textBox_Arena_N.Text].AxisX.Maximum
+                                                          - myChart.ChartAreas[textBox_Arena_N.Text].AxisX.Minimum) / 100;
       if (e.KeyCode == System.Windows.Forms.Keys.NumPad8)
-        Chart1.ChartAreas[TextBox_Arena_N.Text].CursorY.Position += (Chart1.ChartAreas[TextBox_Arena_N.Text].AxisY.Maximum
-                                                          - Chart1.ChartAreas[TextBox_Arena_N.Text].AxisY.Minimum) / 100;
+        myChart.ChartAreas[textBox_Arena_N.Text].CursorY.Position += (myChart.ChartAreas[textBox_Arena_N.Text].AxisY.Maximum
+                                                          - myChart.ChartAreas[textBox_Arena_N.Text].AxisY.Minimum) / 100;
       if (e.KeyCode == System.Windows.Forms.Keys.NumPad2)
-        Chart1.ChartAreas[TextBox_Arena_N.Text].CursorY.Position -= (Chart1.ChartAreas[TextBox_Arena_N.Text].AxisY.Maximum
-                                                          - Chart1.ChartAreas[TextBox_Arena_N.Text].AxisY.Minimum) / 100;
+        myChart.ChartAreas[textBox_Arena_N.Text].CursorY.Position -= (myChart.ChartAreas[textBox_Arena_N.Text].AxisY.Maximum
+                                                          - myChart.ChartAreas[textBox_Arena_N.Text].AxisY.Minimum) / 100;
 
     }
     /// <summary>
@@ -472,7 +463,7 @@ namespace GoodPlot
       }
       if (e.Key == System.Windows.Input.Key.D1)
       {
-        Chart1.Width = (int)(Chart1.Height / 1.41);
+        myChart.Width = (int)(myChart.Height / 1.41);
 
       }
 
@@ -490,10 +481,10 @@ namespace GoodPlot
 
 
 
-        Chart1.ChartAreas[TextBox_Arena_N.Text].CursorY.IsUserSelectionEnabled = false;
-        Chart1.ChartAreas[TextBox_Arena_N.Text].CursorY.IsUserEnabled = false;
-        Chart1.ChartAreas[TextBox_Arena_N.Text].CursorY.LineWidth = 0;
-        Chart1.ChartAreas[TextBox_Arena_N.Text].CursorY.Interval = 100;
+        myChart.ChartAreas[textBox_Arena_N.Text].CursorY.IsUserSelectionEnabled = false;
+        myChart.ChartAreas[textBox_Arena_N.Text].CursorY.IsUserEnabled = false;
+        myChart.ChartAreas[textBox_Arena_N.Text].CursorY.LineWidth = 0;
+        myChart.ChartAreas[textBox_Arena_N.Text].CursorY.Interval = 100;
 
 
         allotment_X_menuItem.Text = "Обычное выделение";
@@ -504,10 +495,10 @@ namespace GoodPlot
         allotment_X_menuItem.Text = "Выделять по X";
         allotment_Y_menuItem.Text = "Выделять по Y";
         //Задаем стандартное выделение везде
-        Chart1.ChartAreas[TextBox_Arena_N.Text].CursorY.IsUserSelectionEnabled = true;
-        Chart1.ChartAreas[TextBox_Arena_N.Text].CursorY.IsUserEnabled = true;
-        Chart1.ChartAreas[TextBox_Arena_N.Text].CursorY.LineWidth = 1;
-        Chart1.ChartAreas[TextBox_Arena_N.Text].CursorY.Interval = 0;
+        myChart.ChartAreas[textBox_Arena_N.Text].CursorY.IsUserSelectionEnabled = true;
+        myChart.ChartAreas[textBox_Arena_N.Text].CursorY.IsUserEnabled = true;
+        myChart.ChartAreas[textBox_Arena_N.Text].CursorY.LineWidth = 1;
+        myChart.ChartAreas[textBox_Arena_N.Text].CursorY.Interval = 0;
         return;
       }
     }
@@ -520,8 +511,8 @@ namespace GoodPlot
     {
       if (allotment_Y_menuItem.Text == "Выделять по Y")
       {
-        Chart1.ChartAreas[TextBox_Arena_N.Text].CursorX.Interval = (Chart1.ChartAreas[TextBox_Arena_N.Text].AxisX.Maximum
-                                                              - Chart1.ChartAreas[TextBox_Arena_N.Text].AxisX.Minimum) / 3;
+        myChart.ChartAreas[textBox_Arena_N.Text].CursorX.Interval = (myChart.ChartAreas[textBox_Arena_N.Text].AxisX.Maximum
+                                                              - myChart.ChartAreas[textBox_Arena_N.Text].AxisX.Minimum) / 3;
         allotment_Y_menuItem.Text = "Обычное выделение";
         return;
       }
@@ -530,8 +521,8 @@ namespace GoodPlot
         allotment_X_menuItem.Text = "Выделять по X";
         allotment_Y_menuItem.Text = "Выделять по Y";
         //Задаем стандартное выделение везде
-        Chart1.ChartAreas[TextBox_Arena_N.Text].CursorX.Interval = 0;
-        Chart1.ChartAreas[TextBox_Arena_N.Text].CursorY.Interval = 0;
+        myChart.ChartAreas[textBox_Arena_N.Text].CursorX.Interval = 0;
+        myChart.ChartAreas[textBox_Arena_N.Text].CursorY.Interval = 0;
         return;
       }
     }
@@ -548,7 +539,7 @@ namespace GoodPlot
         Many_GraphButton.Background = System.Windows.Media.Brushes.BurlyWood;
       }
       //Добавили арену
-      Chart_Acts_One.Add_Area_Bottom(Chart1);
+      myChart_Acts.Add_Area_Bottom(myChart);
     }
     /// <summary>
     /// Построить на дополнительной оси слева.
@@ -557,23 +548,23 @@ namespace GoodPlot
     /// <param name="e"></param>
     private void bsLeft_Click(object sender, RoutedEventArgs e)
     {
-      //Не давать строить , если еще по главным осям нет графиков.
-      bool Is_there_Left_Axis = false;
-      foreach (Series item in Chart1.Series)
-      {
-        if (item.YAxisType == AxisType.Primary)
-        {
-          Is_there_Left_Axis = true;
-        }
-      }
-      if (Chart1.Series.Count == 0 || !Is_there_Left_Axis)
-      {
-        MessageBox.Show("Пожалуйста, сначала постройте график данной линии по основной левой оси.");
-        return;
-      }
+      ////Не давать строить , если еще по главным осям нет графиков.
+      //bool is_there_Left_Axis = false;
+      //foreach (Series item in myChart.Series)
+      //{
+      //  if (item.YAxisType == AxisType.Primary)
+      //  {
+      //    is_there_Left_Axis = true;
+      //  }
+      //}
+      //if ( ! is_there_Left_Axis )
+      //{
+      //  MessageBox.Show("Пожалуйста, сначала постройте график данной линии по основной левой оси.");
+      //  return;
+      //}
 
       //Магия
-      dynamic selectedItem = List_Parameters.SelectedItem;
+      dynamic selectedItem = list_Parameters.SelectedItem;
 
       //Проверка потому что не успевает прогрузиться список, и тогда ошибка выбора элемента,
       //т.к. нет выбора элемента.
@@ -581,9 +572,9 @@ namespace GoodPlot
       if (selectedItem != null)
       {
         //Добавляем линию 
-        Chart_Acts_One.AddLine(Chart1, List_Parameters, List_Parameters.SelectedItems, TextBox_Arena_N.Text, File_Acts_One, "left", "Yes");
+        myChart_Acts.AddAdditional_AxisAndlLine(myChart, textBox_Arena_N.Text, list_Parameters.SelectedItems, myFileActs , "left");
         TabCont1.SelectedIndex = 1;
-        Chart1.Focus();
+        myChart.Focus();
         // Добавим линию, и назначим ее в созданную область по имени текста в TextBox_Arena_N
       }
 
@@ -595,23 +586,23 @@ namespace GoodPlot
     /// <param name="e"></param>
     private void bsRight_Click(object sender, RoutedEventArgs e)
     {
-      //Не давать строить , если еще по главным осям нет граиков.
-      bool Is_there_Right_Axis = false;
-      foreach (Series item in Chart1.Series)
-      {
-        if (item.YAxisType == AxisType.Secondary)
-        {
-          Is_there_Right_Axis = true;
-        }
-      }
-      if (Chart1.Series.Count == 0 || !Is_there_Right_Axis)
-      {
-        MessageBox.Show("Пожалуйста, сначала постройте график данной линии по основной правой оси.");
-        return;
-      }
+      ////Не давать строить , если еще по главным осям нет граиков.
+      //bool Is_there_Right_Axis = false;
+      //foreach (Series item in myChart.Series)
+      //{
+      //  if (item.YAxisType == AxisType.Secondary)
+      //  {
+      //    Is_there_Right_Axis = true;
+      //  }
+      //}
+      //if (myChart.Series.Count == 0 || !Is_there_Right_Axis)
+      //{
+      //  MessageBox.Show("Пожалуйста, сначала постройте график данной линии по основной правой оси.");
+      //  return;
+      //}
 
       //Магия
-      dynamic selectedItem = List_Parameters.SelectedItem;
+      dynamic selectedItem = list_Parameters.SelectedItem;
 
       //Проверка потому что не успевает прогрузиться список, и тогда ошибка выбора элемента,
       //т.к. нет выбора элемента.
@@ -619,9 +610,9 @@ namespace GoodPlot
       if (selectedItem != null)
       {
         //Для начала строим просто справа.
-        Chart_Acts_One.AddLine(Chart1, List_Parameters, List_Parameters.SelectedItems, TextBox_Arena_N.Text, File_Acts_One, "right", "Yes");
+        myChart_Acts.AddAdditional_AxisAndlLine(myChart, textBox_Arena_N.Text, list_Parameters.SelectedItems, myFileActs, "right");
         TabCont1.SelectedIndex = 1;
-        Chart1.Focus();
+        myChart.Focus();
         // Добавим линию, и назначим ее в созданную область по имени текста в TextBox_Arena_N
       }
     }
@@ -632,16 +623,16 @@ namespace GoodPlot
     /// <param name="e"></param>
     private void One_Graph_Click(object sender, RoutedEventArgs e)
     {
-      if (Chart1.ChartAreas.Contains(Chart1.ChartAreas.FindByName("Area# 2")))
+      if (myChart.ChartAreas.Contains(myChart.ChartAreas.FindByName("Area# 2")))
       {
         System.Windows.MessageBox.Show("Либо 1 график и 4 оси, либо много графиков с 2 осями!");
         return;
       }
       else
       {
-        //Задействуем элементы меню для добавления на доп. оси гравиков.
-        bsLeft.IsEnabled = true;
-        bsRight.IsEnabled = true;
+        ////Задействуем элементы меню для добавления на доп. оси гравиков.
+        //bsLeft.IsEnabled = true;
+        //bsRight.IsEnabled = true;
         //Не дает построить снизу график теперь
         Add_Area_menuItem.Enabled = false;
         //Кнопку подсвечиват типа графика
@@ -657,15 +648,15 @@ namespace GoodPlot
     /// <param name="e"></param>
     private void Many_Graph_Click(object sender, RoutedEventArgs e)
     {
-      if (Chart1.ChartAreas.Count != 1)
+      if (myChart.ChartAreas.Count != 1)
       {
         System.Windows.MessageBox.Show("Либо 1 график и 4 оси, либо много графиков с 2 осями!");
         return;
       }
       else
       {
-        bsLeft.IsEnabled = false;
-        bsRight.IsEnabled = false;
+        //bsLeft.IsEnabled = false;
+        //bsRight.IsEnabled = false;
         Add_Area_menuItem.Enabled = true;
         Many_GraphButton.Background = System.Windows.Media.Brushes.BurlyWood;
         One_GraphButton.Background = default(System.Windows.Media.Brush);
@@ -688,7 +679,7 @@ namespace GoodPlot
       polyline.AllowMoving = true;
       //polyline.IsFreeDrawPlacement = true;
 
-      Chart1.Annotations.Add(polyline);
+      myChart.Annotations.Add(polyline);
       polyline.BeginPlacement();
       //DrawLine(); То что выше в отдельный метод в примере выносилось, а зачем, не понятно.
     }
@@ -700,14 +691,14 @@ namespace GoodPlot
     /// <param name="e"></param>
     private void DelChosen_Click(object sender, RoutedEventArgs e)
     {
-      if (Chart1.Titles.Count > 0)
+      if (myChart.Titles.Count > 0)
       {
         // Удалить  подпись
         if (result.ChartElementType == ChartElementType.Title)
-          Chart1.Titles.Remove((Title)result.Object);
+          myChart.Titles.Remove((Title)result.Object);
         //Удалить аннотацию
         if (result.ChartElementType == ChartElementType.Annotation)
-          Chart1.Annotations.Remove((Annotation)result.Object);
+          myChart.Annotations.Remove((Annotation)result.Object);
       }
     }
     /// <summary>
@@ -717,10 +708,10 @@ namespace GoodPlot
     /// <param name="e"></param>
     private void DelAllLines_Click(object sender, RoutedEventArgs e)
     {
-      if (Chart1.Annotations.Count > 0)
+      if (myChart.Annotations.Count > 0)
       {
         // if in drawing mode, end the drawing mode...
-        Chart1.Annotations.Clear();
+        myChart.Annotations.Clear();
 
       }
     }
@@ -731,9 +722,9 @@ namespace GoodPlot
     /// <param name="e"></param>
     private void DelAllTitles_Click(object sender, RoutedEventArgs e)
     {
-      if (Chart1.Titles.Count > 0)
+      if (myChart.Titles.Count > 0)
       {
-        Chart1.Titles.Clear();
+        myChart.Titles.Clear();
       }
     }
     /// <summary>
@@ -785,7 +776,7 @@ namespace GoodPlot
         }
 
         // Save image
-        Chart1.SaveImage(saveFileDialog1.FileName, format);
+        myChart.SaveImage(saveFileDialog1.FileName, format);
       }
 
     }
@@ -798,7 +789,7 @@ namespace GoodPlot
     {
       if (DelKursorButton.Header.ToString() == "Убрать")
       {
-        foreach (var item in Chart1.ChartAreas)
+        foreach (var item in myChart.ChartAreas)
         {
           item.CursorX.IsUserSelectionEnabled = false;
           item.CursorX.IsUserEnabled = false;
@@ -815,7 +806,7 @@ namespace GoodPlot
       }
       if (DelKursorButton.Header.ToString() == "Вернуть")
       {
-        foreach (var item in Chart1.ChartAreas)
+        foreach (var item in myChart.ChartAreas)
         {
           item.CursorX.IsUserSelectionEnabled = true;
           item.CursorX.IsUserEnabled = true;
@@ -849,9 +840,9 @@ namespace GoodPlot
       }
 
       // Save chart into the memory stream
-      Chart1.Serializer.Content = SerializationContents.Default;
+      myChart.Serializer.Content = SerializationContents.Default;
       MemoryStream ms = new MemoryStream();
-      Chart1.Serializer.Save(ms);
+      myChart.Serializer.Save(ms);
 
       //Запись MemoryStream
       FileStream fileStr = new FileStream(fileName, FileMode.Create);
@@ -887,7 +878,7 @@ namespace GoodPlot
 
 
       ms.Seek(0, SeekOrigin.Begin);
-      Chart1.Serializer.Load(ms);
+      myChart.Serializer.Load(ms);
       ms.Close();
       fileStr.Close();
     }
@@ -904,9 +895,9 @@ namespace GoodPlot
       {
         try
         {
-          LabelXcoord.Content = DateTime.FromOADate(Chart1.ChartAreas[TextBox_Arena_N.Text].CursorX.Position).ToString();
-          Chart1.ChartAreas[TextBox_Arena_N.Text].CursorY.AxisType = AxisType.Primary;
-          LabelYcoord.Content = Chart1.ChartAreas[TextBox_Arena_N.Text].CursorY.Position.ToString();
+          LabelXcoord.Content = DateTime.FromOADate(myChart.ChartAreas[textBox_Arena_N.Text].CursorX.Position).ToString();
+          myChart.ChartAreas[textBox_Arena_N.Text].CursorY.AxisType = AxisType.Primary;
+          LabelYcoord.Content = myChart.ChartAreas[textBox_Arena_N.Text].CursorY.Position.ToString();
         }
         catch (Exception) { }
         return;
@@ -915,9 +906,9 @@ namespace GoodPlot
       {
         try
         {
-          LabelXcoord.Content = DateTime.FromOADate(Chart1.ChartAreas[TextBox_Arena_N.Text].CursorX.Position).ToString();
-          Chart1.ChartAreas[TextBox_Arena_N.Text].CursorY.AxisType = AxisType.Secondary;
-          LabelYcoord.Content = Chart1.ChartAreas[TextBox_Arena_N.Text].CursorY.Position.ToString();
+          LabelXcoord.Content = DateTime.FromOADate(myChart.ChartAreas[textBox_Arena_N.Text].CursorX.Position).ToString();
+          myChart.ChartAreas[textBox_Arena_N.Text].CursorY.AxisType = AxisType.Secondary;
+          LabelYcoord.Content = myChart.ChartAreas[textBox_Arena_N.Text].CursorY.Position.ToString();
         }
         catch (Exception) { }
         return;
@@ -926,9 +917,9 @@ namespace GoodPlot
       {
         try
         {
-          LabelXcoord.Content = DateTime.FromOADate(Chart1.ChartAreas[TextBox_Arena_N.Text].CursorX.Position).ToString();
-          LabelYcoord.Content = Chart1.ChartAreas["Area# 11a"].CursorY.AxisType = AxisType.Primary;
-          LabelYcoord.Content = Chart1.ChartAreas["Area# 11a"].CursorY.Position.ToString();
+          LabelXcoord.Content = DateTime.FromOADate(myChart.ChartAreas[textBox_Arena_N.Text].CursorX.Position).ToString();
+          LabelYcoord.Content = myChart.ChartAreas["Area# 11a"].CursorY.AxisType = AxisType.Primary;
+          LabelYcoord.Content = myChart.ChartAreas["Area# 11a"].CursorY.Position.ToString();
 
         }
         catch (Exception) { }
@@ -938,15 +929,15 @@ namespace GoodPlot
       {
         try
         {
-          LabelXcoord.Content = DateTime.FromOADate(Chart1.ChartAreas[TextBox_Arena_N.Text].CursorX.Position).ToString();
-          LabelYcoord.Content = Chart1.ChartAreas["Area# 12a"].CursorY.AxisType = AxisType.Secondary;
-          LabelYcoord.Content = Chart1.ChartAreas["Area# 12a"].CursorY.Position.ToString();
+          LabelXcoord.Content = DateTime.FromOADate(myChart.ChartAreas[textBox_Arena_N.Text].CursorX.Position).ToString();
+          LabelYcoord.Content = myChart.ChartAreas["Area# 12a"].CursorY.AxisType = AxisType.Secondary;
+          LabelYcoord.Content = myChart.ChartAreas["Area# 12a"].CursorY.Position.ToString();
 
         }
         catch (Exception) { }
         return;
       }
-      Chart1.Focus();
+      myChart.Focus();
     }
 
 
@@ -964,9 +955,9 @@ namespace GoodPlot
       {
         try
         {
-          LabelXcoord.Content = DateTime.FromOADate(Chart1.ChartAreas[TextBox_Arena_N.Text].CursorX.Position).ToString();
-          LabelYcoord.Content = Chart1.ChartAreas[TextBox_Arena_N.Text].CursorY.AxisType = AxisType.Primary;
-          LabelYcoord.Content = Chart1.ChartAreas[TextBox_Arena_N.Text].CursorY.Position.ToString();
+          LabelXcoord.Content = DateTime.FromOADate(myChart.ChartAreas[textBox_Arena_N.Text].CursorX.Position).ToString();
+          LabelYcoord.Content = myChart.ChartAreas[textBox_Arena_N.Text].CursorY.AxisType = AxisType.Primary;
+          LabelYcoord.Content = myChart.ChartAreas[textBox_Arena_N.Text].CursorY.Position.ToString();
         }
         catch (Exception) { }
         return;
@@ -975,9 +966,9 @@ namespace GoodPlot
       {
         try
         {
-          LabelXcoord.Content = DateTime.FromOADate(Chart1.ChartAreas[TextBox_Arena_N.Text].CursorX.Position).ToString();
-          LabelYcoord.Content = Chart1.ChartAreas[TextBox_Arena_N.Text].CursorY.AxisType = AxisType.Secondary;
-          LabelYcoord.Content = Chart1.ChartAreas[TextBox_Arena_N.Text].CursorY.Position.ToString();
+          LabelXcoord.Content = DateTime.FromOADate(myChart.ChartAreas[textBox_Arena_N.Text].CursorX.Position).ToString();
+          LabelYcoord.Content = myChart.ChartAreas[textBox_Arena_N.Text].CursorY.AxisType = AxisType.Secondary;
+          LabelYcoord.Content = myChart.ChartAreas[textBox_Arena_N.Text].CursorY.Position.ToString();
         }
         catch (Exception) { }
         return;
@@ -986,9 +977,9 @@ namespace GoodPlot
       {
         try
         {
-          LabelXcoord.Content = DateTime.FromOADate(Chart1.ChartAreas[TextBox_Arena_N.Text].CursorX.Position).ToString();
-          LabelYcoord.Content = Chart1.ChartAreas["Area# 11a"].CursorY.AxisType = AxisType.Primary;
-          LabelYcoord.Content = Chart1.ChartAreas["Area# 11b"].CursorY.Position.ToString();
+          LabelXcoord.Content = DateTime.FromOADate(myChart.ChartAreas[textBox_Arena_N.Text].CursorX.Position).ToString();
+          LabelYcoord.Content = myChart.ChartAreas["Area# 11a"].CursorY.AxisType = AxisType.Primary;
+          LabelYcoord.Content = myChart.ChartAreas["Area# 11b"].CursorY.Position.ToString();
 
         }
         catch (Exception) { }
@@ -998,9 +989,9 @@ namespace GoodPlot
       {
         try
         {
-          LabelXcoord.Content = DateTime.FromOADate(Chart1.ChartAreas[TextBox_Arena_N.Text].CursorX.Position).ToString();
-          LabelYcoord.Content = Chart1.ChartAreas["Area# 12a"].CursorY.AxisType = AxisType.Secondary;
-          LabelYcoord.Content = Chart1.ChartAreas["Area# 12b"].CursorY.Position.ToString();
+          LabelXcoord.Content = DateTime.FromOADate(myChart.ChartAreas[textBox_Arena_N.Text].CursorX.Position).ToString();
+          LabelYcoord.Content = myChart.ChartAreas["Area# 12a"].CursorY.AxisType = AxisType.Secondary;
+          LabelYcoord.Content = myChart.ChartAreas["Area# 12b"].CursorY.Position.ToString();
 
         }
         catch (Exception) { }
@@ -1024,7 +1015,7 @@ namespace GoodPlot
 
 
 
-      Chart1.Titles.Add(new_tile);
+      myChart.Titles.Add(new_tile);
 
 
 
@@ -1033,18 +1024,18 @@ namespace GoodPlot
     //Настройка страницы.
     private void PageOptions_Click(object sender, RoutedEventArgs e)
     {
-      Chart1.Printing.PageSetup();
+      myChart.Printing.PageSetup();
 
     }
     //Выбор принтера
     private void PrintOptions_Click(object sender, RoutedEventArgs e)
     {
-      Chart1.Printing.Print(true);
+      myChart.Printing.Print(true);
     }
     //Предварительный просмотр
     private void PreviewPrint_Click(object sender, RoutedEventArgs e)
     {
-      Chart1.Printing.PrintPreview();
+      myChart.Printing.PrintPreview();
 
     }
 
@@ -1052,18 +1043,18 @@ namespace GoodPlot
     private void NewBeginning_Click(object sender, RoutedEventArgs e)
     {
       //Удалить все элементы графика
-      Chart1.Series.Clear();
-      Chart1.Titles.Clear();
-      Chart1.Annotations.Clear();
-      Chart1.Legends.Clear();
-      Chart1.ChartAreas.Clear();
+      myChart.Series.Clear();
+      myChart.Titles.Clear();
+      myChart.Annotations.Clear();
+      myChart.Legends.Clear();
+      myChart.ChartAreas.Clear();
       //Название арены начальное
-      TextBox_Arena_N.Text = "Area# 1";
+      textBox_Arena_N.Text = "Area# 1";
 
       //Начальная арена
-      bsLeft.IsEnabled = false;
-      bsRight.IsEnabled = false;
-      Chart_Acts_One.LoadNEWArena(Chart1, Chart1.ChartAreas.Count() + 1);
+      //bsLeft.IsEnabled = false;
+      //bsRight.IsEnabled = false;
+      myChart_Acts.LoadFirstArena(myChart);
 
       //Элементы в меню закрасить по умолчанию
     }
@@ -1076,15 +1067,15 @@ namespace GoodPlot
       {
 
         //Считываем файл
-        File_Acts_One.Read_File(openFileDialog1.FileName);
+        myFileActs.Read_File(openFileDialog1.FileName);
 
 
       }
       //Заполнение списка параметров. 
       //List_Parameters.ItemsSource = File_Acts_One.Parameters;
       //Переносит на вкладочку с видом на данные по выбранному KKS. Фокусимся на графике.
-      List_Parameters.Items.Refresh();
-      Chart1.Focus();
+      list_Parameters.Items.Refresh();
+      myChart.Focus();
     }
     /// <summary>
     /// Добавление файлов. Все аналогично, но не затирается график и т.п.
@@ -1103,18 +1094,18 @@ namespace GoodPlot
         foreach (var item in openFileDialog1.FileNames)
         {
           //Считываем файл
-          File_Acts_One.Read_File(item);
+          myFileActs.Read_File(item);
         }
       }
 
 
 
       //Заполнение списка параметров. (При загрузке приложения.)
-      List_Parameters.ItemsSource = File_Acts_One.Parameters;
+      list_Parameters.ItemsSource = myFileActs.Parameters;
       //Переносит на вкладочку с видом на данные по выбранному KKS. Фокусимся на графике.
-      List_Parameters.Items.Refresh();
+      list_Parameters.Items.Refresh();
       TabCont1.SelectedIndex = 0;
-      Chart1.Focus();
+      myChart.Focus();
     }
     /// <summary>
     /// Для обработки дифф. эфф.
@@ -1127,7 +1118,7 @@ namespace GoodPlot
       One_GraphButton.IsEnabled = false;
       Many_GraphButton.IsEnabled = false;
 
-      ModuleDiffEff DiffEffWindow = new ModuleDiffEff(Chart1, File_Acts_One, TableCurrent);
+      ModuleDiffEff DiffEffWindow = new ModuleDiffEff(myChart, myFileActs, TableCurrent);
       DiffEffWindow.Show();
     }
     //Под войному щелчку копировать название KKS.
@@ -1140,13 +1131,13 @@ namespace GoodPlot
 
     private void CalculOptions_Click(object sender, RoutedEventArgs e)
     {
-      Calculations CalculationsWindow = new Calculations(File_Acts_One, Chart1);
+      Calculations CalculationsWindow = new Calculations(myFileActs, myChart);
       CalculationsWindow.Show();
     }
 
     private void Values_Module_Click(object sender, RoutedEventArgs e)
     {
-      foreach (var item in Chart1.ChartAreas)
+      foreach (var item in myChart.ChartAreas)
       {
 
         item.CursorY.IsUserSelectionEnabled = false;
@@ -1156,7 +1147,7 @@ namespace GoodPlot
 
       }
       allotment_X_menuItem.Text = "Обычное выделение";
-      ModuleValues ValuesWindow = new ModuleValues(File_Acts_One, Chart1, List_Parameters);
+      ModuleValues ValuesWindow = new ModuleValues(myFileActs, myChart, list_Parameters);
       ValuesWindow.Show();
     }
     /// <summary>
@@ -1179,14 +1170,14 @@ namespace GoodPlot
 
 
       //Выделенный , по его значениям идем. Проверим, что выделен параметр.
-      if (List_Parameters.SelectedItems.Count == 0)
+      if (list_Parameters.SelectedItems.Count == 0)
       {
         MessageBox.Show("Выделите параметр");
         return;
       }
       //Запомним, что выделили из параметров
       List<Parameter> selectedParametrs = new List<Parameter>();
-      foreach (var item in List_Parameters.SelectedItems)
+      foreach (var item in list_Parameters.SelectedItems)
       {
         selectedParametrs.Add((Parameter)item);
       }
@@ -1213,7 +1204,7 @@ namespace GoodPlot
         NewParametrSubstr.Description = item.KKS;
 
 
-        File_Acts_One.Parameters.Add(NewParametrSubstr);
+        myFileActs.Parameters.Add(NewParametrSubstr);
       }
 
 
@@ -1221,7 +1212,7 @@ namespace GoodPlot
 
       //Привязка
       //List_Parameters.ItemsSource = File_Acts_One.Parameters;
-      List_Parameters.Items.Refresh();
+      list_Parameters.Items.Refresh();
       //Перестройка графика       
       //Chart1.Series.Clear();
 
@@ -1241,7 +1232,7 @@ namespace GoodPlot
 
       // Запишем каждый из параметров в свой файл. Счетчик для разделения файлов
       int MyI = 0;
-      foreach (Parameter item in List_Parameters.SelectedItems)
+      foreach (Parameter item in list_Parameters.SelectedItems)
       {
         MyI++;
         //Создаем поток записи
@@ -1259,14 +1250,14 @@ namespace GoodPlot
     // Для очистки выделения параметров, а это удобство
     private void ContextMenu_Closed(object sender, RoutedEventArgs e)
     {
-        List_Parameters.UnselectAll();
+        list_Parameters.UnselectAll();
     }
 
     //Удалить точки данных 
     private void Delete_Click(object sender, RoutedEventArgs e)
     {
       //Можно выделить несколько параметров, у которых удалить точки данных
-      foreach (Parameter item in List_Parameters.SelectedItems)
+      foreach (Parameter item in list_Parameters.SelectedItems)
       {
         //У каждого искать и удалить соответствующее время
         foreach (Time_and_Value item1 in Points_List.SelectedItems)
@@ -1290,7 +1281,7 @@ namespace GoodPlot
     private void Substraction_Men_Item_Click(object sender, RoutedEventArgs e)
     {
       //Если выделено не 2 параметра ровно, ничего не делать, предупредив пользователя.
-      if (List_Parameters.SelectedItems.Count != 2)
+      if (list_Parameters.SelectedItems.Count != 2)
       {
         MessageBox.Show("Выделите ровно 2 параметра");
         return;
@@ -1300,8 +1291,8 @@ namespace GoodPlot
       //Сюда разность сохраним
       Parameter NewParametrSubstr = new Parameter();
       //Первый выделенный , по его значениям идем для вычисления разности
-      Parameter selectedParametr0 = (Parameter)List_Parameters.SelectedItems[0];
-      Parameter selectedParametr1 = (Parameter)List_Parameters.SelectedItems[1];
+      Parameter selectedParametr0 = (Parameter)list_Parameters.SelectedItems[0];
+      Parameter selectedParametr1 = (Parameter)list_Parameters.SelectedItems[1];
       //Пошли
       for (int i = 0; i < selectedParametr0.Time_and_Value_List.Count; i++)
       {
@@ -1328,12 +1319,12 @@ namespace GoodPlot
         NewParametrSubstr.Time_and_Value_List.ForEach(n => n.Value = -1 * n.Value);
         NewParametrSubstr.Description = selectedParametr1.KKS + " - " + selectedParametr0.KKS;
       }
-      File_Acts_One.Parameters.Add(NewParametrSubstr);
+      myFileActs.Parameters.Add(NewParametrSubstr);
 
 
       //Привязка
       //List_Parameters.ItemsSource = File_Acts_One.Parameters;
-      List_Parameters.Items.Refresh();
+      list_Parameters.Items.Refresh();
 
 
 
@@ -1345,10 +1336,10 @@ namespace GoodPlot
     private void X_Format_Click(object sender, RoutedEventArgs e)
     {
       // Axis item result
-      Axis AxisItem = Chart1.ChartAreas[TextBox_Arena_N.Text].AxisX;
+      Axis AxisItem = myChart.ChartAreas[textBox_Arena_N.Text].AxisX;
 
       // НА случай если собираемся добавочную ось редактировать добавлено имя арены в вызов конструктора.
-      Axis_format_Window AFWindow = new Axis_format_Window(AxisItem, Chart1, TextBox_Arena_N.Text);
+      Axis_format_Window AFWindow = new Axis_format_Window(AxisItem, myChart, textBox_Arena_N.Text);
       //Вызов окна
       AFWindow.Show();
       //По закрытии будем все оси времени объединять. Но только в случае друг под другом построения.
@@ -1358,10 +1349,10 @@ namespace GoodPlot
     private void Yleft_Format_Click(object sender, RoutedEventArgs e)
     {
       // Axis item result
-      Axis AxisItem = Chart1.ChartAreas[TextBox_Arena_N.Text].AxisY;
+      Axis AxisItem = myChart.ChartAreas[textBox_Arena_N.Text].AxisY;
 
       // НА случай если собираемся добавочную ось редактировать добавлено имя арены в вызов конструктора.
-      Axis_format_Window AFWindow = new Axis_format_Window(AxisItem, Chart1, TextBox_Arena_N.Text);
+      Axis_format_Window AFWindow = new Axis_format_Window(AxisItem, myChart, textBox_Arena_N.Text);
       //Вызов окна
       AFWindow.Show();
       //По закрытии будем все оси времени объединять. Но только в случае друг под другом построения.
@@ -1371,10 +1362,10 @@ namespace GoodPlot
     private void Yright_Format_Click(object sender, RoutedEventArgs e)
     {
       // Axis item result
-      Axis AxisItem = Chart1.ChartAreas[TextBox_Arena_N.Text].AxisY2;
+      Axis AxisItem = myChart.ChartAreas[textBox_Arena_N.Text].AxisY2;
 
       // НА случай если собираемся добавочную ось редактировать добавлено имя арены в вызов конструктора.
-      Axis_format_Window AFWindow = new Axis_format_Window(AxisItem, Chart1, TextBox_Arena_N.Text);
+      Axis_format_Window AFWindow = new Axis_format_Window(AxisItem, myChart, textBox_Arena_N.Text);
       //Вызов окна
       AFWindow.Show();
       //По закрытии будем все оси времени объединять. Но только в случае друг под другом построения.
@@ -1384,10 +1375,10 @@ namespace GoodPlot
     private void Y2left_Format_Click(object sender, RoutedEventArgs e)
     {
       // Axis item result
-      Axis AxisItem = Chart1.ChartAreas[TextBox_Arena_N.Text + "1b"].AxisY;
+      Axis AxisItem = myChart.ChartAreas[textBox_Arena_N.Text + "1b"].AxisY;
 
       // НА случай если собираемся добавочную ось редактировать добавлено имя арены в вызов конструктора.
-      Axis_format_Window AFWindow = new Axis_format_Window(AxisItem, Chart1, TextBox_Arena_N.Text);
+      Axis_format_Window AFWindow = new Axis_format_Window(AxisItem, myChart, textBox_Arena_N.Text);
       //Вызов окна
       AFWindow.Show();
       //По закрытии будем все оси времени объединять. Но только в случае друг под другом построения.
@@ -1397,10 +1388,10 @@ namespace GoodPlot
     private void Y2right_Format_Click(object sender, RoutedEventArgs e)
     {
       // Axis item result
-      Axis AxisItem = Chart1.ChartAreas[TextBox_Arena_N.Text + "2b"].AxisY2;
+      Axis AxisItem = myChart.ChartAreas[textBox_Arena_N.Text + "2b"].AxisY2;
 
       // НА случай если собираемся добавочную ось редактировать добавлено имя арены в вызов конструктора.
-      Axis_format_Window AFWindow = new Axis_format_Window(AxisItem, Chart1, TextBox_Arena_N.Text);
+      Axis_format_Window AFWindow = new Axis_format_Window(AxisItem, myChart, textBox_Arena_N.Text);
       //Вызов окна
       AFWindow.Show();
       //По закрытии будем все оси времени объединять. Но только в случае друг под другом построения.
@@ -1413,8 +1404,8 @@ namespace GoodPlot
     /// <param name="e"></param>
     private void Delete_Men_Item_Click(object sender, RoutedEventArgs e)
     {
-      File_Acts_One.Parameters.RemoveAll(x => List_Parameters.SelectedItems.Contains(x));
-      List_Parameters.Items.Refresh();
+      myFileActs.Parameters.RemoveAll(x => list_Parameters.SelectedItems.Contains(x));
+      list_Parameters.Items.Refresh();
     }
 
     /// <summary>
@@ -1433,7 +1424,7 @@ namespace GoodPlot
         return;
       }
       //Обрезание
-      foreach (Parameter item in File_Acts_One.Parameters)
+      foreach (Parameter item in myFileActs.Parameters)
       {
         item.Time_and_Value_List = item.Time_and_Value_List.FindAll(n => n.Time >= DateTime.Parse(TextBoxStartTime.Text) && n.Time <= DateTime.Parse(TextBoxEndTime.Text));
       }
@@ -1442,7 +1433,7 @@ namespace GoodPlot
     //Очистить серии на графике
     private void DelAllGraphs_Click(object sender, RoutedEventArgs e)
     {
-      Chart1.Series.Clear();
+      myChart.Series.Clear();
     }
 
 

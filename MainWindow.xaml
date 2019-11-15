@@ -151,7 +151,7 @@ Icon="PerfCenterCpl.ico"
                     </ListView>
 
                     <!--Лист списка параметров-->
-                    <ListView SelectionMode="Extended"  x:Name="List_Parameters" Grid.RowSpan="2"  Grid.Column="0" Grid.ColumnSpan="2"  MouseDoubleClick="List_Parameters_MouseDoubleClick" MouseLeftButtonUp="List_Parameters_MouseLeftButtonUp">
+                    <ListView SelectionMode="Extended"  x:Name="list_Parameters" Grid.RowSpan="2"  Grid.Column="0" Grid.ColumnSpan="2"  MouseDoubleClick="List_Parameters_MouseDoubleClick" MouseLeftButtonUp="List_Parameters_MouseLeftButtonUp">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn  DisplayMemberBinding="{Binding KKS, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Width="150" Header="KKS параметра" />
@@ -163,8 +163,8 @@ Icon="PerfCenterCpl.ico"
                             <ContextMenu Closed="ContextMenu_Closed" >
                                 <MenuItem Header="Построить/левая ось" Name="bLeft"  Click="BuildLeft_Click"></MenuItem>
                                 <MenuItem Header="Построить/правая ось" Name="bRight"  Click="BuildRight_Click"></MenuItem>
-                                <MenuItem Header="Построить/вторая левая ось"  Name="bsLeft" Click="bsLeft_Click"></MenuItem>
-                                <MenuItem Header="Построить/вторая правая ось" Name="bsRight" Click="bsRight_Click"></MenuItem>
+                                <MenuItem Header="Построить/дополнительная левая ось"  Name="addLeftAxis" Click="bsLeft_Click"></MenuItem>
+                                <MenuItem Header="Построить/дополнителная правая ось" Name="addRightAxis" Click="bsRight_Click"></MenuItem>
                                 <MenuItem Header="Сохрани меня в .csv" Name="ToCSV" Click="ToCSV_Click"></MenuItem>
                                 <MenuItem Header="Добавить разность" Name="Substraction_Men_Item" Click="Substraction_Men_Item_Click"></MenuItem>
                                 <MenuItem Header="Удалить" Name="Delete_Men_Item" Click="Delete_Men_Item_Click"></MenuItem>
@@ -179,7 +179,7 @@ Icon="PerfCenterCpl.ico"
                         <StackPanel Orientation="Horizontal" Height="24">
                             <Label Name="LabelSecs"   Content="Сдвиг на сколько,с?" Grid.Column="0" Background="Bisque" Width="118"  />
                             <TextBox Text="3600"  x:Name="TextBoxTime"  Width="71" />
-                            
+
                         </StackPanel>
 
                         <Button x:Name="ButtonShift" Click="ButtonShift_Click" Background="LightGray"  Content="Сдвинуть" Height="20" />
@@ -213,23 +213,24 @@ Icon="PerfCenterCpl.ico"
 
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="53*" />
+                        <ColumnDefinition Width="68*" />
                         <ColumnDefinition Width="0*" />
                         <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="470*"/>
+                        <ColumnDefinition Width="47*"/>
+                        <ColumnDefinition Width="555*"/>
                     </Grid.ColumnDefinitions>
                     <!--Раздделители-->
                     <GridSplitter Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Stretch" Width="5"   />
 
 
                     <!--Добавляем элемент winforms MS Chart. -->
-                    <WindowsFormsHost x:Name="ChartHost"  Grid.Column="3"   HorizontalAlignment="Stretch" VerticalAlignment="Stretch"   >
-                        <dvc:Chart x:Name="Chart1" x:FieldModifier="public"/>
+                    <WindowsFormsHost x:Name="ChartHost"  Grid.Column="3"   HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="2"   >
+                        <dvc:Chart x:Name="myChart" x:FieldModifier="public"/>
                     </WindowsFormsHost>
 
                     <!--Столбец с кнопками-->
-                    <StackPanel Grid.Column="0" Orientation="Vertical"  Grid.ColumnSpan="2" >
-                        <TextBox  x:Name="TextBox_Arena_N" Height="20" Text="Area# 1" 
+                    <StackPanel Grid.Column="0" Orientation="Vertical" >
+                        <TextBox  x:Name="textBox_Arena_N" Height="20" Text="Area# 1" 
                                    Width="59" Margin="0,2"  />
                         <Button Name="ButtonDrowLine" Background="LightGray" Click="ButtonDrowLine_Click" Content="Линия"/>
                         <Button Name="ButtonDrow_Title" Background="LightGray" Click="ButtonDrowTitle_Click" Content="Подпись"/>

@@ -10,344 +10,252 @@ using System.Drawing;
 
 namespace GoodPlot
 {
-    
+                                    //Работа с графиком
     class Chart_Acts
     {
-
-    int I=0;
-        /// <summary>
-        /// Создает арену "по умолчанию": ось времени, значений, цвет курсора, масштабируема по все осям. Имеет меню
+                  /// <summary>
+         /// Счетчик главных арен
+         /// </summary>
+        int mainArenaCounter=0;
+                  /// <summary>
+        /// Счетчик повторно строящихся линий
         /// </summary>
-        /// <param name="Chart1"></param>
-        public void LoadNEWArena(Chart Chart1, Int32 Arena_N)
+        int slisesCounter=0;
+                  /// <summary>
+        /// Счетчик дополнительных осей слева и справа.
+        /// </summary>
+        int addAxisesCounter_L = 0, addAxisesCounter_R = 0;
+                  /// <summary>
+        /// Постоянные , на сколько сдвинута ось, место под отметки шкалы
+        /// </summary>
+        float axisOffset=7,  labelsSize=4;
+              /// <summary>
+        /// Создать начальную (главную) арену: ось времени, значений, масштабируема по все осям. Имеет меню
+        /// </summary>
+        /// <param name="Chart1">Передаваемый из MainWindow объект график.</param>
+        public void LoadFirstArena(Chart myChart)
         {
-            //Все графики находятся в пределах области построения ChartArea, создадим ее
-            Chart1.ChartAreas.Add(new ChartArea("Area" + "# " + Arena_N.ToString()));
-            //Все же, запомним номер
-            string Num_area = "Area" + "# " + Arena_N.ToString();
-            //Все формат арены и курсора
-            Chart1.ChartAreas[Num_area].CursorX.LineColor = Color.DarkGreen;
-            Chart1.ChartAreas[Num_area].CursorX.LineDashStyle = ChartDashStyle.DashDot;
-            Chart1.ChartAreas[Num_area].CursorX.LineWidth = 2;
-            Chart1.ChartAreas[Num_area].CursorY.LineColor = Color.DarkGreen;
-            Chart1.ChartAreas[Num_area].CursorY.LineDashStyle = ChartDashStyle.DashDot;
-            Chart1.ChartAreas[Num_area].CursorY.LineWidth = 2;
-            Chart1.ChartAreas[Num_area].AxisX.MajorGrid.LineDashStyle = ChartDashStyle.Dot;
-            Chart1.ChartAreas[Num_area].AxisY.MajorGrid.LineDashStyle = ChartDashStyle.Dot;
-            Chart1.ChartAreas[Num_area].AxisY2.MajorGrid.LineDashStyle = ChartDashStyle.Dot;
-            
-            //Интервал и формат оси
-            //CultureInfo ci = new CultureInfo("de-DE");
-            Chart1.ChartAreas[Num_area].AxisX.IntervalType = DateTimeIntervalType.Auto;
-            Chart1.ChartAreas[Num_area].AxisX.LabelStyle.Format = "HH:mm:ss";
-            //Работа с курсором.
-            //Добавление полосы прокрутки
-            Chart1.ChartAreas[Num_area].AxisX.ScrollBar.Enabled = true;
-            Chart1.ChartAreas[Num_area].AxisY.ScrollBar.Enabled = true;
-            //Расположение полосы прокрутки
-            Chart1.ChartAreas[Num_area].AxisX.ScrollBar.IsPositionedInside = true;
-            Chart1.ChartAreas[Num_area].AxisY.ScrollBar.IsPositionedInside = true;
-            //Разрешение увеличивать промежуток выделения
-            Chart1.ChartAreas[Num_area].AxisX.ScaleView.Zoomable = true;
-            Chart1.ChartAreas[Num_area].AxisY.ScaleView.Zoomable = true;
-            //Разрешение пользоваться курсором
-            Chart1.ChartAreas[Num_area].CursorX.IsUserEnabled = true;
-            Chart1.ChartAreas[Num_area].CursorX.IsUserSelectionEnabled = true;
-            Chart1.ChartAreas[Num_area].CursorY.IsUserEnabled = true;
-            Chart1.ChartAreas[Num_area].CursorY.IsUserSelectionEnabled = true;
-            //Выбор интервала для курсора. Ноль даст возможность выделять прямоугольные области.
-            Chart1.ChartAreas[Num_area].CursorX.Interval = 0;
-            Chart1.ChartAreas[Num_area].CursorY.Interval = 0;
-            //Показывать конечное значение на оси
-            //Chart1.ChartAreas[Num_area].AxisX.LabelStyle.IsStaggered=true;
-            //Chart1.ChartAreas[Num_area].AxisX.LabelStyle.IntervalType = DateTimeIntervalType.Auto;
-            Chart1.ChartAreas[Num_area].AxisX.IntervalAutoMode = IntervalAutoMode.VariableCount;
-            //Chart1.ChartAreas[Num_area].AxisX.IntervalType = DateTimeIntervalType.Minutes;
-
-            //Поработаем с легендой
-            Legend My_Legend = new Legend(Num_area);
-            
-
+                  //Увеличиваем счетчик главных арен, так как добавляем 1.
+            mainArenaCounter++;
+                  //Все графики находятся в пределах области построения ChartArea, создадим ее.
+            string meinAreaName = "Area" + "# " + mainArenaCounter;     //Запомним номер
+            myChart.ChartAreas.Add( new ChartArea(meinAreaName) );
+                  //Формат линий сетки
+            myChart.ChartAreas[meinAreaName].AxisX.MajorGrid.LineDashStyle = ChartDashStyle.Dot;
+            myChart.ChartAreas[meinAreaName].AxisY.MajorGrid.LineDashStyle = ChartDashStyle.Dot;
+            myChart.ChartAreas[meinAreaName].AxisY2.MajorGrid.LineDashStyle = ChartDashStyle.Dot;
+                  //Интервал и формат оси
+            myChart.ChartAreas[meinAreaName].AxisX.IntervalType = DateTimeIntervalType.Auto;
+            myChart.ChartAreas[meinAreaName].AxisX.LabelStyle.Format = "HH:mm:ss";
+                  //Добавление полосы прокрутки.
+            myChart.ChartAreas[meinAreaName].AxisX.ScrollBar.Enabled = true;
+            myChart.ChartAreas[meinAreaName].AxisY.ScrollBar.Enabled = true;
+            myChart.ChartAreas[meinAreaName].AxisY2.ScrollBar.Enabled = true;
+                  //Разрешение увеличивать промежуток выделения
+            myChart.ChartAreas[meinAreaName].AxisX.ScaleView.Zoomable = true;
+            myChart.ChartAreas[meinAreaName].AxisY.ScaleView.Zoomable = true;
+            myChart.ChartAreas[meinAreaName].AxisY2.ScaleView.Zoomable = true;
+                  //Разрешение пользоваться курсором
+            myChart.ChartAreas[meinAreaName].CursorX.IsUserEnabled = true;
+            myChart.ChartAreas[meinAreaName].CursorX.IsUserSelectionEnabled = true;
+            myChart.ChartAreas[meinAreaName].CursorY.IsUserEnabled = true;
+            myChart.ChartAreas[meinAreaName].CursorY.IsUserSelectionEnabled = true;
+                  //Выбор интервала для курсора. Ноль даст возможность выделять прямоугольные области нормально. Иначе коряво работает
+            myChart.ChartAreas[meinAreaName].CursorX.Interval = 0;
+            myChart.ChartAreas[meinAreaName].CursorY.Interval = 0;
+                  //Автомасштаб оси
+            myChart.ChartAreas[meinAreaName].AxisY.IsStartedFromZero=false;
+            myChart.ChartAreas[meinAreaName].AxisY2.IsStartedFromZero = false;
+                  //Задаем, как интервалы считаются
+            myChart.ChartAreas[meinAreaName].AxisX.IntervalAutoMode = IntervalAutoMode.VariableCount;
+                  //Поработаем с легендой
+            Legend My_Legend = new Legend(meinAreaName);
             My_Legend.Docking = Docking.Right;
             My_Legend.Alignment = StringAlignment.Far;
-            My_Legend.DockedToChartArea = Num_area;
             My_Legend.IsDockedInsideChartArea = true;
-
-            Chart1.Legends.Add(My_Legend);
-            
-            // Set custom chart area position
-            Chart1.ChartAreas[Num_area].Position = new ElementPosition(5, 5, 90, 90);
-            Chart1.ChartAreas[Num_area].InnerPlotPosition = new ElementPosition(5, 5, 90, 90);
+                 // Set custom chart area position. 
+            myChart.ChartAreas[meinAreaName].Position = new ElementPosition(1, 1, 90, 90);
+            myChart.ChartAreas[meinAreaName].InnerPlotPosition = new ElementPosition(5, 1, 90, 95);
         }
-        ///// <summary>
-        ///// Выровнять графики
-        ///// </summary>
-        //public void SetAlignment(Chart Chart1)
-        //{
-        //    for (int i = 1; i < Chart1.ChartAreas.Count; i++)
-        //    {
-        //        Chart1.ChartAreas[i].AlignWithChartArea = "Area" + "# " + 1;//1 площадка рисования
-        //        Chart1.ChartAreas[i].AlignmentOrientation = AreaAlignmentOrientations.Vertical;
-        //        //ChartFromForm.ChartAreas[i].AlignmentStyle = AreaAlignmentStyles.PlotPosition;
-        //    }
-        //}
-        /// <summary>
-        /// Создать ось СЛЕВА. (Создавая 2 доп. арены, 1 линию доп. невидимую, 1 перенося)
+              /// <summary>
+        /// Добавить линию на основной арене. ПРи этом, один и тот же параметр можно несколько раз рисовать. Сделано, чтобы иметь возможность сшивать графики по времени.
         /// </summary>
-        /// <param name="chart">График</param>
-        /// <param name="area">Исходная арена (для определения позиции)</param>
-        /// <param name="series">Серия данных передаваема</param>
-        /// <param name="axisOffset">Сдвиг оси</param>
-        
-        /// <summary>
-        /// Создать дополнительную ось.
-        /// </summary>
-        /// <param name="chart">График</param>
-        /// <param name="area">Исходная арена (для определения позиции)</param>
-        /// <param name="series">Серия данных передаваема</param>
-        /// <param name="axisOffset">Сдвиг оси</param>
-        public void CreateSecondYAxis(string LeftRight, Chart chart, ChartArea area, Series series, float axisOffset, float labelsSize)
+        /// <param name="chart1">График, с которым работаем</param>
+        /// <param name="selectedKKSs">Выбранная пользователем группа параметров</param>
+        /// <param name="chartareaName"> Выбранное пользователем имя главной арены, на которой рисуем.</param>
+        /// <param name="myFileActs">Передает данные</param>
+        /// <param name="r_L">Сообщает сторону оси</param>
+        public void AddMainLine(Chart myChart, System.Collections.IList selectedKKSs, string chartareaName, File_Acts myFileActs, string r_L)
         {
-          // СОздаем площадку для графика. Здесь русем график.
-          ChartArea areaForSeria = new     ChartArea();
-          if (LeftRight=="L")
+                //Сейчас обрабатываемый KKS из списка переданного.
+          string serName = "";
+                //Цикл по выдленным параметрам.
+          foreach (Parameter item in selectedKKSs)
           {
-            areaForSeria = chart.ChartAreas.Add(area.Name + "1a");
+                //Проверка, была ли уже серия с таким именем. (Если сшивали по времени.) Счетчик увеличиваем, имя с номером повторно добавленной серии называем. Если единственная линия с таким именем, как обычно, по KKS называем.
+            bool isAttend=false; // ПРисутствует ли добавляемое имя линии
+            foreach (var item0 in myChart.Series)
+            {
+              if (item0.Name==item.KKS)
+              {
+              isAttend=true;
+              }
+            }
+            if (isAttend)
+            {
+              slisesCounter++;
+              serName = item.KKS + "_" + slisesCounter;
+            }
+            else
+              serName = item.KKS;
+                  //Добавляем серию на график
+            myChart.Series.Add(new Series(serName));
+                  //Легенда видимая будет.
+            myChart.Series[serName].IsVisibleInLegend = true;
+                  //Тип линии
+            myChart.Series[serName].ChartType = SeriesChartType.Line;
+            myChart.Series[serName].BorderDashStyle = ChartDashStyle.Solid;
+                  //Арена линии соответствующая
+            myChart.Series[serName].ChartArea = chartareaName;
+                  //По какой оси
+            if (r_L == "left")
+            {
+              myChart.Series[serName].YAxisType = AxisType.Primary;
+            }
+            else
+            {
+              myChart.Series[serName].YAxisType = AxisType.Secondary;
+            }
+                  //Пополнение серии.   
+            foreach (Time_and_Value item1 in myFileActs.Find_Parametr(serName).Time_and_Value_List)
+            {
+              myChart.Series[serName].Points.AddXY(item1.Time, item1.Value);
+            }
+          }
+        }
+              /// <summary>
+        /// Добавить линию на дополнительной оси (на дополнительной арене). ПРи этом, один и тот же параметр можно по-прежнему несколько раз рисовать.  
+        /// Насчет положения арены: есть положение самой арены. Есть положение пространства для рисования графиков. Оно внутри чартарены. Таким образом, надо и то и то задать. Схема, как это работает -- в описании. Кода много, но все просто. Хотя логику придется смотреть в описании.
+        /// </summary>
+        /// <param name="myChart">График, с которым работаем</param>
+        /// <param name="chartareaName"> Выбранное пользователем имя главной арены, на которой рисуем. Здесь для привязки к этой арене</param>
+        /// <param name="selectedKKSs">Выбранная пользователем группа параметров</param>
+        /// <param name="myFileActs">Передает данные</param>
+        /// <param name="r_L">Сообщает сторону оси</param>
+        /// <param name="axisOffset">На сколько сдвигать арену с дополнительной осью</param>
+        /// <param name="labelsSize">На сколько сдвигать область рисования арены с дополнительной осью</param>
+        public void AddAdditional_AxisAndlLine(Chart myChart, string chartareaName, System.Collections.IList selectedKKSs, File_Acts myFileActs, string r_L)
+        {
+                  //Цикл по выделенным параметрам пользователем.
+          foreach (Parameter item in selectedKKSs)
+          {
+                         //1) Создаем незаметную арену для видимой серии на графике. Она точно совпадает с основной ареной.
+            ChartArea areaSeria = myChart.ChartAreas.Add("invisible_" + chartareaName + "_#" ); //Имя дополним (для вновь добавляемых арен было бы повторяющимся)
+          areaSeria.BackColor = Color.Transparent;
+          areaSeria.BorderColor = Color.Transparent;
+          areaSeria.Position.FromRectangleF(myChart.ChartAreas[chartareaName].Position.ToRectangleF());
+          areaSeria.InnerPlotPosition.FromRectangleF(myChart.ChartAreas[chartareaName].InnerPlotPosition.ToRectangleF());
+          areaSeria.AxisX.MajorGrid.Enabled = false;
+          areaSeria.AxisX.MajorTickMark.Enabled = false;
+          areaSeria.AxisX.LabelStyle.Enabled = false;
+          areaSeria.AxisY.MajorGrid.Enabled = false;
+          areaSeria.AxisY.MajorTickMark.Enabled = false;
+          areaSeria.AxisY.LabelStyle.Enabled = false;
+          areaSeria.AxisY.IsStartedFromZero = myChart.ChartAreas[chartareaName].AxisY.IsStartedFromZero;
+                    //Добавляем на главную арену серию, переносим ее на эту невидимую арену. Первые 2 строки ниже -- для подстановки в метод добавления по главной оси параметра единственного. 
+          List<Parameter> itemAsCollection   =  new List<Parameter>();
+          itemAsCollection.Add(item);
+          AddMainLine(myChart, itemAsCollection, chartareaName, myFileActs, r_L);
+          myChart.Series[item.KKS].ChartArea = areaSeria.Name;//сам перенос на невидимую арену.
+                    //Определение слева/справа строить
+          if (r_L == "left")
+          {
+            myChart.Series[item.KKS].YAxisType = AxisType.Primary;
           }
           else
           {
-            areaForSeria = chart.ChartAreas.Add(area.Name + "2a");
+            myChart.Series[item.KKS].YAxisType = AxisType.Secondary;
           }
-            
-            areaForSeria.BackColor = Color.Transparent;
-            areaForSeria.BorderColor = Color.Transparent;
-            //Выровнять. Площадку, где рисуем и начальную.
-            areaForSeria.Position.FromRectangleF(area.Position.ToRectangleF());
-            areaForSeria.InnerPlotPosition.FromRectangleF(area.InnerPlotPosition.ToRectangleF());
-            //Осей нет.
-            areaForSeria.AxisX.Enabled = AxisEnabled.False;
-            areaForSeria.AxisY.Enabled = AxisEnabled.False;
-            areaForSeria.AxisY2.Enabled = AxisEnabled.False;
-            //Разрешение пользоваться курсором
-            areaForSeria.CursorX.IsUserEnabled = true;
-            areaForSeria.CursorX.IsUserSelectionEnabled = true;
-            areaForSeria.CursorY.IsUserEnabled = true;
-            areaForSeria.CursorY.IsUserSelectionEnabled = true;
-            //Выбор интервала для курсора. Ноль даст возможность выделять прямоугольные области.
-            areaForSeria.CursorX.Interval = 0;
-            areaForSeria.CursorY.Interval = 0;
-
-            // Добавим линию, и назначим ее в созданную область.
-            series.ChartArea = areaForSeria.Name;
-            //Легенда линии привязывается к первой арене
-            series.Legend = area.Name;
-           
-            // Создаем арену для размещения в ней  оси.
-            // СОздаем площадку для графика. Здесь русем график.
-            ChartArea areaForAxis = new ChartArea();
-            if (LeftRight == "L")
-            {
-              areaForAxis = chart.ChartAreas.Add(area.Name + "1b");
-              areaForAxis.AxisY.Name = "Y1" + "b";
-            }
-            else
-            {
-              areaForAxis = chart.ChartAreas.Add(area.Name + "2b");
-              areaForAxis.AxisY2.Name = "Y2" + "b";
-            }
-
-            areaForAxis.BackColor = Color.Transparent;
-            areaForAxis.BorderColor = Color.Transparent;
-            areaForAxis.Position.FromRectangleF(chart.ChartAreas[series.ChartArea].Position.ToRectangleF());
-            areaForAxis.InnerPlotPosition.FromRectangleF(chart.ChartAreas[series.ChartArea].Position.ToRectangleF());
-            
-            // Create a copy of specified series. Копия невидимая, так как надо ось настроить видимую.
-            Series seriesCopy = chart.Series.Add(series.Name + "_Copy");
-            seriesCopy.ChartType = series.ChartType;
-            foreach (DataPoint point in series.Points)
-            {
-                seriesCopy.Points.AddXY(point.XValue, point.YValues[0]);
-            }
-
-            // Hide copied series
-            seriesCopy.IsVisibleInLegend = false;
-            seriesCopy.Color = Color.Transparent;
-            seriesCopy.BorderColor = Color.Transparent;
-            seriesCopy.ChartArea = areaForAxis.Name;
-            
-            // Настроим оси
-            areaForAxis.AxisX.Enabled = AxisEnabled.False;
-            if (LeftRight == "L")
-            {
-              areaForAxis.AxisY.Enabled = AxisEnabled.True;
-              areaForAxis.AxisY2.Enabled = AxisEnabled.False;
-              areaForAxis.AxisY.MajorGrid.Enabled = false;
-            }
-            else
-            {
-              areaForAxis.AxisY.Enabled = AxisEnabled.False;
-              areaForAxis.AxisY2.Enabled = AxisEnabled.True;
-              areaForAxis.AxisY2.MajorGrid.Enabled = false;
-            }
-            
-            
-            
-            //Разрешение пользоваться курсором
-            areaForAxis.CursorX.IsUserEnabled = true;
-            areaForAxis.CursorX.IsUserSelectionEnabled = true;
-            areaForAxis.CursorY.IsUserEnabled = true;
-            areaForAxis.CursorY.IsUserSelectionEnabled = true;
-            //Выбор интервала для курсора. Ноль даст возможность выделять прямоугольные области.
-            areaForAxis.CursorX.Interval = 0;
-            areaForAxis.CursorY.Interval = 0;
-
-            // Adjust area position
-            if (LeftRight == "L")
-            {
-              areaForAxis.Position.X -= axisOffset;
-              areaForAxis.InnerPlotPosition.X -= labelsSize;
-            }
-            else
-            {
-              areaForAxis.Position.X += axisOffset;
-              areaForAxis.InnerPlotPosition.X += labelsSize;
-            }
-            
-        }
-        /// <summary>
-        /// Добавить линию для оси на данной арене.
-        /// </summary>
-        public void AddLine(Chart Chart1, System.Windows.Controls.ListView LW_given, System.Collections.IList tempKKSs, string chartareaName, File_Acts File_Acts_One, string lrAxis, string ISsecond)
-        {
-          string SerName="";
-          //Можно много параметров выделить потому что.
-          foreach (Parameter item in tempKKSs)
+                     // 2) Теперь создаем арену для оси. (Кроме оси дополнительной, на ней все остальное незаметное.) Делаем совпадающей с основной сейчас.
+          ChartArea areaAxis = myChart.ChartAreas.Add("arenaForAxisYin_" + chartareaName + "_#" );
+          areaAxis.BackColor = Color.Transparent;
+          areaAxis.BorderColor = Color.Transparent;
+          areaAxis.Position.FromRectangleF(myChart.ChartAreas[chartareaName].Position.ToRectangleF());
+          areaAxis.InnerPlotPosition.FromRectangleF(myChart.ChartAreas[chartareaName].InnerPlotPosition.ToRectangleF());
+                    // Создаем копию видимой серии. (Копия невидима.)
+          Series seriesCopy = myChart.Series.Add(myChart.Series[item.KKS].Name + "_invisibleCopy");
+          seriesCopy.ChartType = myChart.Series[item.KKS].ChartType;
+          foreach (DataPoint point in myChart.Series[item.KKS].Points)
           {
-            //Добавлем имя серии
-            SerName=item.KKS;
-
-            ////Если серия уже была, не уникальна, имя серии для нее назовем с добавлением номера, сколько раз уже строили дополнительные линии аналогичные, в конце.
-            //РЕШИл, ЧТО ЭТО ЛИШНЕЕ
-            //if (!Chart1.Series.IsUniqueName(SerName))
-            //{
-            //  I++;
-            //  SerName+=I;
-            //} 
-            //Добавили серию в список графика
-            Chart1.Series.Add(new Series(SerName));
-            
-            //Легенда видимая будет.
-            Chart1.Series[SerName].IsVisibleInLegend = true;
-
-            //Определяем, строились ли дополнительные оси.
-            bool noAxis=true;
-            foreach (var item1 in Chart1.ChartAreas)
-            {
-              if (item1.Name.Contains("1b") || item1.Name.Contains("2b"))
+            seriesCopy.Points.AddXY(point.XValue, point.YValues[0]);
+          }
+          seriesCopy.ChartArea = areaAxis.Name;
+                      //Определение слева/справа строить
+          if (r_L == "left")
+          {
+            seriesCopy.YAxisType = AxisType.Primary;
+          }
+          else
+          {
+            seriesCopy.YAxisType = AxisType.Secondary;
+          }
+                    // Скрываем копию серии
+          seriesCopy.IsVisibleInLegend = false;
+          seriesCopy.Color = Color.Transparent;
+          seriesCopy.BorderColor = Color.Transparent;
+                    // Disable grid lines & tickmarks
+          areaAxis.AxisX.LineWidth = 0;
+          areaAxis.AxisX.MajorGrid.Enabled = false;
+          areaAxis.AxisX.MajorTickMark.Enabled = false;
+          areaAxis.AxisX.LabelStyle.Enabled = false;
+          areaAxis.AxisY.MajorGrid.Enabled = false;
+          areaAxis.AxisY.IsStartedFromZero = myChart.ChartAreas[chartareaName].AxisY.IsStartedFromZero;
+                    // 3) Задаем позицию оси. Смотрится сложно, ведь R_l вначале (определить сторону). Потом сдвинуть по этой стороне.
+                    //switch выбирает сторону
+          switch (r_L)
+          {
+            case "left":
+                      //Счетчик количества арен слева увеличим, созданные арены правильно назовем.
+              addAxisesCounter_L++;
+              areaSeria.Name = "invisible_" + chartareaName + "_#" + addAxisesCounter_L;
+              areaAxis.Name = "arenaForAxisYin_" + chartareaName + "_#" + addAxisesCounter_L;
+                        //Cжимаем все арены, кроме нашей с осью, последней, на axisOffset. А позицию -- вперед.
+              for (int i = 0; i < myChart.ChartAreas.Count - 1; i++)
               {
-                noAxis=false;
+              myChart.ChartAreas[i].Position.Width -= axisOffset;
+              myChart.ChartAreas[i].Position.X += axisOffset;
               }
-            }
-            //Если нет дополнительной оси. Легенду привязываем к указанной арене. 
-            if (noAxis)
-	            {
-               Chart1.Series[SerName].Legend = chartareaName;
-	            }
-            //Если есть, то и тип графика с 4 осями, на основную арену легенду наносим.
-            else
-              Chart1.Series[SerName].Legend = "Area# 1";
+                        //Последнюю (которую добавляем) тоже сожмем. Двигаем ее назад на axisOffset*(addAxisesCounter-1) . Её площадку с графиком, который связан с осью, от начала на labelsSize отодвигаем. МОжет показаться странным множитель (addAxisesCounter - 1). Он тут поскольку положение последней мы задавали при добавлении наравне с основной. И если добавлялись еще оси, то сдвигать следует соответственно.
+              areaAxis.Position.Width -= axisOffset;
+              areaAxis.Position.X -= axisOffset * (addAxisesCounter_L - 1);
+              areaAxis.InnerPlotPosition.X += labelsSize;
+            break;
 
-            //Тип линии
-            Chart1.Series[SerName].ChartType = SeriesChartType.Line;
-            Chart1.Series[SerName].BorderDashStyle = ChartDashStyle.Solid;
-
-            
-
-            
-
-
-            //По какой оси
-            if (lrAxis == "left")
+                      //Сдвигаем в другую сторону
+            case "right":
+                       //Счетчик количества арен слева увеличим, созданные арены правильно назовем.
+            addAxisesCounter_R++;
+            areaSeria.Name = "invisible_" + chartareaName + "_#" + addAxisesCounter_R;
+            areaAxis.Name = "arenaForAxisYin_" + chartareaName + "_#" + addAxisesCounter_R;
+                        //Cжимаем все арены, кроме нашей с осью, последней, на axisOffset. А позицию -- без изменений.
+            for (int i = 0; i < myChart.ChartAreas.Count - 1; i++)
             {
-              Chart1.Series[SerName].YAxisType = AxisType.Primary;
+              myChart.ChartAreas[i].Position.Width -= axisOffset;
             }
-            else
-            {
-              Chart1.Series[SerName].YAxisType = AxisType.Secondary;
-            }
+                      //Последнюю (которую добавляем) тоже сожмем. Двигаем ее вперед на axisOffset*(addAxisesCounter-1) . Её площадку с графиком, который связан с осью, от начала на labelsSize отодвигаем влево. 
+            areaAxis.Position.Width -= axisOffset;
+            areaAxis.Position.X += axisOffset * addAxisesCounter_R;
+            areaAxis.InnerPlotPosition.X -= labelsSize;
+            break;
 
-            
-            //Пополнение серии.   
-            foreach (Time_and_Value item1 in File_Acts_One.Find_Parametr(SerName).Time_and_Value_List)
-            {
-              Chart1.Series[SerName].Points.AddXY(item1.Time, item1.Value);
-            }
-
-            //Арена линии соответствующая
-            Chart1.Series[SerName].ChartArea = chartareaName;
-          
-            //ЕСЛИ на допоплнительных осях строим в первый раз.
-          bool IsarenaReadyLeft = false;
-          foreach (var item1 in Chart1.ChartAreas)
-          {
-            if (item1.Name.Contains("1b"))
-            {
-              IsarenaReadyLeft = true;
-            }
-          }
-
-          if (ISsecond == "Yes" && !IsarenaReadyLeft && lrAxis=="left")
-            {
-              //Теперь переносим ее.
-              this.CreateSecondYAxis("L", Chart1, Chart1.ChartAreas[chartareaName], Chart1.Series[SerName], 4, 0);
-            }
-          if (ISsecond == "Yes" && IsarenaReadyLeft)
-          {
-            //Теперь переносим ее.
-            // Добавим линию, и назначим ее в созданную область.
-            Chart1.Series[SerName].ChartArea = Chart1.ChartAreas[chartareaName].Name + "1a";
-          }
-
-
-          bool IsarenaReadyRight = false;
-          foreach (var item2 in Chart1.ChartAreas)
-          {
-            if (item2.Name.Contains("2b"))
-            {
-              IsarenaReadyRight = true;
-            }
-          }
-
-          if (ISsecond == "Yes" && !IsarenaReadyRight && lrAxis == "right")
-            {
-              //Теперь переносим ее.
-              this.CreateSecondYAxis("R", Chart1, Chart1.ChartAreas[chartareaName], Chart1.Series[item.KKS], 4, 0);
-            }
-          if (ISsecond == "Yes" && IsarenaReadyRight)
-          {
-            //Теперь переносим ее.
-            // Добавим линию, и назначим ее в созданную область.
-            Chart1.Series[SerName].ChartArea = Chart1.ChartAreas[chartareaName].Name + "2a";
-          }
-
-          //ПРи удалении единственной линии на оси дополнительной, мы ее крыли. Откроем
-          if (ISsecond.Contains("Yes"))
-          {
-            if (lrAxis == "left")
-            {
-              Chart1.ChartAreas["Area# 11b"].AxisY.Enabled = AxisEnabled.True;
-            }
-            //ПРавая ось
-            else
-            {
-              Chart1.ChartAreas["Area# 12b"].AxisY2.Enabled = AxisEnabled.True;
-            }
-          }
-          }
-          //LW_given.UnselectAll();
-        }
-
-        /// <summary>
+            default:
+              System.Windows.MessageBox.Show("Это никогда не выводтся. ПРосто для заполнения default");
+                break;
+          }//Конец switch
+         }//Закрыли обход по списку выделенных KKS.
+       }//Закрыли тело метода
+        
+              /// <summary>
         /// Добавить арену снизу.
         /// </summary>
         /// <param name="Chart1"></param>
@@ -361,7 +269,7 @@ namespace GoodPlot
           //}
 
             //Добавляем арена с номером СЛЕДУЮЩИМ
-            LoadNEWArena(Chart1, Chart1.ChartAreas.Count + 1);
+            LoadFirstArena(Chart1);
             //Получаем теперь , уже настоящий, этот номер.
           int GraphCounter = Chart1.ChartAreas.Count;
           //Новый размер окон.
@@ -401,10 +309,6 @@ namespace GoodPlot
             Chart1.Titles[i].Position.Y = (GraphCounter - 1) * (Chart1.Titles[i].Position.Y) / GraphCounter;
             Chart1.Titles[i].Font = new System.Drawing.Font("Times New Roman", 9, System.Drawing.FontStyle.Regular);
           }
-
-         
-        }
-        
-
-    }
-}
+        }//Тело метода
+     }//Класс
+}//Пространство имен
