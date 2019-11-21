@@ -1356,16 +1356,21 @@ namespace GoodPlot
           FileRead.Close();
         }
         /// <summary>
-        /// Даст Parameter по его описанию, KKS (по Discription, по KKS). Доработан на случай копии линии (+"_Copy")
+        /// Даст Parameter по его KKS . Так же, по KKS с номером повторно построенных линий этого KKS.
         /// </summary>
         /// <param name="Discription_"></param>
         /// <returns></returns>
         public Parameter Find_Parametr(string Text)
         {
-            
+          //Ище как сам KKS, так и KKS с добавленным _номером.
+          if (Text.Contains("_"))
+          {
+            Text= Text.Substring(0,Text.LastIndexOf("_"));
+          }
+            //ПРостой поиск
             foreach (Parameter one in Parameters)
             {
-              if (one.KKS.Contains(Text)) //one.Description.Contains(Text) ||
+              if (one.KKS.Contains(Text))
                     return one;
             }
             MessageBox.Show("Была запущена процедура поиска параметра Find_Parametr, но параметр не был обнаружен!");

@@ -30,42 +30,30 @@ namespace GoodPlot
     Title MovingTitle = null;
     Legend MovingLegend = null;
     /// <summary>
-    /// Выделенный элемент
+            /// Выделенный элемент
     /// </summary>
     HitTestResult result;
-    /// <summary>
-    /// Акт. экз. SaveLoadClass
-    /// </summary>
-
-    /// <summary>
+          /// <summary>
     /// Активный экземпляр класса File_Acts.
     /// </summary>
     File_Acts myFileActs = new File_Acts();
-    /// <summary>
+            /// <summary>
     /// Активный экземпляр класса Chart_Acts.
     /// </summary>
     Chart_Acts myChart_Acts;
 
-    //Задаем контекстное меню на график
+          //Задаем контекстное меню на график
     System.Windows.Forms.ContextMenu ContMenuChart = new System.Windows.Forms.ContextMenu();
     //Задаем элементы контекстного меню
-    /// <summary>
-    /// Выделять по оси Х/общее выделение
-    /// </summary>
-    System.Windows.Forms.MenuItem allotment_X_menuItem = new System.Windows.Forms.MenuItem();
-    /// <summary>
-    /// Выделять по оси Y/общее выделение
-    /// </summary>
-    System.Windows.Forms.MenuItem allotment_Y_menuItem = new System.Windows.Forms.MenuItem();
-    /// <summary>
+          /// <summary>
     /// Добавить снизу форму графика
     /// </summary>
     public System.Windows.Forms.MenuItem Add_Area_menuItem = new System.Windows.Forms.MenuItem();
-    /// <summary>
+            /// <summary>
     /// Список имеющихся осей отмечать, откуда брать координаты.
     /// </summary>
     private readonly List<string> ItemsInComboBox;
-    /// <summary>
+            /// <summary>
     /// Для счета разностей
     /// </summary>
     private int D = 1;
@@ -76,8 +64,7 @@ namespace GoodPlot
 
       InitializeComponent();
 
-      
-      //Заполняю список значений имен осей , чтобы координаты курсора соотв. отображать
+            //Заполняю список значений имен осей , чтобы координаты курсора соотв. отображать
       ItemsInComboBox = new List<string>();
       ItemsInComboBox.Add("L1");
       ItemsInComboBox.Add("R1");
@@ -101,15 +88,11 @@ namespace GoodPlot
       myChart.MouseClick += new System.Windows.Forms.MouseEventHandler(Chart1_Click);
 
       //Меню
-      allotment_X_menuItem.Text = "Выделять по X";
-      allotment_Y_menuItem.Text = "Выделять по Y";
       Add_Area_menuItem.Text = "Еще график снизу";
       //Пропишем обработчик собитий по нажатию на элементы меню
-      allotment_X_menuItem.Click += allotment_X_menuItem_Click;
-      allotment_Y_menuItem.Click += allotment_Y_menuItem_Click;
       Add_Area_menuItem.Click += Add_Area_menuItem_Click;
       //Добавление элементов меню в меню
-      ContMenuChart.MenuItems.AddRange(new[] { allotment_X_menuItem, allotment_Y_menuItem, Add_Area_menuItem });
+      ContMenuChart.MenuItems.AddRange(new[] {  Add_Area_menuItem });
       //Привязка этого меню к меню графика
       myChart.ContextMenu = ContMenuChart;
 
@@ -276,7 +259,8 @@ namespace GoodPlot
     /// <param name="e"></param>
     void AFWindow_Closed(object sender, EventArgs e)
     {
-      if (Many_GraphButton.Background == System.Windows.Media.Brushes.BurlyWood)
+    //Если имеются дополнительные снизу арены, совместить оси времени
+      if (myChart_Acts.mainArenaCounter != 1)
       {
         for (int i = 0; i < myChart.ChartAreas.Count - 1; i++)
         {
@@ -284,8 +268,6 @@ namespace GoodPlot
           myChart.ChartAreas[i].AxisX.Maximum = myChart.ChartAreas[myChart.ChartAreas.Count - 1].AxisX.Maximum;
         }
       }
-
-
     }
 
     /// <summary>
@@ -469,76 +451,13 @@ namespace GoodPlot
 
     }
 
-    /// <summary>
-    /// Изменение на выделение по оси Х/обратно
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    void allotment_X_menuItem_Click(object sender, EventArgs e)
-    {
-      if (allotment_X_menuItem.Text == "Выделять по X")
-      {
-
-
-
-        myChart.ChartAreas[textBox_Arena_N.Text].CursorY.IsUserSelectionEnabled = false;
-        myChart.ChartAreas[textBox_Arena_N.Text].CursorY.IsUserEnabled = false;
-        myChart.ChartAreas[textBox_Arena_N.Text].CursorY.LineWidth = 0;
-        myChart.ChartAreas[textBox_Arena_N.Text].CursorY.Interval = 100;
-
-
-        allotment_X_menuItem.Text = "Обычное выделение";
-        return;
-      }
-      if (allotment_X_menuItem.Text == "Обычное выделение")
-      {
-        allotment_X_menuItem.Text = "Выделять по X";
-        allotment_Y_menuItem.Text = "Выделять по Y";
-        //Задаем стандартное выделение везде
-        myChart.ChartAreas[textBox_Arena_N.Text].CursorY.IsUserSelectionEnabled = true;
-        myChart.ChartAreas[textBox_Arena_N.Text].CursorY.IsUserEnabled = true;
-        myChart.ChartAreas[textBox_Arena_N.Text].CursorY.LineWidth = 1;
-        myChart.ChartAreas[textBox_Arena_N.Text].CursorY.Interval = 0;
-        return;
-      }
-    }
-    /// <summary>
-    /// Изменение на выделение по оси Y/обратно
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    void allotment_Y_menuItem_Click(object sender, EventArgs e)
-    {
-      if (allotment_Y_menuItem.Text == "Выделять по Y")
-      {
-        myChart.ChartAreas[textBox_Arena_N.Text].CursorX.Interval = (myChart.ChartAreas[textBox_Arena_N.Text].AxisX.Maximum
-                                                              - myChart.ChartAreas[textBox_Arena_N.Text].AxisX.Minimum) / 3;
-        allotment_Y_menuItem.Text = "Обычное выделение";
-        return;
-      }
-      if (allotment_Y_menuItem.Text == "Обычное выделение")
-      {
-        allotment_X_menuItem.Text = "Выделять по X";
-        allotment_Y_menuItem.Text = "Выделять по Y";
-        //Задаем стандартное выделение везде
-        myChart.ChartAreas[textBox_Arena_N.Text].CursorX.Interval = 0;
-        myChart.ChartAreas[textBox_Arena_N.Text].CursorY.Interval = 0;
-        return;
-      }
-    }
-    /// <summary>
+            /// <summary>
     /// Добавить снизу график.
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
     void Add_Area_menuItem_Click(object sender, EventArgs e)
     {
-      //Маркер типа графика.
-      if (Many_GraphButton.Background != System.Windows.Media.Brushes.BurlyWood)
-      {
-        Many_GraphButton.Background = System.Windows.Media.Brushes.BurlyWood;
-      }
-      //Добавили арену
       myChart_Acts.Add_Area_Bottom(myChart);
     }
     /// <summary>
@@ -548,36 +467,39 @@ namespace GoodPlot
     /// <param name="e"></param>
     private void bsLeft_Click(object sender, RoutedEventArgs e)
     {
-      ////Не давать строить , если еще по главным осям нет графиков.
-      //bool is_there_Left_Axis = false;
-      //foreach (Series item in myChart.Series)
-      //{
-      //  if (item.YAxisType == AxisType.Primary)
-      //  {
-      //    is_there_Left_Axis = true;
-      //  }
-      //}
-      //if ( ! is_there_Left_Axis )
-      //{
-      //  MessageBox.Show("Пожалуйста, сначала постройте график данной линии по основной левой оси.");
-      //  return;
-      //}
-
-      //Магия
+          //Магия
       dynamic selectedItem = list_Parameters.SelectedItem;
+            //Проверка потому что не успевает прогрузиться список, и тогда ошибка выбора элемента,
+              //т.к. нет выбора элемента.
+          if (selectedItem != null)
+            {
+                //Добавляем линию 
+        List<ChartArea> listAreas = myChart_Acts.AddAdditional_AxisAndlLine(myChart, textBox_Arena_N.Text, list_Parameters.SelectedItems, myFileActs , "left");
+                //Добавление в контекстное меню параметров элемента с функциональностью строить графики по добавленной оси.
+        foreach (ChartArea Area_i in listAreas)
+        {
+          //Добавление элементов в меню
+          System.Windows.Controls.MenuItem additionalAxis_menuItem = new System.Windows.Controls.MenuItem();
+          additionalAxis_menuItem.Header = Area_i.Name;//По какой оси (арене) график.
+          list_Parameters.ContextMenu.Items.Add(additionalAxis_menuItem);
+          //Пропишем обработчик собитий по нажатию на элементы меню
+          additionalAxis_menuItem.Click += Additional_Axis_menuItem_Click;
+        }
+        
+              
 
-      //Проверка потому что не успевает прогрузиться список, и тогда ошибка выбора элемента,
-      //т.к. нет выбора элемента.
-
-      if (selectedItem != null)
-      {
-        //Добавляем линию 
-        myChart_Acts.AddAdditional_AxisAndlLine(myChart, textBox_Arena_N.Text, list_Parameters.SelectedItems, myFileActs , "left");
+                  //Для удобства переход на вкладку с графиком.
         TabCont1.SelectedIndex = 1;
         myChart.Focus();
-        // Добавим линию, и назначим ее в созданную область по имени текста в TextBox_Arena_N
       }
-
+    }
+    //Строить по добавленной дополнительной оси.
+    void Additional_Axis_menuItem_Click(object sender, EventArgs e)
+    {
+      myChart_Acts.AddLine_OnAdditionalAxis(myChart,  list_Parameters.SelectedItems, myFileActs, ((MenuItem)sender).Header.ToString());
+      //Для удобства переход на вкладку с графиком.
+      TabCont1.SelectedIndex = 1;
+      myChart.Focus();
     }
     /// <summary>
     /// Строить по дополнительной правой оси.
@@ -586,82 +508,30 @@ namespace GoodPlot
     /// <param name="e"></param>
     private void bsRight_Click(object sender, RoutedEventArgs e)
     {
-      ////Не давать строить , если еще по главным осям нет граиков.
-      //bool Is_there_Right_Axis = false;
-      //foreach (Series item in myChart.Series)
-      //{
-      //  if (item.YAxisType == AxisType.Secondary)
-      //  {
-      //    Is_there_Right_Axis = true;
-      //  }
-      //}
-      //if (myChart.Series.Count == 0 || !Is_there_Right_Axis)
-      //{
-      //  MessageBox.Show("Пожалуйста, сначала постройте график данной линии по основной правой оси.");
-      //  return;
-      //}
-
-      //Магия
+            //Магия
       dynamic selectedItem = list_Parameters.SelectedItem;
-
-      //Проверка потому что не успевает прогрузиться список, и тогда ошибка выбора элемента,
+                  //Проверка потому что не успевает прогрузиться список, и тогда ошибка выбора элемента,
       //т.к. нет выбора элемента.
-
       if (selectedItem != null)
       {
         //Для начала строим просто справа.
-        myChart_Acts.AddAdditional_AxisAndlLine(myChart, textBox_Arena_N.Text, list_Parameters.SelectedItems, myFileActs, "right");
+        List<ChartArea> listAreas = myChart_Acts.AddAdditional_AxisAndlLine(myChart, textBox_Arena_N.Text, list_Parameters.SelectedItems, myFileActs, "right");
+        //Добавление в контекстное меню параметров элемента с функциональностью строить графики по добавленной оси.
+        foreach (ChartArea Area_i in listAreas)
+        {
+          //Добавление элементов в меню
+          System.Windows.Controls.MenuItem additionalAxis_menuItem = new System.Windows.Controls.MenuItem();
+          additionalAxis_menuItem.Header = Area_i.Name;//По какой оси (арене) график.
+          list_Parameters.ContextMenu.Items.Add(additionalAxis_menuItem);
+          //Пропишем обработчик собитий по нажатию на элементы меню
+          additionalAxis_menuItem.Click += Additional_Axis_menuItem_Click;
+        }
+
         TabCont1.SelectedIndex = 1;
         myChart.Focus();
-        // Добавим линию, и назначим ее в созданную область по имени текста в TextBox_Arena_N
       }
     }
-    /// <summary>
-    /// Строить 1 график, но с 4 осями. Разблокировать такую возможность. Заблокировать добавление снизу.
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void One_Graph_Click(object sender, RoutedEventArgs e)
-    {
-      if (myChart.ChartAreas.Contains(myChart.ChartAreas.FindByName("Area# 2")))
-      {
-        System.Windows.MessageBox.Show("Либо 1 график и 4 оси, либо много графиков с 2 осями!");
-        return;
-      }
-      else
-      {
-        ////Задействуем элементы меню для добавления на доп. оси гравиков.
-        //bsLeft.IsEnabled = true;
-        //bsRight.IsEnabled = true;
-        //Не дает построить снизу график теперь
-        Add_Area_menuItem.Enabled = false;
-        //Кнопку подсвечиват типа графика
-        One_GraphButton.Background = System.Windows.Media.Brushes.BurlyWood;
-        //Кнопку графика подграфиком обычным цеветом, что бы не выделялась
-        Many_GraphButton.Background = default(System.Windows.Media.Brush);
-      }
-    }
-    /// <summary>
-    /// Много графиков.
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    private void Many_Graph_Click(object sender, RoutedEventArgs e)
-    {
-      if (myChart.ChartAreas.Count != 1)
-      {
-        System.Windows.MessageBox.Show("Либо 1 график и 4 оси, либо много графиков с 2 осями!");
-        return;
-      }
-      else
-      {
-        //bsLeft.IsEnabled = false;
-        //bsRight.IsEnabled = false;
-        Add_Area_menuItem.Enabled = true;
-        Many_GraphButton.Background = System.Windows.Media.Brushes.BurlyWood;
-        One_GraphButton.Background = default(System.Windows.Media.Brush);
-      }
-    }
+    
     /// <summary>
     /// Рисовать линию.
     /// </summary>
@@ -857,13 +727,7 @@ namespace GoodPlot
     /// <param name="e"></param>
     private void LoadMenuItem_Click(object sender, RoutedEventArgs e)
     {
-      //Это модет быть неточно, но вроде и не должно помешать нам. Вообще, переаботать этот дебилизм с необходимостью нажатия
-      Many_GraphButton.IsEnabled = true;
-      One_GraphButton.IsEnabled = true;
-
-
-
-      //Диалог организуем
+              //Диалог организуем
       OpenFileDialog openFileDialog = new OpenFileDialog();
       openFileDialog.Filter = "Бинарный файл (*.bin)|*.bin";
       string fileName = "f.bin";
@@ -1114,10 +978,6 @@ namespace GoodPlot
     /// <param name="e"></param>
     private void DiffEffModule_Click(object sender, RoutedEventArgs e)
     {
-      //У нас тут только обыный график. Ведем обработку! Исключаем все фарианты с несколькими графиками!
-      One_GraphButton.IsEnabled = false;
-      Many_GraphButton.IsEnabled = false;
-
       ModuleDiffEff DiffEffWindow = new ModuleDiffEff(myChart, myFileActs, TableCurrent);
       DiffEffWindow.Show();
     }
@@ -1146,7 +1006,7 @@ namespace GoodPlot
         item.CursorY.Interval = 100;
 
       }
-      allotment_X_menuItem.Text = "Обычное выделение";
+      
       ModuleValues ValuesWindow = new ModuleValues(myFileActs, myChart, list_Parameters);
       ValuesWindow.Show();
     }

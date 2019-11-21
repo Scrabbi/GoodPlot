@@ -22,18 +22,7 @@ Icon="PerfCenterCpl.ico"
                 <MenuItem Header="Добавить" x:Name="AddFile" Click="AddFile_Click"/>
             </MenuItem>
             <!--тип графика-->
-            <MenuItem Header="Тип графика" RenderTransformOrigin="0.5,0.5">
-                <MenuItem.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform/>
-                        <SkewTransform/>
-                        <RotateTransform Angle="10.347"/>
-                        <TranslateTransform/>
-                    </TransformGroup>
-                </MenuItem.RenderTransform>
-                <MenuItem Header="1 график, 4 оси"  Name="One_GraphButton" x:FieldModifier="public" Click="One_Graph_Click"/>
-                <MenuItem Header="Друг под другом, 2 оси"  Name="Many_GraphButton" Click="Many_Graph_Click"/>
-            </MenuItem>
+            
             <!--удаление элементов-->
             <MenuItem Header="Удаление" RenderTransformOrigin="0.5,0.5">
                 <MenuItem.RenderTransform>
