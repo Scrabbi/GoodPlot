@@ -5,8 +5,8 @@
         Title="Axis_Format_Window" Height="393.133" Width="661.833">
     <Grid >
         <Grid.RowDefinitions>
-            <RowDefinition Height="12*" ></RowDefinition>
-            <RowDefinition Height="25*" ></RowDefinition>
+            <RowDefinition Height="42*" ></RowDefinition>
+            <RowDefinition Height="79*" ></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="77*" ></ColumnDefinition>
@@ -19,6 +19,12 @@
         <StackPanel Grid.Row="0" Grid.ColumnSpan="6" Orientation="Vertical" VerticalAlignment="Stretch">
             <Label Content="Название оси" Background="Aqua" HorizontalAlignment="Center" />
             <TextBox Name="Axis_name" Text="TextBox" Background="AntiqueWhite" HorizontalAlignment="Stretch"/>
+            <Label Content="Тип оси" Background="Aqua" HorizontalAlignment="Center" />
+            <ComboBox Name="ComboBoxLogarifmic" SelectionChanged="ComboBoxLogarifmic_SelectionChanged" Height="28"/>
+            <StackPanel Orientation="Horizontal">
+                <Label Content="Автометки" Background="Aqua" HorizontalAlignment="Center" />
+                <CheckBox   Name="CheckBoxAuto" Checked="CheckBoxAuto_Checked"/>
+            </StackPanel>
         </StackPanel>
         <StackPanel Grid.Row="1" Grid.Column="0" VerticalAlignment="Stretch">
             <Label Content="Max" Background="Aquamarine" HorizontalAlignment="Stretch" Height="35" />

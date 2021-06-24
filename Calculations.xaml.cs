@@ -22,7 +22,10 @@ namespace GoodPlot
   /// </summary>
   public partial class Calculations : System.Windows.Window
   {
-    public  double Step_h = 3.52;
+    public static double FrecvencyRegistration=1.2;
+
+
+    public static  double Step_h = 3.75;
     public double B_eff = 0.74;
     public int Min_TimeReg=30;
     public static string ReactKKSMainPart = "247.";
@@ -53,7 +56,7 @@ namespace GoodPlot
       InitializeComponent();
       Fileacts_ref=FA;
       chart_ref=chart;
-      
+      FrecvencyRegistration=Fileacts_ref . Parameters [ 0 ] . Time_and_Value_List [ 1 ] . Time . Subtract ( Fileacts_ref . Parameters [ 0 ] . Time_and_Value_List [ 0 ] . Time ) . TotalSeconds/2;
       //Считать состояние
       try
       {
@@ -97,22 +100,26 @@ namespace GoodPlot
         GroupKKSMainPart8 = "JDA00FG908";
       }
     }
+
     /// <summary>
     /// Найти из списка точек точку с заданным временем из списка значений параметра
     /// </summary>
     /// <param name="TadList">Список точек</param>
     /// <param name="Dt">Заданное время</param>
     /// <returns></returns>
-    public Time_and_Value FindPoint(List<Time_and_Value> TadList, DateTime Dt)
+    public Time_and_Value FindClosePoint ( List<Time_and_Value> TadList , DateTime Dt )
     {
-      double FrecvencyRegistration = TadList[1].Time.Subtract(TadList[0].Time).TotalMilliseconds;
+      
       foreach (var item in TadList)
       {
-        if (item.Time.Subtract(Dt).TotalMilliseconds <= FrecvencyRegistration )
-        //if (item.Time.Hour == Dt.Hour && item.Time.Minute == Dt.Minute && Math.Abs(item.Time.Second - Dt.Second) <= FrecvencyRegistration/2)
-          return item;
+          //TimeSpan span = item . Time . Subtract ( Dt );
+          //double rez= item.Time.Subtract(Dt).TotalSeconds;
+        if ( Math.Abs( item.Time.Subtract(Dt).TotalSeconds ) <= FrecvencyRegistration )
+        {
+            return item;
+        }
       }
-      MessageBox.Show("Не найдено совпадение времени с курсором");
+      MessageBox . Show ( "Не найдено совпадение времени с курсором : FindClosePoint" );
       return new Time_and_Value();
     }
     /// <summary>
@@ -121,29 +128,20 @@ namespace GoodPlot
     /// <param name="PointList"></param>
     /// <param name="Dt"></param>
     /// <returns></returns>
-    public static DataPoint FindPoint(DataPointCollection PointList, DateTime Dt)
+    public static DataPoint FindPoint ( DataPointCollection PointList , DateTime Dt )
     {
-      if (DateTime.FromOADate(PointList[0].XValue).Subtract(Dt).TotalMilliseconds > 0 || DateTime.FromOADate(PointList[PointList.Count-1].XValue).Subtract(Dt).TotalMilliseconds < 0)
-      {
-        MessageBox.Show("Усреднение не произвено. Выбран интервал усреднения, заходящий за начало данных");
-        return new DataPoint();
-      }
-      else
-      {
-      double FrecvencyRegistration = DateTime.FromOADate(PointList[1].XValue).Subtract(DateTime.FromOADate(PointList[0].XValue)).TotalMilliseconds;
-     
-      TimeSpan MyTS;
-      foreach (var item in PointList)
-      {
-        //if (DateTime.FromOADate(item.XValue).Hour == Dt.Hour && DateTime.FromOADate(item.XValue).Minute == Dt.Minute && Math.Abs(DateTime.FromOADate(item.XValue).Second - Dt.Second) <= FrecvencyRegistration/2)
-        MyTS= DateTime.FromOADate(item.XValue).Subtract(Dt);
+        TimeSpan MyTS;
+        foreach ( var item in PointList )
+        {
+            //if (DateTime.FromOADate(item.XValue).Hour == Dt.Hour && DateTime.FromOADate(item.XValue).Minute == Dt.Minute && Math.Abs(DateTime.FromOADate(item.XValue).Second - Dt.Second) <= FrecvencyRegistration/2)
+            MyTS= DateTime . FromOADate ( item . XValue ) . Subtract ( Dt );
 
-        if (Math.Abs(MyTS.TotalMilliseconds) <= FrecvencyRegistration)
-          return item;
-      }
-      MessageBox.Show("Не найдено совпадение времени с курсором");
-      }
-      return new DataPoint();
+            if ( Math . Abs ( MyTS . TotalSeconds ) <= FrecvencyRegistration )
+                return item;
+        }
+        MessageBox . Show ( "Не найдено совпадение времени с курсором" );
+
+        return new DataPoint ( );
     }
     /// <summary>
     /// Среднее вправо-лево от указанного количества времени.
@@ -213,17 +211,20 @@ namespace GoodPlot
     /// <param name="TadList"></param>
     /// <param name="Dt"></param>
     /// <returns></returns>
-    public int FindIndex(List<Time_and_Value> TadList, DateTime Dt)
+    public int FindIndex ( List<Time_and_Value> TadList , DateTime Dt )
     {
-    double FrecvencyRegistration=TadList[1].Time.Subtract(TadList[0].Time).TotalSeconds;
+    
     
       for (int i = 0; i < TadList.Count; i++)
       {
-        if (TadList[i].Time.Hour == Dt.Hour && TadList[i].Time.Minute == Dt.Minute && Math.Abs(TadList[i].Time.Second - Dt.Second) < FrecvencyRegistration)
+      //Ио секунды могут не совпадатьчислом, а интервал то меньше и нормальный
+       // if (TadList[i].Time.Hour == Dt.Hour && TadList[i].Time.Minute == Dt.Minute && Math.Abs(TadList[i].Time.Second - Dt.Second) <= FrecvencyRegistration)
+       double df = TadList [ i ] . Time . Subtract ( Dt ) . TotalSeconds;
+       if ( Math.Abs( TadList [ i ] . Time . Subtract ( Dt ) . TotalSeconds) <= FrecvencyRegistration )
         return i;
       }
-     
 
+      MessageBox . Show ( "Лажа в FindIndex" );
      return 0;
     }
     public struct Line_for_Table
@@ -315,93 +316,127 @@ namespace GoodPlot
     /// <param name="Start"></param>
     /// <param name="End"></param>
     /// <returns></returns>
-    public List<DateTime> GiveM1(DateTime Start, DateTime End)
+    public List<DateTime> GiveGroupSteps(DateTime Start, DateTime End)
     {
-    List<DateTime> M1=new List<DateTime>();
+        List<DateTime> M1=new List<DateTime>();
 
-    try
-    {
-      H12 = Fileacts_ref.Parameters.Find(n => n.KKS.Contains(GroupKKSMainPart12));
-      H11 = Fileacts_ref.Parameters.Find(n => n.KKS.Contains(GroupKKSMainPart11));
-      H10 = Fileacts_ref.Parameters.Find(n => n.KKS.Contains(GroupKKSMainPart10));
-      H9 = Fileacts_ref.Parameters.Find(n => n.KKS.Contains(GroupKKSMainPart9));
-      H8 = Fileacts_ref.Parameters.Find(n => n.KKS.Contains(GroupKKSMainPart8));
-      Reactivity = Fileacts_ref.Parameters.Find(n => n.KKS.Contains(ReactKKSMainPart));
-    }
-    catch (Exception)
-    { throw; }
-    if (H10==null)
-    {
-      MessageBox.Show("Наверное, забыли изменить характерные KKS");
-      return null;
-    }
-   int start = FindIndex(H10.Time_and_Value_List,Start);
-   int end = FindIndex(H10.Time_and_Value_List, End);
-    if (H12==null)
-    {
-    //Чтобы алгоритм работал при любых файлах
-    H11=H10;
-    H12=H11;
-    }
-
-    int i = start;
-      while ( i < end)
-      {
-        while (Math.Abs( H12.Time_and_Value_List[i].Value - H12.Time_and_Value_List[i+3].Value) < 0.05
-        && Math.Abs(H11.Time_and_Value_List[i].Value - H11.Time_and_Value_List[i + 3].Value) < 0.05
-        &&Math.Abs(H10.Time_and_Value_List[i].Value - H10.Time_and_Value_List[i + 3].Value) < 0.05 
-        &&Math.Abs(H9.Time_and_Value_List[i].Value - H9.Time_and_Value_List[i + 3].Value) < 0.05 
-        &&Math.Abs(H8.Time_and_Value_List[i].Value - H8.Time_and_Value_List[i + 3].Value) < 0.05
-        && i < end)
+        try
         {
-        i++;
+          H12 = Fileacts_ref.Parameters.Find(n => n.KKS.Contains(GroupKKSMainPart12));
+          H11 = Fileacts_ref.Parameters.Find(n => n.KKS.Contains(GroupKKSMainPart11));
+          H10 = Fileacts_ref.Parameters.Find(n => n.KKS.Contains(GroupKKSMainPart10));
+          H9 = Fileacts_ref.Parameters.Find(n => n.KKS.Contains(GroupKKSMainPart9));
+          H8 = Fileacts_ref.Parameters.Find(n => n.KKS.Contains(GroupKKSMainPart8));
+          Reactivity = Fileacts_ref.Parameters.Find(n => n.KKS.Contains(ReactKKSMainPart));
         }
-        if (i < end)//переход к следующему движению группы
-        M1.Add(H10.Time_and_Value_List[i+2].Time);//Запомнили точку спуска
+        catch (Exception)
+        { throw; }
+
+        if (H10==null)
+        {
+          MessageBox.Show("Наверное, забыли изменить характерные KKS");
+          return null;
+        }
+
+        //Для любой группы времена такие как у другой любой. Берем 10 , могли любую другую.
+       int start = FindIndex(H10.Time_and_Value_List,Start);
+       int end = FindIndex(H10.Time_and_Value_List, End);
+
+        //if (H12==null)
+        //{
+        ////Чтобы алгоритм работал при любых файлах
+        //H11=H10;
+        //H12=H11;
+        //}
+
+        int i = start;
+          while ( i < end)
+          {
+              //Ждем изменения группы.
+            while (Math.Abs( H12.Time_and_Value_List[i].Value - H12.Time_and_Value_List[i+3].Value) < 0.5
+            && Math.Abs(H11.Time_and_Value_List[i].Value - H11.Time_and_Value_List[i + 3].Value) < 0.5
+            &&Math.Abs(H10.Time_and_Value_List[i].Value - H10.Time_and_Value_List[i + 3].Value) < 0.5 
+            &&Math.Abs(H9.Time_and_Value_List[i].Value - H9.Time_and_Value_List[i + 3].Value) < 0.5 
+            &&Math.Abs(H8.Time_and_Value_List[i].Value - H8.Time_and_Value_List[i + 3].Value) < 0.5
+            && i < end)
+            {
+            i++;
+            }
+
+            if (i < end)//переход к следующему движению группы
+            M1.Add(H10.Time_and_Value_List[i].Time);//Запомнили точку (верх) спуска
         
             
-        while (Math.Abs(H12.Time_and_Value_List[i].Value - H12.Time_and_Value_List[i + 4].Value) > 0.03 
-        || Math.Abs(H11.Time_and_Value_List[i].Value - H11.Time_and_Value_List[i + 4].Value) > 0.03 
-        ||Math.Abs(H10.Time_and_Value_List[i].Value - H10.Time_and_Value_List[i + 4].Value) > 0.03 
-        ||Math.Abs(H9.Time_and_Value_List[i].Value - H9.Time_and_Value_List[i + 4].Value) > 0.03 
-        ||Math.Abs(H8.Time_and_Value_List[i].Value - H8.Time_and_Value_List[i + 4].Value) > 0.03
-        && i < end)
-        {
-        i++;  
-        }
-        if (i < end)//переход к следующему движению группы
-        M1.Add(H10.Time_and_Value_List[i].Time);//Точка низа
+            while (Math.Abs(H12.Time_and_Value_List[i].Value - H12.Time_and_Value_List[i + 4].Value) > 0.03 
+            || Math.Abs(H11.Time_and_Value_List[i].Value - H11.Time_and_Value_List[i + 4].Value) > 0.03 
+            ||Math.Abs(H10.Time_and_Value_List[i].Value - H10.Time_and_Value_List[i + 4].Value) > 0.03 
+            ||Math.Abs(H9.Time_and_Value_List[i].Value - H9.Time_and_Value_List[i + 4].Value) > 0.03 
+            ||Math.Abs(H8.Time_and_Value_List[i].Value - H8.Time_and_Value_List[i + 4].Value) > 0.03
+            && i < end)
+            {
+            i++;  
+            }
+            if (i < end)//переход к следующему движению группы
+            M1.Add(H10.Time_and_Value_List[i+1].Time);//Точка (низ) спуска
 
-        i+=1;
-      }  
+            i+=1;
+          }  
     
 
-      return M1;
+          return M1;
     }
+
     /// <summary>
-    /// Улучшает в том смысле, что убирает лишние маленькие перемещения, непригодные для обработки
+    /// Группа иногда перемещается шажками очень малыми. Отсеем пары значений такие, где мало времени между перемещениями
     /// </summary>
-    /// <param name="?"></param>
+    /// <param name="groupSteps_m1"></param>
     /// <returns></returns>
-    public List<DateTime> GiveM1_improove(List<DateTime> m1)
+    public List<DateTime> GiveM1_improove ( List<DateTime> groupSteps_m1 )
     {
-    List<DateTime> M1_improove = new List<DateTime>();
-    M1_improove.Add(m1[0]);
-    
-    for (int i = 0; i < m1.Count - 1; i += 1)
-    {
-      
-      if (m1[i + 1].Subtract(m1[i]).TotalSeconds> Min_TimeReg)
-      {
-        M1_improove.Add(m1[i]);
-        M1_improove.Add(m1[i+1]);
-      }
-    }
-    M1_improove.Add(m1[m1.Count-1]);
+         List<DateTime> m1_improove = new List<DateTime>();
+         m1_improove.AddRange( groupSteps_m1);
+         List<DateTime> remoovingDates = new List<DateTime>();
 
+        for (int i = 0; i < groupSteps_m1.Count; i+=2)
+			{
+            if (
+          Math . Abs ( FindClosePoint ( H12 . Time_and_Value_List , groupSteps_m1 [ i+1 ] ) . Value - FindClosePoint ( H12 . Time_and_Value_List , groupSteps_m1 [ i ] ) . Value )  >0 &&
+          Math . Abs ( FindClosePoint ( H12 . Time_and_Value_List , groupSteps_m1 [ i+1 ] ) . Value - FindClosePoint ( H12 . Time_and_Value_List , groupSteps_m1 [ i ] ) . Value )  <1
+           )
+             { remoovingDates . Add ( groupSteps_m1 [ i ] );                  remoovingDates . Add ( groupSteps_m1 [ i +1] );}
 
-    return M1_improove;
+              if (
+            Math . Abs ( FindClosePoint ( H11 . Time_and_Value_List , groupSteps_m1 [ i+1 ] ) . Value - FindClosePoint ( H11 . Time_and_Value_List , groupSteps_m1 [ i ] ) . Value )  >0 &&
+              Math . Abs ( FindClosePoint ( H11 . Time_and_Value_List , groupSteps_m1 [ i+1 ] ) . Value - FindClosePoint ( H11 . Time_and_Value_List , groupSteps_m1 [ i ] ) . Value )  <1
+             )
+              { remoovingDates . Add ( groupSteps_m1 [ i ] ); remoovingDates . Add ( groupSteps_m1 [ i +1 ] ); }
+			    
+             if (
+            Math . Abs ( FindClosePoint ( H10 . Time_and_Value_List , groupSteps_m1 [ i+1 ] ) . Value - FindClosePoint ( H10 . Time_and_Value_List , groupSteps_m1 [ i ] ) . Value )  >0 &&
+              Math . Abs ( FindClosePoint ( H10 . Time_and_Value_List , groupSteps_m1 [ i+1 ] ) . Value - FindClosePoint ( H10 . Time_and_Value_List , groupSteps_m1 [ i ] ) . Value )  <1
+             )
+              { remoovingDates . Add ( groupSteps_m1 [ i ] ); remoovingDates . Add ( groupSteps_m1 [ i +1 ] ); }
+			
+                if (
+            Math . Abs ( FindClosePoint ( H9 . Time_and_Value_List , groupSteps_m1 [ i+1 ] ) . Value - FindClosePoint ( H9 . Time_and_Value_List , groupSteps_m1 [ i ] ) . Value )  >0 &&
+              Math . Abs ( FindClosePoint ( H9 . Time_and_Value_List , groupSteps_m1 [ i+1 ] ) . Value - FindClosePoint ( H9 . Time_and_Value_List , groupSteps_m1 [ i ] ) . Value )  <1
+             )
+              { remoovingDates . Add ( groupSteps_m1 [ i ] ); remoovingDates . Add ( groupSteps_m1 [ i +1 ] ); }
+
+               if (
+            Math . Abs ( FindClosePoint ( H8 . Time_and_Value_List , groupSteps_m1 [ i+1 ] ) . Value - FindClosePoint ( H8 . Time_and_Value_List , groupSteps_m1 [ i ] ) . Value )  >0 &&
+              Math . Abs ( FindClosePoint ( H8 . Time_and_Value_List , groupSteps_m1 [ i+1 ] ) . Value - FindClosePoint ( H8 . Time_and_Value_List , groupSteps_m1 [ i ] ) . Value )  <1
+             )
+              { remoovingDates . Add ( groupSteps_m1 [ i ] ); remoovingDates . Add ( groupSteps_m1 [ i +1 ] ); }
+        }
+
+                //Оставить уникальные удаляемые желементы
+        List<DateTime> UniqueremoovingDates = remoovingDates . Distinct ( ).ToList();
+
+        m1_improove . RemoveAll ( n => UniqueremoovingDates.Contains(n));
+        return m1_improove;
     }
+
     /// <summary>
     /// Получить лист с отступами в 33% у каждой точки через одну, начиная с 3-й точки.
     /// </summary>
@@ -409,16 +444,17 @@ namespace GoodPlot
     /// <returns></returns>
     public List<DateTime> GiveIndentList_M3(List<DateTime> M)
     {
-    List<DateTime> Mout=new List<DateTime>();
-    Mout.AddRange(M);
-      for (int i = 2; i < M.Count; i+=2)
-      {
-        Mout[i] = Give30PercentPointBetween(Mout[i], Mout[i + 1]);
-      }
-      return Mout;
+        List<DateTime> Mout=new List<DateTime>();
+        Mout.AddRange(M);
+
+          for (int i = 2; i < M.Count; i+=2)
+          {
+            Mout[i] = Give30PercentPointBetween(Mout[i], Mout[i + 1]);
+          }
+          return Mout;
     }
     /// <summary>
-    /// Вернуть точку на 33% вперед (по отношению к следующей точке) от точку старта
+    /// Вернуть точку на 33% вперед (процент от расстояния до следующей точки) от точки старта
     /// </summary>
     /// <param name="p_Start"></param>
     /// <param name="p_End"></param>
@@ -434,21 +470,24 @@ namespace GoodPlot
     /// <returns></returns>
     public List<Tuple<double,double>> Give_ab_Koeffs_M4(List<DateTime> M3)
     {
-    List<Tuple<double,double>> AB_Koeffs= new List<Tuple<double,double>>();
-    for (int i = 0; i < M3.Count; i+=2)
-			    {
-        //AB_Koeffs.Add(Fit.Line(
-        //new double[] { M[i].ToOADate(), M[i + 1].ToOADate() },
-        //new double[] { FindPoint(Reactivity.Time_and_Value_List, M[i]).Value, FindPoint(Reactivity.Time_and_Value_List, M[i+1]).Value }));
-        List<double> Times = new List<double>();
-        List<double> Values = new List<double>();
-        GiveIntervalBtw(M3[i], M3[i + 1], out Values, out Times);
+        List<Tuple<double,double>> AB_Koeffs= new List<Tuple<double,double>>();
 
-        AB_Koeffs.Add(Fit.Line(Times.ToArray(), Values.ToArray()));
-       }
+        for (int i = 0; i < M3.Count; i+=2)
+			        {
+            //AB_Koeffs.Add(Fit.Line(
+            //new double[] { M[i].ToOADate(), M[i + 1].ToOADate() },
+            //new double[] { FindPoint(Reactivity.Time_and_Value_List, M[i]).Value, FindPoint(Reactivity.Time_and_Value_List, M[i+1]).Value }));
+            List<double> Times ;
+            List<double> Values;
 
-        return AB_Koeffs;
+            GiveIntervalBtw(M3[i], M3[i + 1], out Values, out Times);
+
+            AB_Koeffs.Add(Fit.Line(Times.ToArray(), Values.ToArray()));
+           }
+
+            return AB_Koeffs;
     }
+
     /// <summary>
     /// Получить интервал значений времени и значения между двумя точками времени
     /// </summary>
@@ -457,15 +496,16 @@ namespace GoodPlot
     /// <returns></returns>
     private void GiveIntervalBtw(DateTime p_Start, DateTime p_End, out List<double> Values, out List<double> Times)
     {
-    Times = new List<double>();
-    Values = new List<double>();
+        Times = new List<double>();
+        Values = new List<double>();
 
-    for (int i = this.FindIndex(Reactivity.Time_and_Value_List, p_Start); i <= this.FindIndex(Reactivity.Time_and_Value_List, p_End); i++)
-      {
-        Times.Add(Reactivity.Time_and_Value_List[i].Time.ToOADate());
-        Values.Add(Reactivity.Time_and_Value_List[i].Value);
-      }
+        for (int i = this.FindIndex(Reactivity.Time_and_Value_List, p_Start); i <= this.FindIndex(Reactivity.Time_and_Value_List, p_End); i++)
+          {
+            Times.Add(Reactivity.Time_and_Value_List[i].Time.ToOADate());
+            Values.Add(Reactivity.Time_and_Value_List[i].Value);
+          }
     }
+
     /// <summary>
     /// Получить все значения изменений реактивности. И перемещений группы.
     /// </summary>
@@ -475,38 +515,43 @@ namespace GoodPlot
       List<Tuple<double, double>> M5 = new List<Tuple<double, double>>();
 
       double DelPo=0;
+        double dH=0;
+        List<Parameter> groupList = new List<Parameter>();
+        groupList.AddRange(new List<Parameter> { H12, H11, H10, H9 });
+
       for (int i = 0; i < M4.Count-1; i++)
       {
-      //точка по центру
-        DateTime PointMiddle =   M1[i*2].AddSeconds(M1[i*2+1].Subtract(M1[i*2]).TotalSeconds / 2);
+            //точка по центру
+        DateTime PointMiddle =   M1[i*2].AddSeconds( M1[i*2+1].Subtract( M1[i*2] ).TotalSeconds/2 );
 
+          //Реактивность
         DelPo = Math.Abs( M4[i].Item1 + M4[i].Item2 * PointMiddle.ToOADate() -
           (M4[i + 1].Item1 + M4[i + 1].Item2 * PointMiddle.ToOADate()));
-        double dH12 = Math.Abs( Step_h*( FindPoint(H12.Time_and_Value_List, M1[i * 2]).Value - FindPoint(H12.Time_and_Value_List, M1[i * 2 + 1]).Value));
-        double dH11 = Math.Abs( Step_h*(FindPoint(H11.Time_and_Value_List, M1[i * 2]).Value - FindPoint(H11.Time_and_Value_List, M1[i * 2 + 1]).Value));
-        double dH10 = Math.Abs( Step_h*(FindPoint(H10.Time_and_Value_List, M1[i * 2]).Value - FindPoint(H10.Time_and_Value_List, M1[i * 2 + 1]).Value));
-        double dH9 = Math.Abs( Step_h*(FindPoint(H9.Time_and_Value_List, M1[i * 2]).Value - FindPoint(H9.Time_and_Value_List, M1[i * 2 + 1]).Value));
-        double dH8 = Math.Abs( Step_h*(FindPoint(H8.Time_and_Value_List, M1[i * 2]).Value - FindPoint(H8.Time_and_Value_List, M1[i * 2 + 1]).Value));
-        if (dH12 > 1)
+            
+          //Группа
+        foreach (var group in groupList)
         {
-          M5.Add(new Tuple<double,double> (DelPo * B_eff,dH12)); 
+        double dH_group;
+        //Иногда точка такая что смешена немного и шаг группы меньше выходит
+            if( (i * 2 + 2) < M4.Count)
+             dH_group = Math.Abs(Step_h * (FindClosePoint(group.Time_and_Value_List, M1[i * 2]).Value - FindClosePoint(group.Time_and_Value_List, M1[i * 2 + 2]).Value));
+             else
+             dH_group = Math . Abs ( Step_h * ( FindClosePoint ( group . Time_and_Value_List , M1 [ i * 2 ] ) . Value - FindClosePoint ( group . Time_and_Value_List , M1 [ i * 2 + 1 ] ) . Value ) );
+
+            //if (dH_group > 0 && FindClosePoint(group.Time_and_Value_List, M1[i * 2]).Value < 100 && FindClosePoint(group .Time_and_Value_List, M1[i * 2]).Value > 5)
+            //{
+            //    dH = dH_group;
+            //}
+
+            if ( dH_group > 0.1  )
+            {
+                dH = dH_group;
+            }
+
+
         }
-        if (dH12 <1 && dH11>1)
-        {
-          M5.Add(new Tuple<double, double>(DelPo * B_eff, dH11));
-        }
-        if (dH12 < 1 && dH11 < 1 && dH10 > 1)
-        {
-          M5.Add(new Tuple<double, double>(DelPo * B_eff, dH10));
-        }
-        if (dH12 < 1 && dH11 < 1 && dH10 < 1 && dH9 > 1)
-        {
-          M5.Add(new Tuple<double, double>(DelPo * B_eff, dH9));
-        }
-        if (dH12 < 1 && dH11 < 1 && dH10 < 1 && dH9 < 1 && dH8 > 1)
-        {
-          M5.Add(new Tuple<double, double>(DelPo * B_eff, dH8));
-        }
+
+        M5.Add(new Tuple<double, double>(DelPo * B_eff, dH));
 
       }
 
@@ -520,29 +565,30 @@ namespace GoodPlot
     /// <returns></returns>
     public List<Tuple<double, double>> GiveXYLine_M6(List<DateTime> M2, List<Tuple<double, double>> M4)
     {
-      List<Tuple<double, double>> M6 = new List<Tuple<double, double>>();
-      //Промежуточный массив с серединными временами у пар точек изменения положения группы.
-      List <DateTime> M2_half=new List<DateTime>();
-      M2_half.Add(M2[0]);
-      for (int i = 1; i < M2.Count-1; i+=2)
-      {
-        M2_half.Add(M2[i].AddSeconds(M2[i  + 1].Subtract(M2[i]).TotalSeconds / 2));
-        M2_half.Add(M2[i].AddSeconds(M2[i + 1].Subtract(M2[i]).TotalSeconds / 2));
-      }
-      M2_half.Add(M2[M2.Count-1]);
+          List<Tuple<double, double>> M6 = new List<Tuple<double, double>>();
 
-      DateTime time;
-      double value;
-      for (int i = 0; i < M2_half.Count; i++)
-      {
-        time = M2_half[i];
+             //Промежуточный массив с серединными временами у пар точек изменения положения группы.
+          List <DateTime> M2_half=new List<DateTime>();
 
-        value = M4[(int)i / 2].Item1 + M4[(int)i / 2].Item2 * M2_half[i].ToOADate();
-        M6.Add(new Tuple<double, double>(time.ToOADate(), value));
-      }
+          M2_half.Add(M2[0]);
+          for (int i = 1; i < M2.Count-1; i+=2)
+          {
+            M2_half.Add(       M2[i].AddSeconds(     Math.Abs( M2[i + 1].Subtract(M2[i]).TotalSeconds ) / 2     )      );
+            M2_half.Add(        M2[i].AddSeconds(    Math.Abs( M2[i + 1].Subtract(M2[i]).TotalSeconds )/ 2      )       );
+          }
+          M2_half.Add(M2[M2.Count-1]);
 
-      return M6;
+            //ЗАкончили со временем.
+          double value;
 
+          for (int i = 0; i < M2_half.Count; i++)
+          {
+            value = M4[(int)i / 2].Item1 + M4[(int)i / 2].Item2 * M2_half[i].ToOADate();
+
+            M6.Add(new Tuple<double, double>(M2_half[i].ToOADate(), value));
+          }
+
+          return M6;
     }
     /// <summary>
     /// Записать параметры

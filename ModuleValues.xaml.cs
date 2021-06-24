@@ -64,6 +64,7 @@ namespace GoodPlot
       
       
     }
+
     /// <summary>
     /// Усреднение по 2 точкам
     /// </summary>

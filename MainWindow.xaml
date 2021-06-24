@@ -127,8 +127,8 @@ Icon="PerfCenterCpl.ico"
                     <ListView   x:Name="Points_List" Grid.Column="3" Grid.Row="0"  >
                         <ListView.View>
                             <GridView>
-                                <GridViewColumn  DisplayMemberBinding="{Binding Time,Mode=OneWay,UpdateSourceTrigger=PropertyChanged,StringFormat='HH:mm:ss.fff yyyy-MM-dd'}" Width="150" Header="Время" />
-                                <GridViewColumn  DisplayMemberBinding="{Binding Value,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Width="100" Header="Значение" />
+                                <GridViewColumn  DisplayMemberBinding="{Binding Time,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat='HH:mm:ss.fff yyyy-MM-dd'}" Width="150" Header="Время" />
+                                <GridViewColumn  DisplayMemberBinding="{Binding Value,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" Width="100" Header="Значение" />
                                 <GridViewColumn  DisplayMemberBinding="{Binding IsOk,Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Width="100" Header="Достоверность" />
                             </GridView>
                         </ListView.View>
@@ -140,7 +140,11 @@ Icon="PerfCenterCpl.ico"
                     </ListView>
 
                     <!--Лист списка параметров-->
-                    <ListView SelectionMode="Extended"  x:Name="list_Parameters" Grid.RowSpan="2"  Grid.Column="0" Grid.ColumnSpan="2"  MouseDoubleClick="List_Parameters_MouseDoubleClick" MouseLeftButtonUp="List_Parameters_MouseLeftButtonUp">
+                    <ListView SelectionMode="Extended" 
+                              x:Name="list_Parameters" 
+                              Grid.RowSpan="2"  Grid.Column="0" Grid.ColumnSpan="2"
+                              MouseDoubleClick="List_Parameters_MouseDoubleClick" 
+                              MouseLeftButtonUp="List_Parameters_MouseLeftButtonUp">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn  DisplayMemberBinding="{Binding KKS, Mode=OneWay,UpdateSourceTrigger=PropertyChanged}" Width="150" Header="KKS параметра" />
@@ -269,6 +273,129 @@ Icon="PerfCenterCpl.ico"
                     </Grid>
                 </ScrollViewer>
             </TabItem>
+
+            <TabItem x:Name="Rezult_Tab">
+                <!--Заголовок-->
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Rectangle Height="12" Width="16" Fill="Purple" />
+                        <TextBlock Margin="3"><Run Text="Результат"/></TextBlock>
+                    </StackPanel>
+                </TabItem.Header>
+
+                <ListView   x:Name="List_Rezult" >
+                    <ListView.ContextMenu>
+                        <ContextMenu >
+                            <MenuItem Header="Скопировать"   Click="RezultCopy_Click"></MenuItem>
+                        </ContextMenu>
+                    </ListView.ContextMenu>
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn  DisplayMemberBinding="{Binding Number,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, StringFormat='#'}" 
+                                              Header="Номер" />
+                            <GridViewColumn  DisplayMemberBinding="{Binding H12,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat='#.0'}" 
+                                              Header="Н12, %" />
+                            <GridViewColumn  DisplayMemberBinding="{Binding H11,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat='#.0'}"
+                                              Header="Н11, %" />
+                            <GridViewColumn  DisplayMemberBinding="{Binding H10,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat='#.0'}"
+                                              Header="Н10, %" />
+                            <GridViewColumn  DisplayMemberBinding="{Binding H9,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat='#.0'}"
+                                             Header="Н9, %" />
+                            <GridViewColumn  DisplayMemberBinding="{Binding Dρ_Dh,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat='#0.0000'}"
+                                             Header="dρ:dН, %:см" />
+                            <GridViewColumn  DisplayMemberBinding="{Binding Δρ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat='#0.00'}"
+                                             Header="Δρ, %" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </TabItem>
+
+            <TabItem x:Name="KI_Tab">
+                <!--Заголовок-->
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Rectangle Height="12" Width="16" Fill="Gold" />
+                        <TextBlock Margin="3"><Run Text="Расчет"/></TextBlock>
+                    </StackPanel>
+                </TabItem.Header>
+
+                <ListView   x:Name="ListCalculation_KI" >
+                    <ListView.ContextMenu>
+                        <ContextMenu >
+                            <MenuItem Header="Скопировать" Click="CulcCopy_Click"></MenuItem>
+                        </ContextMenu>
+                    </ListView.ContextMenu>
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn  DisplayMemberBinding="{Binding Number,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, StringFormat='#'}" 
+                                              Header="Номер" />
+                            <GridViewColumn  DisplayMemberBinding="{Binding Indication,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, StringFormat='#.0'}" 
+                                              Header="От 1000" />
+                            <GridViewColumn  DisplayMemberBinding="{Binding H12,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat='#.0'}" 
+                                              Header="Н12, %" />
+                            <GridViewColumn  DisplayMemberBinding="{Binding H11,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat='#.0'}"
+                                              Header="Н11, %" />
+                            <GridViewColumn  DisplayMemberBinding="{Binding H10,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat='#.0'}"
+                                              Header="Н10, %" />
+                            <GridViewColumn  DisplayMemberBinding="{Binding H9,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat='#.0'}"
+                                             Header="Н9, %" />
+                            <GridViewColumn  DisplayMemberBinding="{Binding Dρ_Dh,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat='#0.0000'}"
+                                             Header="dρ:dН, %:см" />
+                            <GridViewColumn  DisplayMemberBinding="{Binding Δρ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat='#0.00'}"
+                                             Header="Δρ, %" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </TabItem>
+
+            <TabItem x:Name="RezultPolinom_Tab">
+                <!--Заголовок-->
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <Rectangle Height="12" Width="16" Fill="Orange" />
+                        <TextBlock Margin="3"><Run Text="Результат"/></TextBlock>
+                    </StackPanel>
+                </TabItem.Header>
+
+                <ListView   x:Name="List_PolinomRezult" >
+                    <ListView.ContextMenu>
+                        <ContextMenu >
+                            <MenuItem Header="Скопировать" Name="RezultCopy"  Click="RezultCopy_Click"></MenuItem>
+                        </ContextMenu>
+                    </ListView.ContextMenu>
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn  DisplayMemberBinding="{Binding Number,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, StringFormat='#'}" 
+                                              Header="Номер" />
+                            <GridViewColumn  DisplayMemberBinding="{Binding Indication,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, StringFormat='#.0'}" 
+                                              Header="От 1000" />
+                            <GridViewColumn  DisplayMemberBinding="{Binding H12,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat='#.0'}" 
+                                              Header="Н12, %" />
+                            <GridViewColumn  DisplayMemberBinding="{Binding H11,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat='#.0'}"
+                                              Header="Н11, %" />
+                            <GridViewColumn  DisplayMemberBinding="{Binding H10,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat='#.0'}"
+                                              Header="Н10, %" />
+                            <GridViewColumn  DisplayMemberBinding="{Binding H9,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat='#.0'}"
+                                             Header="Н9, %" />
+                            
+                            <GridViewColumn  DisplayMemberBinding="{Binding Dρ_Dh,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat='#0.0000'}"
+                                                    Header="Измерение" />
+                            <GridViewColumn  DisplayMemberBinding="{Binding Dρ_Dh_Calculate,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat='#0.0000'}"
+                                                    Header="Расчет" />
+                            <GridViewColumn  DisplayMemberBinding="{Binding Dρ_Dh_Deviation,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat='#00.00'}"
+                                                    Header="Отклонение" />
+
+                            <GridViewColumn  DisplayMemberBinding="{Binding Δρ,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat='#0.00'}"
+                                                    Header="Измерение" />
+                            <GridViewColumn  DisplayMemberBinding="{Binding Δρ_Calculate,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat='#0.00'}"
+                                                    Header="Расчет" />
+                           <GridViewColumn  DisplayMemberBinding="{Binding Δρ_Deviation,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged,StringFormat='#00.00'}"
+                                                    Header="Отклонение" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </TabItem>
+
         </TabControl>
     </Grid>
 </Window>

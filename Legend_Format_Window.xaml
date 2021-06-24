@@ -51,7 +51,11 @@
             </ComboBox>
         </StackPanel>
         <Label Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="4" HorizontalContentAlignment="Center" Background="Coral" VerticalAlignment="Stretch" Content="Легенда" Width="466" Margin="0,0,0,73"/>
-        <Label Grid.Row="0" Content="Арена легенды" Background="DarkRed" Grid.Column="2" VerticalAlignment="Stretch" Margin="0,27,0,26"/>
+
+        <StackPanel Grid.Row="0"  Grid.Column="2" Margin="0,27,0,26">
+            <Label  Content="Арена легенды" Background="DarkRed" VerticalAlignment="Stretch"/>
+            
+        </StackPanel>
         <TextBox Name="TextBoxArenaName" Grid.Row="0" Grid.Column="3" HorizontalAlignment="Stretch" Height="49"/>
         <Button Name="BUtHideLeg" Grid.Row="0" Content="Скрыть/отобразить" Background="Beige" Grid.Column="2" VerticalAlignment="Stretch" Margin="0,74,0,0" Grid.ColumnSpan="2" Click="BUtHideLeg_Click"/>
         <Label Grid.Row="0" Content="Положение" Background="DarkRed" Grid.Column="4" Grid.ColumnSpan="2"  VerticalAlignment="Stretch" Margin="0,27,0,0" HorizontalAlignment="Left" Width="233"/>

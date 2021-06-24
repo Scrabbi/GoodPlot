@@ -240,7 +240,6 @@ D:\Progs\C#Projects\GoodPlot_07\bin\Debug\GoodPlot.exe
 D:\Progs\C#Projects\GoodPlot_07\bin\Debug\GoodPlot.pdb
 D:\Progs\C#Projects\GoodPlot_07\bin\Debug\MathNet.Numerics.dll
 D:\Progs\C#Projects\GoodPlot_07\bin\Debug\Microsoft.CSharp.dll
-D:\Progs\C#Projects\GoodPlot_07\bin\Debug\Microsoft.QualityTools.Testing.Fakes.dll
 D:\Progs\C#Projects\GoodPlot_07\bin\Debug\PresentationCore.dll
 D:\Progs\C#Projects\GoodPlot_07\bin\Debug\PresentationFramework.dll
 D:\Progs\C#Projects\GoodPlot_07\bin\Debug\System.Data.DataSetExtensions.dll
@@ -268,7 +267,6 @@ D:\Progs\C#Projects\GoodPlot_07\bin\Debug\ro\Xceed.Wpf.AvalonDock.resources.dll
 D:\Progs\C#Projects\GoodPlot_07\bin\Debug\ru\Xceed.Wpf.AvalonDock.resources.dll
 D:\Progs\C#Projects\GoodPlot_07\bin\Debug\sv\Xceed.Wpf.AvalonDock.resources.dll
 D:\Progs\C#Projects\GoodPlot_07\bin\Debug\zh-Hans\Xceed.Wpf.AvalonDock.resources.dll
-D:\Progs\C#Projects\GoodPlot_07\obj\Debug\GoodPlot.csprojResolveAssemblyReference.cache
 D:\Progs\C#Projects\GoodPlot_07\obj\Debug\Axis_format_Window.baml
 D:\Progs\C#Projects\GoodPlot_07\obj\Debug\Calculations.baml
 D:\Progs\C#Projects\GoodPlot_07\obj\Debug\ChartFormatWindow.baml
@@ -291,3 +289,7 @@ D:\Progs\C#Projects\GoodPlot_07\obj\Debug\MainWindow.baml
 D:\Progs\C#Projects\GoodPlot_07\obj\Debug\GoodPlot.g.resources
 D:\Progs\C#Projects\GoodPlot_07\obj\Debug\GoodPlot.Properties.Resources.resources
 D:\Progs\C#Projects\GoodPlot_07\obj\Debug\GoodPlot.csproj.GenerateResource.Cache
+D:\Progs\C#Projects\GoodPlot_07\bin\Debug\ru\Microsoft.QualityTools.Testing.Fakes.resources.dll
+D:\Progs\C#Projects\GoodPlot_07\obj\Debug\GoodPlot.csprojAssemblyReference.cache
+D:\Progs\C#Projects\GoodPlot_07\obj\Debug\GoodPlot.csproj.CoreCompileInputs.cache
+D:\Progs\C#Projects\GoodPlot_07\obj\Debug\GoodPlot.csproj.CopyComplete

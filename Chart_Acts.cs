@@ -81,7 +81,7 @@ namespace GoodPlot
                   //Ширину оставить 100- 2*labelsSize. Так как оси будут и справа, и слева.
                   // Высоту -- по удобству отображения, но место для меток оставить.
                   // По "У" не отступаем вообще.
-                  //По "Х" слева labelsSize для отметок делений. Справа этого не нужно, место справа расчитается по формуле: ширина-место слева=место справа.
+                  //По "Х" слева labelsSize для отметок делений. Справа этого не нужно, место справа расчитается по формуле: (100-ширина)-место слева=место справа.
             myChart.ChartAreas[meinAreaName].InnerPlotPosition = new ElementPosition(labelsSize, 0, 90, 93);
         }
               /// <summary>
@@ -130,13 +130,14 @@ namespace GoodPlot
 
                   //Легенда видимая будет.
             myChart.Series[serName].IsVisibleInLegend = true;
-           
+            
 
                   //Тип линии
             myChart.Series[serName].ChartType = SeriesChartType.Line;
             myChart.Series[serName].BorderDashStyle = ChartDashStyle.Solid;
                   //Арена линии соответствующая
             myChart.Series[serName].ChartArea = chartareaName;
+            
                   //Пополнение серии.   
             foreach (Time_and_Value item1 in myFileActs.Find_Parametr(serName).Time_and_Value_List)
             {
@@ -215,20 +216,22 @@ namespace GoodPlot
           switch (r_L)
           {
             case "left":
-                      //Cжимаем все арены, кроме нашей с осью, последней, на axisOffset. И передвигаем их вперед (расстояние между осями создаем).
+                      //Cжимаем все арены на axisOffset. И передвигаем их вперед 
               for (int i = 0; i < myChart.ChartAreas.Count; i++)
               {
               myChart.ChartAreas[i].Position.Width -= axisOffset;
               myChart.ChartAreas[i].Position.X += axisOffset;
-              }           
-                            //Последнюю (с осью) сдвинем влево.  
+              }
+              //Последнюю (с осью) сдвинем влево (расстояние между осями создаем).
               areaAxis.Position.X -= axisOffset ;
                             //Если уже еще добавлли арены, сдвинуть надо больше
               int countArenasLeftHere=CountArenas(myChart,chartareaName).Item1;
               areaAxis.Position.X -= (axisOffset)*countArenasLeftHere;//отодвинуть на число построенных дополнительных осей
                           //Имена зададим: 10 символов 1 часть. + 7 + 2 + 1 + 1. Итого, 17-ый означает номер главной арены. (Рядом с которой рисуем.)
               areaSeria.Name = "invisible_" + chartareaName + "_#" + (countArenasLeftHere + 1) + "L";
-              areaAxis.Name = "axisYin___" + chartareaName + "_#" + (countArenasLeftHere + 1) + "L";
+              areaAxis.Name = "axisYinnn_" + chartareaName + "_#" + (countArenasLeftHere + 1) + "L";//Главное в названии для алгоритма--это "_" там, где стоят.
+                      //Для опредления, какая это ось. 
+              areaAxis.AxisY.Name += areaAxis.Name;
               
             break;
 
@@ -244,8 +247,10 @@ namespace GoodPlot
             areaAxis.Position.X +=axisOffset;
             areaAxis.Position.X += (axisOffset) * CountArenas(myChart,chartareaName).Item2;//отодвинуть, учитывая число уже построенных дополнительных осей
                        //Имена зададим: 10 символов 1 часть. + 7 + 2 + 1 + 1. Итого, 17-ый означает номер главной арены. (Рядом с которой рисуем.)
-            areaSeria.Name = "invisible_" + chartareaName + "_#" + (CountArenas(myChart, chartareaName).Item2 + 1) + "R";
-            areaAxis.Name = "axisYin___" + chartareaName + "_#" + (CountArenas(myChart, chartareaName).Item2 + 1) + "R";
+            areaSeria.Name = "invisible_" + chartareaName + "_#" + (CountArenas(myChart, chartareaName).Item2 + 1) + "R";//+ 1 :на момент подсчета еще 1 арену не добавили
+            areaAxis.Name = "axisYinnn_" + chartareaName + "_#" + (CountArenas(myChart, chartareaName).Item2 + 1) + "R";
+                      //Для опредления, какая это ось. 
+            areaAxis.AxisY2.Name += areaAxis.Name;
             break;
           }//Конец switch
           ListAreas.Add(areaSeria);
@@ -407,11 +412,11 @@ namespace GoodPlot
 		        if (area_i.Name.Contains(mainArenaName) )
 	            {
              //Определим, слева или справа дополнительная ось. Сохраним количество справа и слева осей.
-              if (area_i.Name.Contains("L") && area_i.Name.Contains("axisYin___"))
+              if (area_i.Name.Contains("L") && area_i.Name.Contains("axisYinnn_"))
 	                {
 		                countL++;
 	                }
-		             if (area_i.Name.Contains("R") && area_i.Name.Contains("axisYin___"))
+		             if (area_i.Name.Contains("R") && area_i.Name.Contains("axisYinnn_"))
 	                {
 		                countR++;
 	                }
@@ -476,7 +481,17 @@ namespace GoodPlot
           }
         }
 
-
+        public void Refresh(Chart myChart)
+        {
+          //Удалить все элементы графика
+          myChart.Series.Clear();
+          myChart.Titles.Clear();
+          myChart.Annotations.Clear();
+          myChart.Legends.Clear();
+          myChart.ChartAreas.Clear();
+          mainArenaCounter=0;
+          LoadFirstArena(myChart);
+        }
 
      }//Класс
 }//Пространство имен

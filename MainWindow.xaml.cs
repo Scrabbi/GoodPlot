@@ -158,8 +158,8 @@ namespace GoodPlot
         Axis_format_Window AFWindow = new Axis_format_Window(AxisItem, myChart, textBox_Arena_N.Text);
         //Вызов окна
         AFWindow.Show();
-        //По закрытии будем все оси времени объединять. Но только в случае друг под другом построения.
-        AFWindow.Closing += AFWindow_Closed;
+        ////По закрытии будем все оси времени объединять. Но только в случае друг под другом построения.
+        //AFWindow.Closing += AFWindow_Closed;
       }
     }
     //-------------------------ПЕРЕМЕЩАТЬ ОБЪЕКТЫ ГРАФИКА
@@ -252,23 +252,23 @@ namespace GoodPlot
           break;
       }
     }
-    /// <summary>
-    /// Объединение по времени всех осей "Х" (ось времени)
-    /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
-    void AFWindow_Closed(object sender, EventArgs e)
-    {
-    //Если имеются дополнительные снизу арены, совместить оси времени
-      if (myChart_Acts.mainArenaCounter != 1)
-      {
-        for (int i = 0; i < myChart.ChartAreas.Count - 1; i++)
-        {
-          myChart.ChartAreas[i].AxisX.Minimum = myChart.ChartAreas[myChart.ChartAreas.Count - 1].AxisX.Minimum;
-          myChart.ChartAreas[i].AxisX.Maximum = myChart.ChartAreas[myChart.ChartAreas.Count - 1].AxisX.Maximum;
-        }
-      }
-    }
+    ///// <summary>
+    ///// Объединение по времени всех осей "Х" (ось времени)
+    ///// </summary>
+    ///// <param name="sender"></param>
+    ///// <param name="e"></param>
+    //void AFWindow_Closed(object sender, EventArgs e)
+    //{
+    //////Если имеются дополнительные снизу арены, совместить оси времени
+    ////  if (myChart_Acts.mainArenaCounter != 1)
+    ////  {
+    ////    for (int i = 0; i < myChart.ChartAreas.Count - 1; i++)
+    ////    {
+    ////      myChart.ChartAreas[i].AxisX.Minimum = myChart.ChartAreas[myChart.ChartAreas.Count - 1].AxisX.Minimum;
+    ////      myChart.ChartAreas[i].AxisX.Maximum = myChart.ChartAreas[myChart.ChartAreas.Count - 1].AxisX.Maximum;
+    ////    }
+    ////  }
+    //}
 
     /// <summary>
     /// Выделение элемента в списке. Последует вывод значений параметра.
@@ -383,8 +383,8 @@ namespace GoodPlot
     /// <summary>
     /// Горячие клавиши
     /// </summary>
-    /// <param name="sender"></param>
-    /// <param name="e"></param>
+    /// <param name="sender"> </param>
+    /// <param name="e"> </param>
     private void Chart1_KeyDown(object sender, System.Windows.Forms.KeyEventArgs e)
     {
       //Вернуть масштаб
@@ -680,10 +680,10 @@ namespace GoodPlot
         {
           item.CursorX.IsUserSelectionEnabled = true;
           item.CursorX.IsUserEnabled = true;
-          item.CursorX.LineWidth = 2;
+          item.CursorX.LineWidth = 1;
           item.CursorY.IsUserSelectionEnabled = true;
           item.CursorY.IsUserEnabled = true;
-          item.CursorY.LineWidth = 2;
+          item.CursorY.LineWidth = 1;
           item.CursorX.Interval = 0;
           item.CursorY.Interval = 0;
         }
@@ -746,6 +746,7 @@ namespace GoodPlot
       ms.Close();
       fileStr.Close();
     }
+
     /// <summary>
     /// Событие изменения курсара. Отображать его
     /// </summary>
@@ -906,21 +907,18 @@ namespace GoodPlot
     //Начать с новым графиком
     private void NewBeginning_Click(object sender, RoutedEventArgs e)
     {
-      //Удалить все элементы графика
-      myChart.Series.Clear();
-      myChart.Titles.Clear();
-      myChart.Annotations.Clear();
-      myChart.Legends.Clear();
-      myChart.ChartAreas.Clear();
-      //Название арены начальное
+      myChart_Acts.Refresh(myChart);
+              //Название арены начальное
       textBox_Arena_N.Text = "Area# 1";
-
-      //Начальная арена
-      //bsLeft.IsEnabled = false;
-      //bsRight.IsEnabled = false;
-      myChart_Acts.LoadFirstArena(myChart);
-
-      //Элементы в меню закрасить по умолчанию
+              //Чистим меню, удаляя элементы с текстом "Area".
+      for (int item_i=0;item_i< list_Parameters.ContextMenu.Items.Count;item_i++)
+      {
+        if (list_Parameters.ContextMenu.Items[item_i].ToString().Contains("Area"))
+        {
+          list_Parameters.ContextMenu.Items.Remove(list_Parameters.ContextMenu.Items[item_i]); 
+        }
+      }
+      
     }
 
     private void LoadSvrkNames_Click(object sender, RoutedEventArgs e)
@@ -929,17 +927,14 @@ namespace GoodPlot
 
       if (openFileDialog1.ShowDialog() == true)
       {
-
-        //Считываем файл
-        myFileActs.Read_File(openFileDialog1.FileName);
-
-
+            //Считываем файл
+          myFileActs . Load_SvrkNvaesNames ( openFileDialog1 . FileName );
       }
       //Заполнение списка параметров. 
       //List_Parameters.ItemsSource = File_Acts_One.Parameters;
       //Переносит на вкладочку с видом на данные по выбранному KKS. Фокусимся на графике.
       list_Parameters.Items.Refresh();
-      myChart.Focus();
+      //myChart.Focus();
     }
     /// <summary>
     /// Добавление файлов. Все аналогично, но не затирается график и т.п.
@@ -978,7 +973,7 @@ namespace GoodPlot
     /// <param name="e"></param>
     private void DiffEffModule_Click(object sender, RoutedEventArgs e)
     {
-      ModuleDiffEff DiffEffWindow = new ModuleDiffEff(myChart, myFileActs, TableCurrent);
+        ModuleDiffEff DiffEffWindow = new ModuleDiffEff(myChart, myFileActs, TableCurrent, List_Rezult, ListCalculation_KI, List_PolinomRezult);
       DiffEffWindow.Show();
     }
     //Под войному щелчку копировать название KKS.
@@ -997,15 +992,15 @@ namespace GoodPlot
 
     private void Values_Module_Click(object sender, RoutedEventArgs e)
     {
-      foreach (var item in myChart.ChartAreas)
-      {
+      //foreach (var item in myChart.ChartAreas)
+      //{
 
-        item.CursorY.IsUserSelectionEnabled = false;
-        item.CursorY.IsUserEnabled = false;
-        item.CursorY.LineWidth = 0;
-        item.CursorY.Interval = 100;
+      //  item.CursorY.IsUserSelectionEnabled = false;
+      //  item.CursorY.IsUserEnabled = false;
+      //  item.CursorY.LineWidth = 0;
+      //  item.CursorY.Interval = 100;
 
-      }
+      //}
       
       ModuleValues ValuesWindow = new ModuleValues(myFileActs, myChart, list_Parameters);
       ValuesWindow.Show();
@@ -1096,7 +1091,7 @@ namespace GoodPlot
       {
         MyI++;
         //Создаем поток записи
-        string dsf = saveFileDialog.InitialDirectory;
+        //string dsf = saveFileDialog.InitialDirectory;
         System.IO.StreamWriter streamWriter = new System.IO.StreamWriter(saveFileDialog.InitialDirectory + item.KKS + ".csv");
         streamWriter.WriteLine(item.KKS + ";" + "Program_file" + ";");
         foreach (var item1 in item.Time_and_Value_List)
@@ -1202,8 +1197,8 @@ namespace GoodPlot
       Axis_format_Window AFWindow = new Axis_format_Window(AxisItem, myChart, textBox_Arena_N.Text);
       //Вызов окна
       AFWindow.Show();
-      //По закрытии будем все оси времени объединять. Но только в случае друг под другом построения.
-      AFWindow.Closing += AFWindow_Closed;
+      ////По закрытии будем все оси времени объединять. Но только в случае друг под другом построения.
+      //AFWindow.Closing += AFWindow_Closed;
     }
 
     private void Yleft_Format_Click(object sender, RoutedEventArgs e)
@@ -1215,8 +1210,8 @@ namespace GoodPlot
       Axis_format_Window AFWindow = new Axis_format_Window(AxisItem, myChart, textBox_Arena_N.Text);
       //Вызов окна
       AFWindow.Show();
-      //По закрытии будем все оси времени объединять. Но только в случае друг под другом построения.
-      AFWindow.Closing += AFWindow_Closed;
+      ////По закрытии будем все оси времени объединять. Но только в случае друг под другом построения.
+      //AFWindow.Closing += AFWindow_Closed;
     }
 
     private void Yright_Format_Click(object sender, RoutedEventArgs e)
@@ -1228,8 +1223,8 @@ namespace GoodPlot
       Axis_format_Window AFWindow = new Axis_format_Window(AxisItem, myChart, textBox_Arena_N.Text);
       //Вызов окна
       AFWindow.Show();
-      //По закрытии будем все оси времени объединять. Но только в случае друг под другом построения.
-      AFWindow.Closing += AFWindow_Closed;
+      ////По закрытии будем все оси времени объединять. Но только в случае друг под другом построения.
+      //AFWindow.Closing += AFWindow_Closed;
     }
 
     private void Y2left_Format_Click(object sender, RoutedEventArgs e)
@@ -1241,8 +1236,8 @@ namespace GoodPlot
       Axis_format_Window AFWindow = new Axis_format_Window(AxisItem, myChart, textBox_Arena_N.Text);
       //Вызов окна
       AFWindow.Show();
-      //По закрытии будем все оси времени объединять. Но только в случае друг под другом построения.
-      AFWindow.Closing += AFWindow_Closed;
+      ////По закрытии будем все оси времени объединять. Но только в случае друг под другом построения.
+      //AFWindow.Closing += AFWindow_Closed;
     }
 
     private void Y2right_Format_Click(object sender, RoutedEventArgs e)
@@ -1254,8 +1249,8 @@ namespace GoodPlot
       Axis_format_Window AFWindow = new Axis_format_Window(AxisItem, myChart, textBox_Arena_N.Text);
       //Вызов окна
       AFWindow.Show();
-      //По закрытии будем все оси времени объединять. Но только в случае друг под другом построения.
-      AFWindow.Closing += AFWindow_Closed;
+      ////По закрытии будем все оси времени объединять. Но только в случае друг под другом построения.
+      //AFWindow.Closing += AFWindow_Closed;
     }
     /// <summary>
     /// Удалить параметр
@@ -1296,9 +1291,30 @@ namespace GoodPlot
       myChart.Series.Clear();
     }
 
+    private void RezultCopy_Click(object sender, RoutedEventArgs e)
+    {
+        string output =   "Положение" + "\t" + "H12" + "\t" + "H11" + "\t" + "H10" + "\t" + "Dρ_Dh" + "\t" + "Dρ_Dh_Calculate" + "\t" + "Dρ_Dh_Deviation" + "\t" + "Δρ" + "\t" + "Δρ_Calculate" + "\t" + "Δρ_Deviation" + "\n";
+        
+        foreach (Row item in List_PolinomRezult.Items)
+        {
+        output += item . Indication + "\t" +item . H12 + "\t" + item . H11 + "\t" + item . H10 + "\t" + item . Dρ_Dh + "\t" + item . Dρ_Dh_Calculate + "\t" + item . Dρ_Dh_Deviation + "\t" + item . Δρ + "\t" + item . Δρ_Calculate + "\t" + item . Δρ_Deviation + "\n"; 
+        }
+        
+        Clipboard.SetText(output); 
+    }
+
+    private void CulcCopy_Click ( object sender , RoutedEventArgs e )
+    {
+        string output =   "Положение" + "\t" + "H12" + "\t" + "H11" + "\t" + "H10" + "\t" + "Dρ_Dh" + "\t"  + "Δρ" + "\t" + "\n";
+
+        foreach ( Row item in ListCalculation_KI . Items )
+        {
+            output += item . Indication + "\t" +item . H12 + "\t" + item . H11 + "\t" + item . H10 + "\t" + item . Dρ_Dh + "\t" + item . Δρ  + "\n";
+        }
+
+        Clipboard . SetText ( output ); 
+    }
 
 
-
-
-  }
+    }
 }

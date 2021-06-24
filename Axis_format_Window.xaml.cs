@@ -32,6 +32,8 @@ namespace GoodPlot
         /// Передаваемый чарт
         /// </summary>
         Chart chart1_ref;
+
+        
         public Axis_format_Window(Axis axis, Chart chart1, string arenaName)
         {
             InitializeComponent();
@@ -42,10 +44,17 @@ namespace GoodPlot
             //ссылаемся на график
             chart1_ref = chart1;
 
+            
             //Название серии текущее. А изменения нет и не надо.
             Axis_name.Text = Axis_ref.Name;
 
-            //Заполнение стилей для делений ДЛЯ ОСНОВНОЙ
+                //Тип оси
+                            this . ComboBoxLogarifmic . Items . Add ( "Logarifmic" );
+                            this . ComboBoxLogarifmic . Items . Add ( "Normal" );
+            
+
+
+            //Заполнение стилей  делений ДЛЯ ОСНОВНОЙ
             foreach (string lineName in Enum.GetNames(typeof(System.Windows.Forms.DataVisualization.Charting.ChartDashStyle)))
             {
               this.ComboBoxStyleMain.Items.Add(lineName);
@@ -210,7 +219,7 @@ namespace GoodPlot
             }
             catch (FormatException) { }
         }
-        /// <summary>
+              /// <summary>
         /// Изменение количества интервалов.
         /// </summary>
         /// <param name="sender"></param>
@@ -285,20 +294,7 @@ namespace GoodPlot
         /// <param name="e"></param>
         void TextBoxMin_TextChanged(object sender, TextChangedEventArgs e)
         {
-            //Переход на ось
-            if (Axis_ref.Name.Contains("X"))
-            {
-                //if ловит выход за границы. Try ловит ошибку формата.
-                try
-                {
-                    if (DateTime.Parse(TextBoxMin.Text).ToOADate() < Axis_ref.Maximum )
-                    {
-                        Axis_ref.Minimum = DateTime.Parse(TextBoxMin.Text).ToOADate();
-                    }
-                }
-                catch (FormatException) { }
-            }
-            //Переход на ось
+            //Основная ось.
             if (Axis_ref.Name.Contains("Y"))
             {
                 //if ловит выход за границы. Try ловит ошибку формата.
@@ -306,71 +302,72 @@ namespace GoodPlot
                 {
                     if (Convert.ToDouble(TextBoxMin.Text) < Axis_ref.Maximum)
                     {
-                    //Это идиотскую ошибку осправляет с перечеркиванием графика при измененении мак мин, отчего-то
-                    Axis_ref.Maximum+=10;
-                    Axis_ref.Maximum -= 10;
+                    ////Это идиотскую ошибку осправляет с перечеркиванием графика при измененении мак мин, отчего-то
+                    //Axis_ref.Maximum+=10;
+                    //Axis_ref.Maximum -= 10;
 
                       Axis_ref.Minimum = Convert.ToDouble(TextBoxMin.Text);
                     }
                 }
                 catch (FormatException) { }
         }
+            //Логика: 1) Определеить, что ось дополнительная и с какой стороны. 
+            //             2) Определить, какой ее номер -- на арене с таким номером (дополнительной с графиком) ось "У" со стороны определенной промасштабировать.
 
-            //Для изменения при НАЛОЖЕНИИ арен. Слева ось
-            if (Axis_ref.Name.Contains("Y") & Axis_ref.Name.Contains("1b"))
+            //Для изменения при НАЛОЖЕНИИ арен. Изменит и масштаб оси, на которой график рисуетя! Ось СЛЕВА
+            if (Axis_ref.Name.Contains("axisYinnn_") && Axis_ref.Name.Contains("L"))
             {
-                //if ловит выход за границы. Try ловит ошибку формата.
-                try
+              //if ловит выход за границы. Try ловит ошибку формата.
+              try
+              {
+                if (Convert.ToDouble(TextBoxMin.Text) < Axis_ref.Maximum)
                 {
-                    if (Convert.ToDouble(TextBoxMin.Text) < Axis_ref.Maximum)
-                    {
-                        chart1_ref.ChartAreas["Area#" + " "+ chartAreaName_ref[6] + "1a"].AxisY.Minimum
-                            = Convert.ToDouble(TextBoxMin.Text);
-                    }
+                  int indexOf_ = Axis_ref.Name.IndexOf("_");   //Номер знака "_".
+                  string areaSeriaName = "invisible_" + Axis_ref.Name.Substring(indexOf_+1);//Получающееся имя арены, где график выдимый параметра
+                  double sdf =chart1_ref.ChartAreas[areaSeriaName].AxisY.Minimum ;
+                  chart1_ref.ChartAreas[areaSeriaName].AxisY.Minimum = Convert.ToDouble(TextBoxMin.Text);
                 }
-                catch (FormatException) { }
+              }
+              catch (FormatException) { }
+            }
+            
+            //Для изменения при наложении арен. Изменит и масштаб оси "а", на которой график рисуетя! ОСЬ СПРАВА
+            if (Axis_ref.Name.Contains("axisYinnn_") && Axis_ref.Name.Contains("R"))
+            {
+              //if ловит выход за границы. Try ловит ошибку формата.
+              try
+              {
+                if (Convert.ToDouble(TextBoxMin.Text) < Axis_ref.Maximum)
+                {
+                  int indexOf_ = Axis_ref.Name.IndexOf("_");   //Номер знака "_".
+                  chart1_ref.ChartAreas["invisible_" + Axis_ref.Name.Substring(indexOf_ + 1)].AxisY2.Minimum = Convert.ToDouble(TextBoxMin.Text);
+                }
+              }
+              catch (FormatException) { }
             }
 
-            //Для изменения при наложении арен. ОСЬ СПРАВА
-            if (Axis_ref.Name.Contains("Y") & Axis_ref.Name.Contains("2b"))
-            {
-                //if ловит выход за границы. Try ловит ошибку формата.
-                try
-                {
-                    if (Convert.ToDouble(TextBoxMin.Text) < Axis_ref.Maximum)
-                    {
-                        chart1_ref.ChartAreas["Area#" + " " + chartAreaName_ref[6] + "2a"].AxisY2.Minimum
-                            = Convert.ToDouble(TextBoxMin.Text);
-                    }
-                }
-                catch (FormatException) { }
-            }
-            //Для изменения при наложении арен. Изменит и масштаб оси ВРЕМЕНИ "а", на которой график рисуетя! Ось ВРЕМЕНИ
+            //Для изменения при наложении арен. Изменит и масштаб всех осей времени.
             if (Axis_ref.Name.Contains("X"))
             {
-                //if ловит выход за границы. Try ловит ошибку формата.
-                try
+              //if ловит выход за границы. Try ловит ошибку формата.
+              try
+              {
+                if (DateTime.Parse(TextBoxMin.Text).ToOADate() < Axis_ref.Maximum)
                 {
-                    if (DateTime.Parse(TextBoxMin.Text).ToOADate() < Axis_ref.Maximum)
-                    {
-                        //Тут трай выполняет функция проверки, есть ли арены
-                        try
-                        {
-                            chart1_ref.ChartAreas["Area#" + " " + chartAreaName_ref[6] + "1a"].AxisX.Minimum
-                                                        = DateTime.Parse(TextBoxMin.Text).ToOADate();
-                            chart1_ref.ChartAreas["Area#" + " " + chartAreaName_ref[6] + "2a"].AxisX.Minimum
-                                                        = DateTime.Parse(TextBoxMin.Text).ToOADate();
-                        }
-                        catch (Exception) { }
-                    }
+                  try
+                  {
+                    foreach (ChartArea chartArea_i in chart1_ref.ChartAreas)
+                    { chartArea_i.AxisX.Minimum = DateTime.Parse(TextBoxMin.Text).ToOADate(); }
+                  }
+                  catch (Exception) { }
                 }
-                catch (FormatException) { }
+              }
+              catch (FormatException) { }
             }
 
-            //Выставляет интервалы, принуждая максимум и минимум отрисовываться на оси
-            MarksCountTextBox_TextChanged(sender, e);
+            
         }
-        /// <summary>
+              /// <summary>
         /// Изменение максимума
         /// </summary>
         /// <param name="sender"></param>
@@ -378,19 +375,6 @@ namespace GoodPlot
         void TextBoxMax_TextChanged(object sender, TextChangedEventArgs e)
         {
             //Переход на ось
-            if (Axis_ref.Name.Contains("X"))
-            { 
-                //if ловит выход за границы. Try ловит ошибку формата.
-                try
-                {
-                    if (DateTime.Parse(TextBoxMax.Text).ToOADate() > Axis_ref.Minimum)
-                    {
-                        Axis_ref.Maximum = DateTime.Parse(TextBoxMax.Text).ToOADate();
-                    }
-                }
-                catch (FormatException) { }
-            }
-            //Переход на ось
             if (Axis_ref.Name.Contains("Y"))
             {
                 //if ловит выход за границы. Try ловит ошибку формата.
@@ -398,29 +382,27 @@ namespace GoodPlot
                 {
                     if (Convert.ToDouble(TextBoxMax.Text) > Axis_ref.Minimum)
                     {
-                      //chart1_ref.Invalidate();
                       Axis_ref.Maximum = Convert.ToDouble(TextBoxMax.Text);
-                      //chart1_ref.Invalidate();
                     }
                 }
                 catch (FormatException) { }
 
-                //Выставляет интервалы, принуждая максимум и минимум отрисовываться на оси
-                MarksCountTextBox_TextChanged(sender, e);
+                
             }
 
+            //Логика: 1) Определеить, что ось дополнительная и с какой стороны. 
+            //             2) Определить, какой ее номер -- на арене с таким номером (дополнительной с графиком) ось "У" со стороны определенной промасштабировать.
 
-
-            //Для изменения при НАЛОЖЕНИИ арен. Изменит и масштаб оси "а", на которой график рисуетя! Ось слева
-            if (Axis_ref.Name.Contains("Y") && Axis_ref.Name.Contains("1b"))
+            //Для изменения при НАЛОЖЕНИИ арен. Изменит и масштаб оси, на которой график рисуетя! Ось СЛЕВА
+            if (Axis_ref.Name.Contains("axisYinnn_") && Axis_ref.Name.Contains("L")) 
             {
                 //if ловит выход за границы. Try ловит ошибку формата.
                 try
                 {
                     if (Convert.ToDouble(TextBoxMax.Text) > Axis_ref.Minimum)
                     {
-                        chart1_ref.ChartAreas["Area#" + " " + chartAreaName_ref[6] + "1a"].AxisY.Maximum
-                            = Convert.ToDouble(TextBoxMax.Text);
+                          int indexOf_  =     Axis_ref.Name.IndexOf("_");   //Номер знака "_".
+                          chart1_ref.ChartAreas["invisible_" + Axis_ref.Name.Substring(indexOf_+1)].AxisY.Maximum = Convert.ToDouble(TextBoxMax.Text);
                     }
                 }
                 catch (FormatException) { }
@@ -428,21 +410,21 @@ namespace GoodPlot
 
 
             //Для изменения при наложении арен. Изменит и масштаб оси "а", на которой график рисуетя! ОСЬ СПРАВА
-            if (Axis_ref.Name.Contains("Y") && Axis_ref.Name.Contains("2b"))
+            if (Axis_ref.Name.Contains("axisYinnn_") && Axis_ref.Name.Contains("R"))
             {
                 //if ловит выход за границы. Try ловит ошибку формата.
                 try
                 {
                     if (Convert.ToDouble(TextBoxMax.Text) > Axis_ref.Minimum)
                     {
-                        chart1_ref.ChartAreas["Area#" + " " + chartAreaName_ref[6] + "2a"].AxisY2.Maximum
-                            = Convert.ToDouble(TextBoxMax.Text);
+                      int indexOf_ = Axis_ref.Name.IndexOf("_");   //Номер знака "_".
+                      chart1_ref.ChartAreas["invisible_" + Axis_ref.Name.Substring(indexOf_+1)].AxisY2.Maximum = Convert.ToDouble(TextBoxMax.Text);
                     }
                 }
                 catch (FormatException) { }
             }
 
-            //Для изменения при наложении арен. Изменит и масштаб оси ВРЕМЕНИ "а", на которой график рисуетя! Ось ВРЕМЕНИ
+            //Для изменения при наложении арен. Изменит и масштаб всех осей времени.
             if (Axis_ref.Name.Contains("X") )
             {
                 //if ловит выход за границы. Try ловит ошибку формата.
@@ -452,19 +434,15 @@ namespace GoodPlot
                     {
                         try
                         {
-                            chart1_ref.ChartAreas["Area#" + " " + chartAreaName_ref[6] + "1a"].AxisX.Maximum
-                                                        = DateTime.Parse(TextBoxMax.Text).ToOADate();
-                            chart1_ref.ChartAreas["Area#" + " " + chartAreaName_ref[6] + "2a"].AxisX.Maximum
-                            = DateTime.Parse(TextBoxMax.Text).ToOADate();
+                          foreach (ChartArea chartArea_i in chart1_ref.ChartAreas)
+                          {chartArea_i.AxisX.Maximum = DateTime.Parse(TextBoxMax.Text).ToOADate();}
                         }
                         catch (Exception) { }
-                        
-                        
-                    }
+                     }
                 }
                 catch (FormatException) { }
             }
-           
+            
         }
         /// <summary>
         /// Изменение ширины
@@ -824,6 +802,29 @@ namespace GoodPlot
         private void ComboBoxView_Minor_TextChanged(object sender, SelectionChangedEventArgs e)
         {
           Axis_ref.MinorTickMark.TickMarkStyle = (TickMarkStyle)TickMarkStyle.Parse(typeof(TickMarkStyle), ComboBoxView_Minor.SelectedItem.ToString());
+        }
+
+        private void ComboBoxLogarifmic_SelectionChanged ( object sender , SelectionChangedEventArgs e )
+        {
+            if ( ComboBoxLogarifmic . SelectedItem == "Logarifmic" )
+            {
+                //Axis_ref . Minimum = Double . NaN;
+                //Axis_ref . Maximum = Double . NaN;
+            Axis_ref.IsLogarithmic=true;
+            Axis_ref.LogarithmBase = 10;
+           
+            }
+            if ( ComboBoxLogarifmic . SelectedItem == "Normal" )
+                Axis_ref . IsLogarithmic=false;
+        }
+
+        private void CheckBoxAuto_Checked ( object sender , RoutedEventArgs e )
+        {
+            Axis_ref . Minimum = Double . NaN;
+            Axis_ref . Maximum = Double . NaN;
+            Axis_ref.IsLabelAutoFit=true;
+            Axis_ref . LabelStyle . Font=new System . Drawing . Font ( "Arial" , Convert . ToInt32 ( FontSizeTextBox . Text ) );
+
         }
 
 
